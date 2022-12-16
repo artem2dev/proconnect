@@ -10,27 +10,27 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('register')
-  async createUser(@Body() dto: CreateUserDto): Promise<User> {
+  async createUser(@Body() dto: CreateUserDto) {
     return await this.userService.createUser(dto);
   }
 
   @Post('login')
-  async loginUser(@Body() userData: LoginUserDto): Promise<Boolean> {
+  async loginUser(@Body() userData: LoginUserDto) {
     return await this.userService.loginUser(userData.email, userData.password);
   }
 
   @Get('all')
-  async getAllUsers(): Promise<User[]> {
+  async getAllUsers() {
     return await this.userService.findAll();
   }
 
   @Get(':id')
-  async getUser(@Param('id') id: string): Promise<User> {
+  async getUser(@Param('id') id: string) {
     return await this.userService.findOne(id);
   }
 
   @Delete(':id')
-  async deleteUser(@Param('id') id: string): Promise<void> {
+  async deleteUser(@Param('id') id: string) {
     return await this.userService.deleteUser(id);
   }
 }
