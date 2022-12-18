@@ -1,24 +1,29 @@
 import React, { useState } from 'react';
 
 import {
+  Box,
+  Button,
+  Center,
+  Checkbox,
+  Container,
+  Divider,
+  Flex,
   FormControl,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  TextField,
-} from '@material-ui/core';
-import Avatar from '@material-ui/core/Avatar';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { registerUser } from '../../api/signUp';
+  FormLabel,
+  Heading,
+  HStack,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Stack,
+  Text,
+  useBreakpointValue,
+  useColorModeValue,
+} from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../../api/auth';
+import { ReactComponent as Logo } from '../../assets/logo.svg';
+import { OAuthButtonGroup } from '../Login/OAuthButtonGroup';
 
 const defaultLabels = {
   userName: 'User name',
@@ -30,6 +35,8 @@ const defaultLabels = {
 const defaultErrorLabels = {
   passwordMinLength: 'Password must contain at least 8 characters',
   passwordsMustMatch: 'Passwords must match',
+  emailCannotBeEmpty: "Email can't be empty",
+  userNameCannotBeEmpty: "User name can't be empty",
 };
 
 const initialIsFieldError = {
@@ -39,88 +46,70 @@ const initialIsFieldError = {
   passwordVerify: false,
 };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-    height: '100vh',
-    width: '100%',
-  },
-  paper: {
-    margin: theme.spacing(8, 4),
-    width: '40%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.success.main,
-  },
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  email: {},
-  password: {
-    borderRadius: '5px',
-  },
-}));
+const initialFields = {
+  userName: '',
+  email: '',
+  password: '',
+  passwordVerify: '',
+};
+
+const initialShowPassword = {
+  password: false,
+  passwordVerify: false,
+};
 
 const SignUp = () => {
-  const classes = useStyles();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showPasswordVerify, setShowPasswordVerify] = useState(false);
-  const [password, setPassword] = useState('');
-  const [passwordVerify, setPasswordVerify] = useState('');
-  const [email, setEmail] = useState('');
-  const [userName, setUserName] = useState('');
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(initialShowPassword);
+  const [fields, setFields] = useState(initialFields);
   const [labels, setLabels] = useState(defaultLabels);
+  const [isLoading, setIsLoading] = useState(false);
   const [isFieldError, setIsFieldError] = useState(initialIsFieldError);
 
-  const onShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
+  const onChange = (e) => {
+    const { name, value } = e.target;
 
-  const onShowPasswordVerify = () => {
-    setShowPasswordVerify(!showPasswordVerify);
-  };
-
-  const onUserNameChange = (e) => {
-    setUserName(e.target.value);
-  };
-
-  const onEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const onPasswordChange = (e) => {
     setIsFieldError({
       ...isFieldError,
-      passwordVerify: false,
-      password: false,
+      [name]: false,
     });
-    setLabels(defaultLabels);
+    setLabels({
+      ...labels,
+      [name]: defaultLabels[name],
+    });
 
-    setPassword(e.target.value);
+    setFields({ ...fields, [name]: value });
   };
 
-  const onPasswordVerifyChange = (e) => {
-    setIsFieldError({
-      ...isFieldError,
-      passwordVerify: false,
-      password: false,
-    });
-    setLabels(defaultLabels);
+  const onShowPassword = (e) => {
+    const { name } = e.target;
 
-    setPasswordVerify(e.target.value);
+    setShowPassword({ ...showPassword, [name]: !showPassword[name] });
   };
 
-  const fieldsVerification = (password, passwordVerify) => {
+  const fieldsVerification = (email, userName, password, passwordVerify) => {
+    if (!email.length) {
+      setLabels({
+        ...labels,
+        email: defaultErrorLabels.emailCannotBeEmpty,
+      });
+
+      setIsFieldError({ ...isFieldError, email: true });
+
+      return false;
+    }
+
+    if (!userName.length) {
+      setLabels({
+        ...labels,
+        userName: defaultErrorLabels.userNameCannotBeEmpty,
+      });
+
+      setIsFieldError({ ...isFieldError, userName: true });
+
+      return false;
+    }
+
     if (password.length < 8) {
       setLabels({
         ...labels,
@@ -152,125 +141,220 @@ const SignUp = () => {
 
   const onSignUp = (e) => {
     e.preventDefault();
-    if (!fieldsVerification(password, passwordVerify)) return;
 
-    registerUser();
+    const { email, userName, password, passwordVerify } = fields;
+
+    if (!fieldsVerification(email, userName, password, passwordVerify)) return;
+
+    const params = { email, userName, password };
+
+    const onSuccess = () => {
+      setIsLoading(false);
+
+      navigate('/');
+    };
+
+    const onError = (error) => {
+      setIsLoading(false);
+
+      console.error(error);
+    };
+
+    setIsLoading(true);
+
+    registerUser(params, onSuccess, onError);
+  };
+
+  const navigateToLogin = () => {
+    navigate('/login');
   };
 
   return (
-    <Grid container component="main" className={classes.root}>
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          To access the site, please register
-        </Typography>
-        <form className={classes.form} onSubmit={onSignUp} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            id="userName"
-            label={labels.userName}
-            name="userName"
-            autoComplete="username"
-            autoFocus
-            value={userName}
-            onChange={onUserNameChange}
-            error={isFieldError.userName}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            id="email"
-            label={labels.email}
-            name="email"
-            autoComplete="email"
-            autoFocus
-            value={email}
-            onChange={onEmailChange}
-            error={isFieldError.email}
-          />
-          <FormControl
-            className={classes.password}
-            style={{ marginTop: '10px' }}
-            variant="outlined"
-            fullWidth
-            error={isFieldError.password}
+    <Container
+      display={'flex'}
+      minH={'100vh'}
+      minW={'100%'}
+      align={'center'}
+      justifyContent={'center'}
+      bg={useColorModeValue('gray.50', 'gray.800')}
+    >
+      <Stack spacing={8} maxW={'lg'} justify="center" minW={'520px'}>
+        <Stack spacing="6">
+          <Center>
+            <Logo />
+          </Center>
+
+          <Stack
+            spacing={{
+              base: '2',
+              md: '3',
+            }}
+            textAlign="center"
           >
-            <InputLabel htmlFor="outlined-adornment-password">
-              {labels.password}
-            </InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-password"
-              value={password}
-              type={showPassword ? 'text' : 'password'}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={onShowPassword}
-                    edge="end"
+            <Heading
+              size={useBreakpointValue({
+                base: 'xs',
+                md: 'sm',
+              })}
+            >
+              Create an account
+            </Heading>
+            <HStack spacing="1" justify="center">
+              <Text color="muted">Already have an account?</Text>
+              <Button
+                variant="link"
+                colorScheme="blue"
+                onClick={navigateToLogin}
+              >
+                Login
+              </Button>
+            </HStack>
+          </Stack>
+        </Stack>
+        <Box
+          py={{
+            base: '0',
+            sm: '8',
+          }}
+          px={{
+            base: '4',
+            sm: '10',
+          }}
+          bg="white"
+          boxShadow={{
+            base: 'none',
+            sm: useColorModeValue('lg', 'md-dark'),
+          }}
+          borderRadius={{
+            base: 'none',
+            sm: 'xl',
+          }}
+        >
+          <Stack spacing="6">
+            <Stack spacing="5">
+              <Flex justify={'space-between'}>
+                <FormControl maxW={'215px'} isRequired>
+                  <FormLabel
+                    htmlFor="email"
+                    color={isFieldError.email ? 'red' : 'black'}
                   >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              onChange={onPasswordChange}
-              label={labels.password}
-            />
-          </FormControl>
-          <FormControl
-            className={classes.password}
-            variant="outlined"
-            fullWidth
-            error={isFieldError.passwordVerify}
-            margin="normal"
-          >
-            <InputLabel htmlFor="outlined-adornment-password">
-              {labels.passwordVerify}
-            </InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-password"
-              value={passwordVerify}
-              type={showPasswordVerify ? 'text' : 'password'}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={onShowPasswordVerify}
-                    edge="end"
+                    {labels.email}
+                  </FormLabel>
+                  <Input
+                    id="email"
+                    type="email"
+                    variant="filled"
+                    name="email"
+                    onChange={onChange}
+                    value={fields.email}
+                    isInvalid={isFieldError.email}
+                  />
+                </FormControl>
+                <FormControl maxW={'215px'} isRequired>
+                  <FormLabel
+                    htmlFor="userName"
+                    color={isFieldError.userName ? 'red' : 'black'}
                   >
-                    {showPasswordVerify ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              onChange={onPasswordVerifyChange}
-              label={labels.passwordVerify}
-            />
-          </FormControl>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Sign up
-          </Button>
-          <Grid container justifyContent="space-around">
-            <Grid item>
-              <Link href="#" variant="body2">
-                Already have an account? Login
-              </Link>
-            </Grid>
-          </Grid>
-          <Box mt={5}></Box>
-        </form>
-      </div>
-    </Grid>
+                    {labels.userName}
+                  </FormLabel>
+                  <Input
+                    id="userName"
+                    type="userName"
+                    variant="filled"
+                    name="userName"
+                    onChange={onChange}
+                    value={fields.userName}
+                    isInvalid={isFieldError.userName}
+                  />
+                </FormControl>
+              </Flex>
+              <FormControl isRequired>
+                <InputGroup size="md" flexDirection="column">
+                  <FormLabel
+                    htmlFor="password"
+                    color={isFieldError.password ? 'red' : 'black'}
+                  >
+                    {labels.password}
+                  </FormLabel>
+                  <Input
+                    pr="4.5rem"
+                    id="password"
+                    variant="filled"
+                    name="password"
+                    value={fields.password}
+                    type={showPassword.password ? 'text' : 'password'}
+                    onChange={onChange}
+                    isInvalid={isFieldError.password}
+                  />
+                  <InputRightElement width="4.5rem" marginTop="8">
+                    <Button
+                      h="1.75rem"
+                      size="sm"
+                      variant="solid"
+                      colorScheme="blue"
+                      name="password"
+                      onClick={onShowPassword}
+                    >
+                      {showPassword.password ? 'Hide' : 'Show'}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+                <InputGroup size="md" flexDirection="column" marginTop="4">
+                  <FormLabel
+                    htmlFor="passwordVerify"
+                    color={isFieldError.passwordVerify ? 'red' : 'black'}
+                  >
+                    {labels.passwordVerify}
+                  </FormLabel>
+                  <Input
+                    pr="4.5rem"
+                    id="passwordVerify"
+                    name="passwordVerify"
+                    variant="filled"
+                    value={fields.passwordVerify}
+                    type={showPassword.passwordVerify ? 'text' : 'password'}
+                    onChange={onChange}
+                    isInvalid={isFieldError.passwordVerify}
+                  />
+                  <InputRightElement width="4.5rem" marginTop="8">
+                    <Button
+                      h="1.75rem"
+                      size="sm"
+                      variant="solid"
+                      colorScheme="blue"
+                      name="passwordVerify"
+                      onClick={onShowPassword}
+                    >
+                      {showPassword.passwordVerify ? 'Hide' : 'Show'}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+              </FormControl>
+            </Stack>
+            <Checkbox>
+              <Button variant={'link'}>I agree with the privacy policy</Button>
+            </Checkbox>
+            <Stack spacing="6">
+              <Button
+                isLoading={isLoading}
+                colorScheme="blue"
+                onClick={onSignUp}
+              >
+                Sign up
+              </Button>
+              <HStack>
+                <Divider />
+                <Text fontSize="sm" whiteSpace="nowrap" color="muted">
+                  or continue with
+                </Text>
+                <Divider />
+              </HStack>
+              <OAuthButtonGroup />
+            </Stack>
+          </Stack>
+        </Box>
+      </Stack>
+    </Container>
   );
 };
 

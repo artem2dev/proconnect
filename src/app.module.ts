@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Article } from './articles/article.entity';
 import { ArticleModule } from './articles/article.module';
+import { AuthModule } from './auth/auth.module';
 import { User } from './users/user.entity';
 import { UserModule } from './users/user.module';
-import { secret } from './utils/constants';
 
 @Module({
   imports: [
@@ -25,10 +24,7 @@ import { secret } from './utils/constants';
       autoLoadEntities: true,
       logging: false,
     }),
-    JwtModule.register({
-      secret,
-      signOptions: { expiresIn: '24h' },
-    }),
+    AuthModule,
   ],
   controllers: [],
   providers: [],

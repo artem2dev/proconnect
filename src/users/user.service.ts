@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcrypt';
-import { getError } from 'src/articles/errors/Errors';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create.user.dto';
 import { User } from './user.entity';
@@ -14,57 +11,14 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
+  getUserByEmail(email: string) {
+    return this.userRepository.findOneBy({ email });
+  }
+
   async createUser(dto: CreateUserDto) {
-    const user = this.userRepository.create(dto);
+    const user = this.userRepository.save(dto);
 
-    try {
-      const salt = await bcrypt.genSalt();
-      const hash = await bcrypt.hash(user.password, salt);
-
-      const newUser = {
-        userName: user.userName,
-        email: user.email,
-        password: hash,
-      };
-
-      await this.userRepository.insert(newUser);
-
-      return newUser;
-    } catch (error) {
-      return getError(error.code);
-    }
-  }
-
-  async loginUser(email: string, password: string): Promise<Boolean> {
-    const user = this.userRepository.findOneBy({ email, password });
-
-    if (!user) return false;
-
-    return true;
-  }
-
-  async login(user: User, jwt: JwtService) {
-    try {
-      const foundUser = await this.userRepository.findOneBy({
-        email: user.email,
-      });
-
-      if (!foundUser) throw new Error('404');
-
-      const { password } = foundUser;
-
-      if (bcrypt.compare(user.password, password)) {
-        throw new Error('10050');
-      }
-
-      const payload = { email: user.email };
-
-      return {
-        token: jwt.sign(payload),
-      };
-    } catch (error) {
-      return getError(error.code);
-    }
+    return user;
   }
 
   findAll(): Promise<User[]> {

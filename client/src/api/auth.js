@@ -2,7 +2,7 @@ import axios from 'axios';
 import { handleSuccess, handleError } from '../helpers/handlers';
 import { baseApiUrl } from '../common/constants';
 
-const baseUrl = `${baseApiUrl}/users`;
+const baseUrl = `${baseApiUrl}/auth`;
 
 export const changePassword = async (params, onSuccess, onError) => {
   axios
@@ -13,7 +13,7 @@ export const changePassword = async (params, onSuccess, onError) => {
 
 export const registerUser = async (params, onSuccess, onError) => {
   axios
-    .post(`${baseUrl}/register`, params)
+    .post(`${baseUrl}/registration`, params)
     .then((response) => handleSuccess(response, onSuccess))
     .catch((error) => handleError(error, onError));
 };

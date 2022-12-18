@@ -4,7 +4,7 @@ export const handleSuccess = (response, callback) => {
 
 export const handleError = (error, callback) => {
   if (callback) {
-    callback(error);
+    callback(error?.response?.data);
   } else {
     console.error(error);
   }
