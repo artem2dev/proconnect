@@ -2,11 +2,11 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import './App.css';
 
-import PrivateRoutes from './PrivateRoute';
+import PrivateRoute from './PrivateRoute';
 import SignUp from './SignUp';
 import Login from './Login';
 import SidebarWithHeader from './SideBar';
-import Card from './Card';
+import ArticleCard from './Card';
 
 function App() {
   return (
@@ -14,8 +14,8 @@ function App() {
       <div className="App">
         <SidebarWithHeader>
           <Routes>
-            <Route element={<PrivateRoutes />}>
-              <Route path="/" element={<Card />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="/" element={<ArticleCard />} />
             </Route>
             <Route path="/register" element={<SignUp />} />
             <Route path="/login" element={<Login />} />

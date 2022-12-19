@@ -6,7 +6,8 @@ import { ArticleModule } from './articles/article.module';
 import { AuthModule } from './auth/auth.module';
 import { User } from './users/user.entity';
 import { UserModule } from './users/user.module';
-
+import { MinioModule } from 'nestjs-minio-client';
+import { MulterModule } from '@nestjs/platform-express';
 @Module({
   imports: [
     ArticleModule,
@@ -24,6 +25,15 @@ import { UserModule } from './users/user.module';
       autoLoadEntities: true,
       logging: false,
     }),
+    MinioModule.register({
+      endPoint: '127.0.0.1',
+      port: 9099,
+      useSSL: false,
+      accessKey: process.env.MINIO_SERVER_ACCESS_KEY,
+      secretKey: process.env.MINIO_SERVER_SECRET_KEY,
+      isGlobal: true,
+    }),
+    MulterModule.register({ dest: '/temp' }),
     AuthModule,
   ],
   controllers: [],

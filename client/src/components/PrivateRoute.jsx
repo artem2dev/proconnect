@@ -1,8 +1,10 @@
 import { Navigate, Outlet } from 'react-router-dom';
+import { getItem } from '../helpers/localStorage';
 
-const PrivateRoutes = () => {
-  let auth = { token: false };
-  return auth.token ? <Outlet /> : <Navigate to="/login" />;
+const PrivateWrapper = () => {
+  const auth = getItem('jwtToken');
+
+  return auth ? <Outlet /> : <Navigate to="/login" />;
 };
 
-export default PrivateRoutes;
+export default PrivateWrapper;
