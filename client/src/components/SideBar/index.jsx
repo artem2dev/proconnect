@@ -19,7 +19,7 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React from 'react';
 import {
   FiBell,
   FiChevronDown,
@@ -30,7 +30,7 @@ import {
   FiStar,
   FiTrendingUp,
 } from 'react-icons/fi';
-import UserProfileEdit from '../Dialogs/Profile';
+import { useNavigate } from 'react-router-dom';
 
 const LinkItems = [
   { name: 'Home', icon: FiHome },
@@ -134,10 +134,10 @@ const NavItem = ({ icon, children, ...rest }) => {
 };
 
 const MobileNav = ({ onOpen, ...rest }) => {
-  const [showEditProfile, setShowEditProfile] = useState(false);
+  const navigate = useNavigate();
 
   const onShowProfileSettings = () => {
-    setShowEditProfile(true);
+    navigate('/profile');
   };
 
   return (
@@ -221,7 +221,6 @@ const MobileNav = ({ onOpen, ...rest }) => {
           </Flex>
         </HStack>
       </Flex>
-      {showEditProfile && <UserProfileEdit />}
     </div>
   );
 };
