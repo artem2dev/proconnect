@@ -20,8 +20,9 @@ export class AuthService {
 
   async login(userDto: LoginUserDto) {
     const user = await this.validateUser(userDto);
+    const data = { token: `Bearer ${(await this.generateToken(user))?.token}` };
 
-    return `Bearer ${this.generateToken(user)}`;
+    return data;
   }
 
   async registration(userDto: CreateUserDto) {

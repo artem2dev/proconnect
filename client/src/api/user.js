@@ -1,12 +1,16 @@
 import axios from 'axios';
-import { handleSuccess, handleError } from '../helpers/handlers';
 import { baseApiUrl } from '../common/constants';
+import { handleError, handleSuccess } from '../helpers/handlers';
+import { getItem } from '../helpers/localStorage';
 
 const baseUrl = `${baseApiUrl}/users`;
 
-export const getUser = async (params, onSuccess, onError) => {
+const token = getItem('jwtToken');
+const headers = { Authorization: token };
+
+export const getUser = async (onSuccess, onError) => {
   axios
-    .post(`${baseUrl}/profile`, params)
+    .get(`${baseUrl}/profile`, { headers })
     .then((response) => handleSuccess(response, onSuccess))
     .catch((error) => handleError(error, onError));
 };

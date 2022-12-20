@@ -1,19 +1,26 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import './App.css';
 import { ChakraProvider } from '@chakra-ui/react';
+import './App.css';
 
-import PrivateRoute from './PrivateRoute';
-import SignUp from './SignUp';
-import Login from './Login';
-import SidebarWithHeader from './SideBar';
-import ArticleCard from './Card';
-import ProfileSettings from './ProfileSettings';
+import { useEffect } from 'react';
+import { getUser } from '../api/user';
 import { theme } from '../helpers/chakraTheme';
-
+import ArticleCard from './Card';
+import Login from './Login';
+import PrivateRoute from './PrivateRoute';
+import ProfileSettings from './ProfileSettings';
+import SidebarWithHeader from './SideBar';
+import SignUp from './SignUp';
 
 const App = () => {
-  
+  useEffect(() => {
+    const onSuccess = (data) => {
+      console.log(data);
+    };
+
+    getUser(onSuccess);
+  }, []);
 
   return (
     <ChakraProvider theme={theme}>

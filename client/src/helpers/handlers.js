@@ -1,5 +1,5 @@
 export const handleSuccess = (response, callback) => {
-  if (callback) callback(response.data.data);
+  if (callback) callback(response.data);
 };
 
 export const handleError = (error, callback) => {
