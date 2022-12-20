@@ -1,4 +1,5 @@
-import { Controller, Delete, Get, Param } from '@nestjs/common';
+import { Controller, Delete, Get, Param, UseGuards } from '@nestjs/common';
+import { JwtOpenGuard } from './user.guard';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -10,7 +11,8 @@ export class UserController {
     return await this.userService.findAll();
   }
 
-  @Get(':id')
+  @Get('profile')
+  @UseGuards(JwtOpenGuard)
   async getUser(@Param('id') id: string) {
     return await this.userService.findOne(id);
   }

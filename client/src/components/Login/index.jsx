@@ -15,13 +15,13 @@ import {
   Stack,
   Text,
   useBreakpointValue,
-  useColorModeValue
+  useColorModeValue,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../../api/auth';
 import { ReactComponent as Logo } from '../../assets/logo.svg';
-import { setItem } from '../../helpers/localStorage';
+import { onLogin as onLoginSuccess } from '../../helpers/auth';
 import { OAuthButtonGroup } from './OAuthButtonGroup';
 
 const defaultLabels = {
@@ -105,7 +105,7 @@ const Login = () => {
     const params = { email, password };
 
     const onSuccess = (data) => {
-      setItem('jwtToken', data?.token);
+      onLoginSuccess(data?.token);
       setIsLoading(false);
 
       navigate('/');

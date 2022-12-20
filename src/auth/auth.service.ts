@@ -21,14 +21,14 @@ export class AuthService {
   async login(userDto: LoginUserDto) {
     const user = await this.validateUser(userDto);
 
-    return this.generateToken(user);
+    return `Bearer ${this.generateToken(user)}`;
   }
 
   async registration(userDto: CreateUserDto) {
     const candidate = await this.userService.getUserByEmail(userDto.email);
     if (candidate) {
       throw new HttpException(
-        'User with this email already exixsts',
+        'User with this email already exists',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -67,7 +67,7 @@ export class AuthService {
     }
 
     throw new UnauthorizedException({
-      message: 'Wrond email or password',
+      message: 'Wrong email or password',
     });
   }
 }

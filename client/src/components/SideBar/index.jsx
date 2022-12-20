@@ -31,6 +31,7 @@ import {
   FiTrendingUp,
 } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import { onSignOut as onSignOutSuccess } from '../../helpers/auth';
 
 const LinkItems = [
   { name: 'Home', icon: FiHome },
@@ -140,6 +141,11 @@ const MobileNav = ({ onOpen, ...rest }) => {
     navigate('/profile');
   };
 
+  const onSignOut = () => {
+    onSignOutSuccess();
+    navigate('/login');
+  };
+
   return (
     <div>
       <Flex
@@ -215,7 +221,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
                 <MenuItem>Settings</MenuItem>
                 <MenuItem>Billing</MenuItem>
                 <MenuDivider />
-                <MenuItem>Sign out</MenuItem>
+                <MenuItem onClick={onSignOut}>Sign out</MenuItem>
               </MenuList>
             </Menu>
           </Flex>
