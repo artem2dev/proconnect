@@ -20,8 +20,10 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
+import { useSelector } from 'react-redux';
 
 const Content = () => {
+  const user = useSelector((state) => state.users);
   const tabs = ['Account Settings', 'Company Settings', 'Notifications'];
 
   return (
@@ -92,7 +94,8 @@ const Content = () => {
                 <Input
                   focusBorderColor="brand.blue"
                   type="email"
-                  placeholder="tcook@apple.com"
+                  placeholder="email@email.com"
+                  value={user?.email}
                 />
               </FormControl>
               <FormControl id="city">

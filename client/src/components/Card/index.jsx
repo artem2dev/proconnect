@@ -7,8 +7,43 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
+import { getUser } from '../../api/user';
+import { useDispatch } from 'react-redux';
+import { getUserInfo } from '../../redux/usersSlice';
+import { getItem } from '../../helpers/localStorage';
+import { setGlobalState } from '../../redux/globalState';
+import { useNavigate } from 'react-router-dom';
 
 export default function ArticleCard() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (getItem('jwtToken')) {
+      dispatch(setGlobalState({ sidebarVisible: true }));
+    }
+
+    const onSuccess = (data) => {
+      dispatch(
+        getUserInfo({
+          ...data,
+        }),
+      );
+    };
+
+    const onError = (err) => {
+      dispatch(setGlobalState({ sidebarVisible: false }));
+      dispatch(getUserInfo({}));
+
+      navigate('/login');
+
+      console.error(err);
+    };
+
+    getUser(onSuccess, onError);
+  }, [dispatch, navigate]);
+
   return (
     <Center py={6}>
       <Box

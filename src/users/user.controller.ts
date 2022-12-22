@@ -25,7 +25,7 @@ export class UserController {
   @UseGuards(AccessTokenGuard)
   @Get('profile')
   async getUser(@Request() req: IGetUserInfoRequest) {
-    return await this.userService.findOne(req.user.id);
+    return await this.userService.findOne(req.user?.id);
   }
 
   @Delete(':id')

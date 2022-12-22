@@ -221,6 +221,7 @@ const Login = () => {
                 />
                 <InputRightElement width="4.5rem" marginTop="8">
                   <Button
+                    p
                     h="1.75rem"
                     size="sm"
                     variant="solid"

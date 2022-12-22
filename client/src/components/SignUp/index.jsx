@@ -18,7 +18,7 @@ import {
   Stack,
   Text,
   useBreakpointValue,
-  useColorModeValue
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../../api/auth';
@@ -29,6 +29,8 @@ import { OAuthButtonGroup } from '../Login/OAuthButtonGroup';
 const defaultLabels = {
   userName: 'User name',
   email: 'Email',
+  firstName: 'First name',
+  lastName: 'Last name',
   password: 'Password',
   passwordVerify: 'Verify password',
 };
@@ -38,10 +40,14 @@ const defaultErrorLabels = {
   passwordsMustMatch: 'Passwords must match',
   emailCannotBeEmpty: "Email can't be empty",
   userNameCannotBeEmpty: "User name can't be empty",
+  firstNameCannotBeEmpty: "First name can't be empty",
+  lastNameCannotBeEmpty: "Last name can't be empty",
 };
 
 const initialIsFieldError = {
   userName: false,
+  firstName: false,
+  lastName: false,
   email: false,
   password: false,
   passwordVerify: false,
@@ -50,6 +56,8 @@ const initialIsFieldError = {
 const initialFields = {
   userName: '',
   email: '',
+  firstName: '',
+  lastName: '',
   password: '',
   passwordVerify: '',
 };
@@ -88,7 +96,14 @@ const SignUp = () => {
     setShowPassword({ ...showPassword, [name]: !showPassword[name] });
   };
 
-  const fieldsVerification = (email, userName, password, passwordVerify) => {
+  const fieldsVerification = (
+    email,
+    userName,
+    firstName,
+    lastName,
+    password,
+    passwordVerify,
+  ) => {
     if (!email.length) {
       setLabels({
         ...labels,
@@ -107,6 +122,28 @@ const SignUp = () => {
       });
 
       setIsFieldError({ ...isFieldError, userName: true });
+
+      return false;
+    }
+
+    if (!firstName.length) {
+      setLabels({
+        ...labels,
+        userName: defaultErrorLabels.firstNameCannotBeEmpty,
+      });
+
+      setIsFieldError({ ...isFieldError, firstName: true });
+
+      return false;
+    }
+
+    if (!lastName.length) {
+      setLabels({
+        ...labels,
+        userName: defaultErrorLabels.lastNameCannotBeEmpty,
+      });
+
+      setIsFieldError({ ...isFieldError, lastName: true });
 
       return false;
     }
@@ -143,11 +180,22 @@ const SignUp = () => {
   const onSignUp = (e) => {
     e.preventDefault();
 
-    const { email, userName, password, passwordVerify } = fields;
+    const { email, userName, firstName, lastName, password, passwordVerify } =
+      fields;
 
-    if (!fieldsVerification(email, userName, password, passwordVerify)) return;
+    if (
+      !fieldsVerification(
+        email,
+        userName,
+        firstName,
+        lastName,
+        password,
+        passwordVerify,
+      )
+    )
+      return;
 
-    const params = { email, userName, password };
+    const params = { email, userName, firstName, lastName, password };
 
     const onSuccess = (data) => {
       setItem('jwtToken', data?.token);
@@ -270,6 +318,42 @@ const SignUp = () => {
                   />
                 </FormControl>
               </Flex>
+              <Flex justify={'space-between'}>
+                <FormControl maxW={'215px'} isRequired>
+                  <FormLabel
+                    htmlFor="firstName"
+                    color={isFieldError.firstName ? 'red' : 'black'}
+                  >
+                    {labels.firstName}
+                  </FormLabel>
+                  <Input
+                    id="firstName"
+                    type="firstName"
+                    variant="filled"
+                    name="firstName"
+                    onChange={onChange}
+                    value={fields.firstName}
+                    isInvalid={isFieldError.firstName}
+                  />
+                </FormControl>
+                <FormControl maxW={'215px'} isRequired>
+                  <FormLabel
+                    htmlFor="lastName"
+                    color={isFieldError.lastName ? 'red' : 'black'}
+                  >
+                    {labels.lastName}
+                  </FormLabel>
+                  <Input
+                    id="lastName"
+                    type="lastName"
+                    variant="filled"
+                    name="lastName"
+                    onChange={onChange}
+                    value={fields.lastName}
+                    isInvalid={isFieldError.lastName}
+                  />
+                </FormControl>
+              </Flex>
               <FormControl isRequired>
                 <InputGroup size="md" flexDirection="column">
                   <FormLabel
@@ -290,7 +374,9 @@ const SignUp = () => {
                   />
                   <InputRightElement width="4.5rem" marginTop="8">
                     <Button
+                      p
                       h="1.75rem"
+                      w="4rem"
                       size="sm"
                       variant="solid"
                       colorScheme="blue"
@@ -320,7 +406,9 @@ const SignUp = () => {
                   />
                   <InputRightElement width="4.5rem" marginTop="8">
                     <Button
+                      p
                       h="1.75rem"
+                      w="4rem"
                       size="sm"
                       variant="solid"
                       colorScheme="blue"

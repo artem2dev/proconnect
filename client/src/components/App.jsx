@@ -2,9 +2,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import { ChakraProvider } from '@chakra-ui/react';
 import './App.css';
-
-import { useEffect } from 'react';
-import { getUser } from '../api/user';
 import { theme } from '../helpers/chakraTheme';
 import ArticleCard from './Card';
 import Login from './Login';
@@ -14,14 +11,6 @@ import SidebarWithHeader from './SideBar';
 import SignUp from './SignUp';
 
 const App = () => {
-  useEffect(() => {
-    const onSuccess = (data) => {
-      console.log(data);
-    };
-
-    getUser(onSuccess);
-  }, []);
-
   return (
     <ChakraProvider theme={theme}>
       <Router basename={process.env.PUBLIC_URL}>

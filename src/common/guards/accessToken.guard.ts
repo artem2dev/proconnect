@@ -23,10 +23,6 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
         null,
       ];
 
-      if (!(bearer && token)) {
-        return true;
-      }
-
       if (bearer !== 'Bearer' || !token) {
         throw new UnauthorizedException();
       }

@@ -30,44 +30,59 @@ import {
   FiStar,
   FiTrendingUp,
 } from 'react-icons/fi';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { onSignOut as onSignOutSuccess } from '../../helpers/auth';
+import { setGlobalState } from '../../redux/globalState';
+import { getUserInfo } from '../../redux/usersSlice';
 
 const LinkItems = [
   { name: 'Home', icon: FiHome },
   { name: 'Trending', icon: FiTrendingUp },
   { name: 'Explore', icon: FiCompass },
-  { name: 'Favourites', icon: FiStar },
+  { name: 'Favorites', icon: FiStar },
   { name: 'Settings', icon: FiSettings },
 ];
 
 export default function SidebarWithHeader({ children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const user = useSelector((state) => state.users);
+  const globalState = useSelector((state) => state.globalState);
+  const bg = useColorModeValue('gray.100', 'gray.900');
+
   return (
-    <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
-      <SidebarContent
-        onClose={() => onClose}
-        display={{ base: 'none', md: 'block' }}
-      />
-      <Drawer
-        autoFocus={false}
-        isOpen={isOpen}
-        placement="left"
-        onClose={onClose}
-        returnFocusOnClose={false}
-        onOverlayClick={onClose}
-        size="full"
-      >
-        <DrawerContent>
-          <SidebarContent onClose={onClose} />
-        </DrawerContent>
-      </Drawer>
-      {/* mobilenav */}
-      <MobileNav onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 60 }} p="4">
-        {children}
+    <>
+      <Box minH="100vh" bg={bg}>
+        {globalState?.sidebarVisible && (
+          <>
+            <SidebarContent
+              onClose={() => onClose}
+              display={{ base: 'none', md: 'block' }}
+            />
+            <Drawer
+              autoFocus={false}
+              isOpen={isOpen}
+              placement="left"
+              onClose={onClose}
+              returnFocusOnClose={false}
+              onOverlayClick={onClose}
+              size="full"
+            >
+              <DrawerContent>
+                <SidebarContent onClose={onClose} />
+              </DrawerContent>
+            </Drawer>
+            <MobileNav onOpen={onOpen} user={user} />
+          </>
+        )}
+        <Box
+          ml={globalState?.sidebarVisible ? { base: 0, md: 60 } : {}}
+          p={globalState?.sidebarVisible ? '4' : ''}
+        >
+          {children}
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }
 
@@ -134,14 +149,17 @@ const NavItem = ({ icon, children, ...rest }) => {
   );
 };
 
-const MobileNav = ({ onOpen, ...rest }) => {
+const MobileNav = ({ onOpen, user, ...rest }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onShowProfileSettings = () => {
     navigate('/profile');
   };
 
   const onSignOut = () => {
+    dispatch(getUserInfo({}));
+    dispatch(setGlobalState({ sidebarVisible: false }));
     onSignOutSuccess();
     navigate('/login');
   };
@@ -191,22 +209,14 @@ const MobileNav = ({ onOpen, ...rest }) => {
                 _focus={{ boxShadow: 'none' }}
               >
                 <HStack>
-                  <Avatar
-                    size={'sm'}
-                    src={
-                      'https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
-                    }
-                  />
+                  <Avatar size={'sm'} src={''} />
                   <VStack
                     display={{ base: 'none', md: 'flex' }}
                     alignItems="flex-start"
                     spacing="1px"
                     ml="2"
                   >
-                    <Text fontSize="sm">Justina Clark</Text>
-                    <Text fontSize="xs" color="gray.600">
-                      Admin
-                    </Text>
+                    <Text fontSize="sm">{user?.userName}</Text>
                   </VStack>
                   <Box display={{ base: 'none', md: 'flex' }}>
                     <FiChevronDown />
@@ -218,8 +228,6 @@ const MobileNav = ({ onOpen, ...rest }) => {
                 borderColor={useColorModeValue('gray.200', 'gray.700')}
               >
                 <MenuItem onClick={onShowProfileSettings}>Profile</MenuItem>
-                <MenuItem>Settings</MenuItem>
-                <MenuItem>Billing</MenuItem>
                 <MenuDivider />
                 <MenuItem onClick={onSignOut}>Sign out</MenuItem>
               </MenuList>
