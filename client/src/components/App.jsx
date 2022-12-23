@@ -22,26 +22,24 @@ const App = () => {
   useEffect(() => {
     if (getItem('jwtToken')) {
       dispatch(setGlobalState({ sidebarVisible: true }));
+
+      const onSuccess = (data) => {
+        dispatch(
+          setUser({
+            ...data,
+          }),
+        );
+      };
+
+      const onError = (err) => {
+        dispatch(setGlobalState({ sidebarVisible: false }));
+        dispatch(setUser({}));
+
+        console.error(err);
+      };
+
+      getUser(onSuccess, onError);
     }
-
-    const onSuccess = (data) => {
-      dispatch(
-        setUser({
-          ...data,
-        }),
-      );
-    };
-
-    const onError = (err) => {
-      dispatch(setGlobalState({ sidebarVisible: false }));
-      dispatch(setUser({}));
-
-      window.location.href = './login';
-
-      console.error(err);
-    };
-
-    getUser(onSuccess, onError);
   }, [dispatch]);
 
   return (

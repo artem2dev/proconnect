@@ -156,6 +156,7 @@ const MobileNav = ({ onOpen, user, ...rest }) => {
   };
 
   const onSignOut = () => {
+    navigate('/login');
     onSignOutSuccess(dispatch);
   };
 

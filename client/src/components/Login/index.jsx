@@ -18,10 +18,14 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../../api/auth';
+import { getUser } from '../../api/user';
 import { ReactComponent as Logo } from '../../assets/logo.svg';
 import { onLogin as onLoginSuccess } from '../../helpers/auth';
+import { setGlobalState } from '../../redux/globalState';
+import { setUser } from '../../redux/usersSlice';
 import { OAuthButtonGroup } from './OAuthButtonGroup';
 
 const defaultLabels = {
@@ -41,6 +45,7 @@ const initialIsFieldError = {
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -107,6 +112,24 @@ const Login = () => {
     const onSuccess = (data) => {
       onLoginSuccess(data?.token);
       setIsLoading(false);
+
+      const onSuccess = (data) => {
+        dispatch(setGlobalState({ sidebarVisible: true }));
+        dispatch(
+          setUser({
+            ...data,
+          }),
+        );
+      };
+
+      const onError = (err) => {
+        dispatch(setGlobalState({ sidebarVisible: false }));
+        dispatch(setUser({}));
+
+        console.error(err);
+      };
+
+      getUser(onSuccess, onError);
 
       navigate('/');
     };

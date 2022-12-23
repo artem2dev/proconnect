@@ -27,6 +27,7 @@ const fieldsInitialState = {
   firstName: '',
   lastName: '',
   email: '',
+  userName: '',
 };
 
 const Content = () => {
@@ -41,6 +42,7 @@ const Content = () => {
         firstName: user?.firstName,
         lastName: user?.lastName,
         email: user?.email,
+        userName: user?.userName,
       }));
   }, [user, setFields]);
 
@@ -119,6 +121,17 @@ const Content = () => {
                   placeholder="(408) 996–1010"
                 />
               </FormControl> */}
+              <FormControl id="userName">
+                <FormLabel>User name</FormLabel>
+                <Input
+                  focusBorderColor="brand.blue"
+                  type="userName"
+                  placeholder="Aboba"
+                  value={fields.userName}
+                  name="userName"
+                  onChange={onFieldChange}
+                />
+              </FormControl>
               <FormControl id="emailAddress">
                 <FormLabel>Email Address</FormLabel>
                 <Input

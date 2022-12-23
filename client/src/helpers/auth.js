@@ -1,4 +1,3 @@
-import jwt_decode from 'jwt-decode';
 import { setGlobalState } from '../redux/globalState';
 import { setUser } from '../redux/usersSlice';
 import { removeItem, setItem } from './localStorage';
@@ -7,9 +6,6 @@ const JWT_TOKEN = 'jwtToken';
 
 const updateAuthToken = (token) => {
   setItem(JWT_TOKEN, token);
-  const decoded = jwt_decode(token);
-
-  return decoded;
 };
 
 export const onLogin = (token) => {
@@ -18,7 +14,6 @@ export const onLogin = (token) => {
 
 export const onSignOut = (dispatch) => {
   removeItem(JWT_TOKEN);
-  window.location.href = './login';
   dispatch(setUser({}));
   dispatch(setGlobalState({ sidebarVisible: false }));
 };

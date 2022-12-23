@@ -22,6 +22,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { uploadImage } from '../../api/upload';
 import { getUrlFromConfig } from '../../helpers/getUrlFromConfig';
 
@@ -46,7 +47,8 @@ const list = [
   },
 ];
 
-const Sidebar = ({ user }) => {
+const Sidebar = () => {
+  const user = useSelector((state) => state.users);
   const value = 'https://apple.com/cook';
   const imageId = user?.image?.id || '';
   const imageUrl = imageId && getUrlFromConfig(`images/${imageId}`);
@@ -162,10 +164,10 @@ const Sidebar = ({ user }) => {
         </Modal>
         <VStack spacing={1}>
           <Heading as="h3" fontSize="xl" color="brand.dark">
-            Tim Cook
+            {`${user?.firstName} ${user?.lastName}`}
           </Heading>
           <Text color="brand.gray" fontSize="sm">
-            CEO of Apple
+            {user?.userName}
           </Text>
         </VStack>
       </VStack>

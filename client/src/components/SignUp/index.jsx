@@ -20,10 +20,14 @@ import {
   useBreakpointValue,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../../api/auth';
+import { getUser } from '../../api/user';
 import { ReactComponent as Logo } from '../../assets/logo.svg';
 import { setItem } from '../../helpers/localStorage';
+import { setGlobalState } from '../../redux/globalState';
+import { setUser } from '../../redux/usersSlice';
 import { OAuthButtonGroup } from '../Login/OAuthButtonGroup';
 
 const defaultLabels = {
@@ -69,6 +73,7 @@ const initialShowPassword = {
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(initialShowPassword);
   const [fields, setFields] = useState(initialFields);
   const [labels, setLabels] = useState(defaultLabels);
@@ -200,6 +205,24 @@ const SignUp = () => {
     const onSuccess = (data) => {
       setItem('jwtToken', data?.token);
       setIsLoading(false);
+
+      const onSuccess = (data) => {
+        dispatch(setGlobalState({ sidebarVisible: true }));
+        dispatch(
+          setUser({
+            ...data,
+          }),
+        );
+      };
+
+      const onError = (err) => {
+        dispatch(setGlobalState({ sidebarVisible: false }));
+        dispatch(setUser({}));
+
+        console.error(err);
+      };
+
+      getUser(onSuccess, onError);
 
       navigate('/');
     };
