@@ -33,8 +33,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { onSignOut as onSignOutSuccess } from '../../helpers/auth';
-import { setGlobalState } from '../../redux/globalState';
-import { getUserInfo } from '../../redux/usersSlice';
 
 const LinkItems = [
   { name: 'Home', icon: FiHome },
@@ -158,10 +156,7 @@ const MobileNav = ({ onOpen, user, ...rest }) => {
   };
 
   const onSignOut = () => {
-    dispatch(getUserInfo({}));
-    dispatch(setGlobalState({ sidebarVisible: false }));
-    onSignOutSuccess();
-    navigate('/login');
+    onSignOutSuccess(dispatch);
   };
 
   return (
@@ -216,7 +211,10 @@ const MobileNav = ({ onOpen, user, ...rest }) => {
                     spacing="1px"
                     ml="2"
                   >
-                    <Text fontSize="sm">{user?.userName}</Text>
+                    <Text fontSize="sm">{`${user?.firstName} ${user?.lastName}`}</Text>
+                    <Text fontSize="xs" color="gray.600">
+                      {user?.userName}
+                    </Text>
                   </VStack>
                   <Box display={{ base: 'none', md: 'flex' }}>
                     <FiChevronDown />

@@ -20,11 +20,35 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+
+const fieldsInitialState = {
+  firstName: '',
+  lastName: '',
+  email: '',
+};
 
 const Content = () => {
   const user = useSelector((state) => state.users);
+  const [fields, setFields] = useState(fieldsInitialState);
   const tabs = ['Account Settings', 'Company Settings', 'Notifications'];
+
+  useEffect(() => {
+    user?.id &&
+      setFields((prev) => ({
+        ...prev,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        email: user?.email,
+      }));
+  }, [user, setFields]);
+
+  const onFieldChange = (e) => {
+    const { name, value } = e.target;
+
+    setFields((prev) => ({ ...prev, [name]: value }));
+  };
 
   return (
     <Box
@@ -71,6 +95,9 @@ const Content = () => {
                   focusBorderColor="brand.blue"
                   type="text"
                   placeholder="Tim"
+                  value={fields.firstName}
+                  name="firstName"
+                  onChange={onFieldChange}
                 />
               </FormControl>
               <FormControl id="lastName">
@@ -79,23 +106,28 @@ const Content = () => {
                   focusBorderColor="brand.blue"
                   type="text"
                   placeholder="Cook"
+                  value={fields.lastName}
+                  name="lastName"
+                  onChange={onFieldChange}
                 />
               </FormControl>
-              <FormControl id="phoneNumber">
+              {/* <FormControl id="phoneNumber">
                 <FormLabel>Phone Number</FormLabel>
                 <Input
                   focusBorderColor="brand.blue"
                   type="tel"
                   placeholder="(408) 996–1010"
                 />
-              </FormControl>
+              </FormControl> */}
               <FormControl id="emailAddress">
                 <FormLabel>Email Address</FormLabel>
                 <Input
                   focusBorderColor="brand.blue"
                   type="email"
                   placeholder="email@email.com"
-                  value={user?.email}
+                  value={fields.email}
+                  name="email"
+                  onChange={onFieldChange}
                 />
               </FormControl>
               <FormControl id="city">

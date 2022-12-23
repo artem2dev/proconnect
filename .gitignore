@@ -36,3 +36,5 @@ lerna-debug.log*
 
 temp
 s3
+
+client/node_modules
