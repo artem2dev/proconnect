@@ -21,7 +21,10 @@ import {
   Tabs,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser, updateUser } from '../../api/user';
+import { setGlobalState } from '../../redux/globalState';
+import { setUser } from '../../redux/usersSlice';
 
 const fieldsInitialState = {
   firstName: '',
@@ -30,9 +33,35 @@ const fieldsInitialState = {
   userName: '',
 };
 
+const defaultLabels = {
+  userName: 'User name',
+  email: 'Email',
+  firstName: 'First name',
+  lastName: 'Last name',
+  password: 'Password',
+};
+
+const defaultErrorLabels = {
+  emailCannotBeEmpty: "Email can't be empty",
+  userNameCannotBeEmpty: "User name can't be empty",
+  firstNameCannotBeEmpty: "First name can't be empty",
+  lastNameCannotBeEmpty: "Last name can't be empty",
+};
+
+const initialIsFieldError = {
+  userName: false,
+  firstName: false,
+  lastName: false,
+  email: false,
+};
+
 const Content = () => {
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.users);
   const [fields, setFields] = useState(fieldsInitialState);
+  const [labels, setLabels] = useState(defaultLabels);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFieldError, setIsFieldError] = useState(initialIsFieldError);
   const tabs = ['Account Settings', 'Company Settings', 'Notifications'];
 
   useEffect(() => {
@@ -49,7 +78,117 @@ const Content = () => {
   const onFieldChange = (e) => {
     const { name, value } = e.target;
 
+    setIsFieldError({
+      ...isFieldError,
+      [name]: false,
+    });
+    setLabels({
+      ...labels,
+      [name]: defaultLabels[name],
+    });
+
     setFields((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const fieldsVerification = (email, userName, firstName, lastName) => {
+    if (!email.length) {
+      setLabels({
+        ...labels,
+        email: defaultErrorLabels.emailCannotBeEmpty,
+      });
+
+      setIsFieldError({ ...isFieldError, email: true });
+
+      return false;
+    }
+
+    if (!userName.length) {
+      setLabels({
+        ...labels,
+        userName: defaultErrorLabels.userNameCannotBeEmpty,
+      });
+
+      setIsFieldError({ ...isFieldError, userName: true });
+
+      return false;
+    }
+
+    if (!firstName.length) {
+      setLabels({
+        ...labels,
+        firstName: defaultErrorLabels.firstNameCannotBeEmpty,
+      });
+
+      setIsFieldError({ ...isFieldError, firstName: true });
+
+      return false;
+    }
+
+    if (!lastName.length) {
+      setLabels({
+        ...labels,
+        lastName: defaultErrorLabels.lastNameCannotBeEmpty,
+      });
+
+      setIsFieldError({ ...isFieldError, lastName: true });
+
+      return false;
+    }
+
+    return true;
+  };
+
+  const onUpdate = (e) => {
+    e.preventDefault();
+
+    const { email, userName, firstName, lastName, password, passwordVerify } =
+      fields;
+
+    if (
+      !fieldsVerification(
+        email,
+        userName,
+        firstName,
+        lastName,
+        password,
+        passwordVerify,
+      )
+    )
+      return;
+
+    const params = { id: user?.id, email, userName, firstName, lastName };
+
+    const onSuccess = () => {
+      setIsLoading(false);
+
+      const onSuccess = (data) => {
+        dispatch(setGlobalState({ sidebarVisible: true }));
+        dispatch(
+          setUser({
+            ...data,
+          }),
+        );
+      };
+
+      const onError = (err) => {
+        dispatch(setGlobalState({ sidebarVisible: false }));
+        dispatch(setUser({}));
+
+        console.error(err);
+      };
+
+      getUser(onSuccess, onError);
+    };
+
+    const onError = (error) => {
+      setIsLoading(false);
+
+      console.error(error);
+    };
+
+    setIsLoading(true);
+
+    updateUser(params, onSuccess, onError);
   };
 
   return (
@@ -92,25 +231,39 @@ const Content = () => {
               gap={6}
             >
               <FormControl id="firstName">
-                <FormLabel>First Name</FormLabel>
+                <FormLabel
+                  htmlFor="firstName"
+                  color={isFieldError.firstName ? 'red' : 'black'}
+                >
+                  {labels.firstName}
+                </FormLabel>
                 <Input
+                  id="firstName"
                   focusBorderColor="brand.blue"
                   type="text"
                   placeholder="Tim"
                   value={fields.firstName}
                   name="firstName"
                   onChange={onFieldChange}
+                  isInvalid={isFieldError.firstName}
                 />
               </FormControl>
               <FormControl id="lastName">
-                <FormLabel>Last Name</FormLabel>
+                <FormLabel
+                  htmlFor="lastName"
+                  color={isFieldError.lastName ? 'red' : 'black'}
+                >
+                  {labels.lastName}
+                </FormLabel>
                 <Input
+                  id="lastName"
                   focusBorderColor="brand.blue"
                   type="text"
                   placeholder="Cook"
                   value={fields.lastName}
                   name="lastName"
                   onChange={onFieldChange}
+                  isInvalid={isFieldError.lastName}
                 />
               </FormControl>
               {/* <FormControl id="phoneNumber">
@@ -122,25 +275,39 @@ const Content = () => {
                 />
               </FormControl> */}
               <FormControl id="userName">
-                <FormLabel>User name</FormLabel>
+                <FormLabel
+                  htmlFor="userName"
+                  color={isFieldError.userName ? 'red' : 'black'}
+                >
+                  {labels.userName}
+                </FormLabel>
                 <Input
+                  id="userName"
                   focusBorderColor="brand.blue"
                   type="userName"
                   placeholder="Aboba"
                   value={fields.userName}
                   name="userName"
                   onChange={onFieldChange}
+                  isInvalid={isFieldError.userName}
                 />
               </FormControl>
               <FormControl id="emailAddress">
-                <FormLabel>Email Address</FormLabel>
+                <FormLabel
+                  htmlFor="email"
+                  color={isFieldError.email ? 'red' : 'black'}
+                >
+                  {labels.email}
+                </FormLabel>
                 <Input
+                  id="email"
                   focusBorderColor="brand.blue"
                   type="email"
                   placeholder="email@email.com"
                   value={fields.email}
                   name="email"
                   onChange={onFieldChange}
+                  isInvalid={isFieldError.email}
                 />
               </FormControl>
               <FormControl id="city">
@@ -241,7 +408,9 @@ const Content = () => {
       </Tabs>
 
       <Box mt={5} py={5} px={8} borderTopWidth={1} borderColor="brand.light">
-        <Button>Update</Button>
+        <Button onClick={onUpdate} isLoading={isLoading}>
+          Update
+        </Button>
       </Box>
     </Box>
   );

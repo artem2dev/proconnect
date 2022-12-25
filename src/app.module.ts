@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MinioModule } from 'nestjs-minio-client';
 import { Article } from './articles/article.entity';
 import { ArticleModule } from './articles/article.module';
 import { AuthModule } from './auth/auth.module';
+import { Media } from './media/media.entity';
+import { MediaModule } from './media/media.module';
 import { User } from './users/user.entity';
 import { UserModule } from './users/user.module';
-import { MinioModule } from 'nestjs-minio-client';
-import { MulterModule } from '@nestjs/platform-express';
 @Module({
   imports: [
     ArticleModule,
@@ -20,7 +22,7 @@ import { MulterModule } from '@nestjs/platform-express';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [User, Article],
+      entities: [User, Article, Media],
       synchronize: true,
       autoLoadEntities: true,
       logging: false,
@@ -29,12 +31,13 @@ import { MulterModule } from '@nestjs/platform-express';
       endPoint: '127.0.0.1',
       port: 9099,
       useSSL: false,
-      accessKey: process.env.MINIO_SERVER_ACCESS_KEY,
-      secretKey: process.env.MINIO_SERVER_SECRET_KEY,
+      accessKey: process.env.MINIO_ROOT_USER,
+      secretKey: process.env.MINIO_ROOT_PASSWORD,
       isGlobal: true,
     }),
     MulterModule.register({ dest: '/temp' }),
     AuthModule,
+    MediaModule,
   ],
   controllers: [],
   providers: [],

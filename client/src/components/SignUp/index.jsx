@@ -134,7 +134,7 @@ const SignUp = () => {
     if (!firstName.length) {
       setLabels({
         ...labels,
-        userName: defaultErrorLabels.firstNameCannotBeEmpty,
+        firstName: defaultErrorLabels.firstNameCannotBeEmpty,
       });
 
       setIsFieldError({ ...isFieldError, firstName: true });
@@ -145,7 +145,7 @@ const SignUp = () => {
     if (!lastName.length) {
       setLabels({
         ...labels,
-        userName: defaultErrorLabels.lastNameCannotBeEmpty,
+        lastName: defaultErrorLabels.lastNameCannotBeEmpty,
       });
 
       setIsFieldError({ ...isFieldError, lastName: true });

@@ -23,7 +23,7 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { uploadImage } from '../../api/upload';
+import { getImage, uploadImage } from '../../api/media';
 import { getUrlFromConfig } from '../../helpers/getUrlFromConfig';
 
 const list = [
@@ -50,7 +50,7 @@ const list = [
 const Sidebar = () => {
   const user = useSelector((state) => state.users);
   const value = 'https://apple.com/cook';
-  const imageId = user?.image?.id || '';
+  const imageId = user?.imageId || '';
   const imageUrl = imageId && getUrlFromConfig(`images/${imageId}`);
   const { hasCopied, onCopy } = useClipboard(value);
 
@@ -85,18 +85,13 @@ const Sidebar = () => {
     const formData = new FormData();
     formData.append('image', file, file.name);
 
-    const config = {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    };
-
     const onSuccess = () => {};
 
     const onError = (error) => {
       console.error(error);
     };
 
-    // setIsLoadingImage(true);
-    uploadImage(formData, config, onSuccess, onError);
+    uploadImage(formData, onSuccess, onError);
   };
 
   return (
@@ -122,7 +117,7 @@ const Sidebar = () => {
           name="Tim Cook"
           cursor="pointer"
           onClick={openChooseImage}
-          src={imageId ? imageUrl : ''}
+          src={getImage()}
         >
           <AvatarBadge bg="brand.blue" boxSize="1em">
             <svg width="0.4em" fill="currentColor" viewBox="0 0 20 20">

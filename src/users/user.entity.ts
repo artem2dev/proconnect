@@ -1,5 +1,12 @@
 import { Article } from 'src/articles/article.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Media } from 'src/media/media.entity';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class User {
@@ -21,8 +28,11 @@ export class User {
   @Column({ default: false })
   banned: boolean;
 
-  @Column()
+  @Column({ select: false })
   password: string;
+
+  @OneToOne(() => Media, (media) => media.user)
+  avatar: Media;
 
   @OneToMany(() => Article, (article) => article.author)
   articles: Article[];

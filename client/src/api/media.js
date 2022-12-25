@@ -3,23 +3,27 @@ import { baseApiUrl } from '../common/constants';
 import { handleError, handleSuccess } from '../helpers/handlers';
 import { getItem } from '../helpers/localStorage';
 
-const baseUrl = `${baseApiUrl}/users`;
+const baseUrl = `${baseApiUrl}/media`;
 
 const authHeaders = () => {
   const token = getItem('jwtToken');
   return { Authorization: token };
 };
 
-export const getUser = async (onSuccess, onError) => {
+export const uploadImage = async (formData, onSuccess, onError) => {
   axios
-    .get(`${baseUrl}/profile`, { headers: authHeaders() })
+    .post(`${baseUrl}/image`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data', ...authHeaders() },
+    })
     .then((response) => handleSuccess(response, onSuccess))
     .catch((error) => handleError(error, onError));
 };
 
-export const updateUser = async (params, onSuccess, onError) => {
+export const getImage = async (onSuccess, onError) => {
   axios
-    .put(`${baseUrl}/profile`, params, { headers: authHeaders() })
+    .get(`${baseUrl}/image`, {
+      headers: authHeaders(),
+    })
     .then((response) => handleSuccess(response, onSuccess))
     .catch((error) => handleError(error, onError));
 };

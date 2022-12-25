@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MinioService } from 'nestjs-minio-client';
+import { IUpdateUserInfo } from 'src/common/types/user';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create.user.dto';
 import { User } from './user.entity';
@@ -10,28 +10,72 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private minIO: MinioService,
   ) {}
 
   getUserByEmail(email: string) {
     return this.userRepository.findOneBy({ email });
   }
 
-  async createUser(dto: CreateUserDto) {
-    const user = this.userRepository.save(dto);
-    // await this.minIO.client.putObject('media', file.originalname, file.stream);
+  async getUserInfo(userId: string) {
+    const user = await this.userRepository.findOneBy({ id: userId });
+
+    if (!user) throw new HttpException('No such user', HttpStatus.BAD_REQUEST);
+
     return user;
   }
 
-  findAll(): Promise<User[]> {
+  async createUser(dto: CreateUserDto) {
+    const user = this.userRepository.save(dto);
+
+    return user;
+  }
+
+  findAll() {
     return this.userRepository.find();
   }
 
-  findOne(id: string): Promise<User> {
+  async updateUser(userInfo: IUpdateUserInfo) {
+    const { id } = userInfo;
+    const user = await this.userRepository.findOneBy({ id });
+
+    if (!user) throw new HttpException('No such user', HttpStatus.BAD_REQUEST);
+
+    const { userName, email } = user;
+
+    if (userName !== userInfo.userName) {
+      const isUserNameExists = await this.userRepository.findOneBy({
+        userName,
+      });
+
+      if (isUserNameExists) {
+        throw new HttpException(
+          'User with this user name already exists',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
+    if (email !== userInfo.email) {
+      const isEmailExists = await this.userRepository.findOneBy({
+        email,
+      });
+
+      if (isEmailExists) {
+        throw new HttpException(
+          'User with this email already exists',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
+    return this.userRepository.update({ id }, userInfo);
+  }
+
+  findOne(id: string) {
     return this.userRepository.findOneBy({ id });
   }
 
-  async deleteUser(id: string): Promise<void> {
+  async deleteUser(id: string) {
     await this.userRepository.delete(id);
   }
 }
