@@ -1,6 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { createReadStream } from 'fs';
 import { MinioService } from 'nestjs-minio-client';
+import { join } from 'path';
 import { IGetUser, IGetUserInfo } from 'src/common/types/user';
 import { UserService } from 'src/users/user.service';
 import { Repository } from 'typeorm';
@@ -20,6 +22,15 @@ export class MediaService {
 
     if (!user) throw new HttpException('No such user', HttpStatus.BAD_REQUEST);
 
+    const mediaToDelete = await this.mediaRepository.findOneBy({
+      user,
+    });
+
+    if (mediaToDelete) {
+      await this.mediaRepository.remove(mediaToDelete);
+      await this.minIO.client.removeObject('media', mediaToDelete.id);
+    }
+
     const media = await this.mediaRepository.save({
       user: userInfo,
       originalName: file.originalname,
@@ -34,14 +45,14 @@ export class MediaService {
   async getImage(user: IGetUser) {
     const image = await this.mediaRepository.findOneBy({ user });
 
-    const imageData = this.minIO.client.getObject(
-      'media',
-      image.id,
-      (err, stream) => {
-        return stream;
-      },
-    );
+    if (!image) {
+      const file = createReadStream(
+        join(__dirname, '..', 'assets', 'Default.png'),
+      );
 
-    return imageData;
+      return file;
+    }
+
+    return await this.minIO.client.getObject('media', image.id);
   }
 }

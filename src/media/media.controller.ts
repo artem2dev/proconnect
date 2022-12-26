@@ -1,8 +1,10 @@
 import {
   Controller,
   Get,
+  Param,
   Post,
   Request,
+  Response,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -26,11 +28,14 @@ export class MediaController {
     return this.mediaService.updateProfileImage(file, req.user);
   }
 
-  @UseGuards(AccessTokenGuard)
-  @Get('image')
-  getProfileImage(@Request() req: IGetUserInfoRequest) {
-    return this.mediaService.getImage({
-      id: req.user?.id,
+  @Get('image/:userId')
+  async getProfileImage(@Param('userId') userId: string, @Response() res: any) {
+    const imageStream = await this.mediaService.getImage({
+      id: userId,
     });
+
+    res.attachment(userId);
+
+    imageStream.pipe(res);
   }
 }

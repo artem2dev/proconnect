@@ -23,8 +23,7 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { getImage, uploadImage } from '../../api/media';
-import { getUrlFromConfig } from '../../helpers/getUrlFromConfig';
+import { uploadImage } from '../../api/media';
 
 const list = [
   {
@@ -48,10 +47,9 @@ const list = [
 ];
 
 const Sidebar = () => {
+  // const [avatar, setAvatar] = useState(null);
   const user = useSelector((state) => state.users);
   const value = 'https://apple.com/cook';
-  const imageId = user?.imageId || '';
-  const imageUrl = imageId && getUrlFromConfig(`images/${imageId}`);
   const { hasCopied, onCopy } = useClipboard(value);
 
   const profileUrl = useRef(null);
@@ -62,6 +60,16 @@ const Sidebar = () => {
       profileUrl.current.select();
     }
   });
+
+  // useEffect(() => {
+  //   const onSuccess = (data) => {
+  //     const fileBlob = new Blob([new Uint8Array(data)]);
+  //     console.log(111, fileBlob);
+  //     setAvatar(data);
+  //   };
+
+  //   user.id && getImage(onSuccess);
+  // }, [user]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const profileImage = useRef(null);
@@ -85,7 +93,9 @@ const Sidebar = () => {
     const formData = new FormData();
     formData.append('image', file, file.name);
 
-    const onSuccess = () => {};
+    const onSuccess = () => {
+      return;
+    };
 
     const onError = (error) => {
       console.error(error);
@@ -117,7 +127,7 @@ const Sidebar = () => {
           name="Tim Cook"
           cursor="pointer"
           onClick={openChooseImage}
-          src={getImage()}
+          src={user?.id ? 'http://localhost:5000/media/image/' + user?.id : ''}
         >
           <AvatarBadge bg="brand.blue" boxSize="1em">
             <svg width="0.4em" fill="currentColor" viewBox="0 0 20 20">

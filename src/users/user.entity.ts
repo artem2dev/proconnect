@@ -28,7 +28,7 @@ export class User {
   @Column({ default: false })
   banned: boolean;
 
-  @Column({ select: false })
+  @Column()
   password: string;
 
   @OneToOne(() => Media, (media) => media.user)
