@@ -8,7 +8,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class AccessTokenGuard extends AuthGuard('jwt') {
+export class RefreshTokenGuard extends AuthGuard('jwt-refresh') {
   constructor(private jwtService: JwtService) {
     super();
   }
@@ -18,7 +18,8 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
   ): boolean | Promise<boolean> | Observable<boolean> {
     try {
       const req = context.switchToHttp().getRequest();
-      const [bearer, token] = req.headers.authorization?.split(' ') || [
+
+      const [bearer, token] = req.cookies.refreshToken?.split(' ') || [
         null,
         null,
       ];
@@ -27,11 +28,11 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
         throw new UnauthorizedException();
       }
 
-      const user = this.jwtService.verify(token, {
-        secret: process.env.JWT_ACCESS_SECRET || 'SECRET',
+      const decoded = this.jwtService.verify(token, {
+        secret: process.env.JWT_REFRESH_SECRET || 'SECRET',
       });
 
-      req.user = user;
+      req.user = { ...decoded, refreshToken: token };
 
       return true;
     } catch (err) {

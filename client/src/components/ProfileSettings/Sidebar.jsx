@@ -61,16 +61,6 @@ const Sidebar = () => {
     }
   });
 
-  // useEffect(() => {
-  //   const onSuccess = (data) => {
-  //     const fileBlob = new Blob([new Uint8Array(data)]);
-  //     console.log(111, fileBlob);
-  //     setAvatar(data);
-  //   };
-
-  //   user.id && getImage(onSuccess);
-  // }, [user]);
-
   const { isOpen, onOpen, onClose } = useDisclosure();
   const profileImage = useRef(null);
 

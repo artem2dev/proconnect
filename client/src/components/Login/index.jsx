@@ -47,8 +47,8 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('adminadmin');
+  const [email, setEmail] = useState('admin@admin.com');
   const [labels, setLabels] = useState(defaultLabels);
   const [isLoading, setIsLoading] = useState(false);
   const [isFieldError, setIsFieldError] = useState(initialIsFieldError);
@@ -110,7 +110,7 @@ const Login = () => {
     const params = { email, password };
 
     const onSuccess = (data) => {
-      onLoginSuccess(data?.token);
+      onLoginSuccess(data);
       setIsLoading(false);
 
       const onSuccess = (data) => {

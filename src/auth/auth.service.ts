@@ -1,4 +1,5 @@
 import {
+  ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -6,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { IGetUserInfo } from 'src/common/types/user';
 import { CreateUserDto } from 'src/users/dto/create.user.dto';
 import { LoginUserDto } from 'src/users/dto/login.user.dto';
 import { User } from 'src/users/user.entity';
@@ -21,7 +23,7 @@ export class AuthService {
   async login(userDto: LoginUserDto) {
     const user = await this.validateUser(userDto);
 
-    return this.generateToken(user);
+    return await this.generateToken(user);
   }
 
   async registration(userDto: CreateUserDto) {
@@ -39,14 +41,28 @@ export class AuthService {
       password: hashPassword,
     });
 
-    return this.generateToken(user);
+    return await this.generateToken(user);
   }
 
-  private async generateToken(user: User) {
+  private async generateToken(user: User | IGetUserInfo) {
     const payload = { email: user.email, id: user.id };
 
+    const [accessToken, refreshToken] = (
+      await Promise.all([
+        this.jwtService.signAsync(payload, {
+          secret: process.env.JWT_ACCESS_SECRET || 'SECRET',
+          expiresIn: '10s',
+        }),
+        this.jwtService.signAsync(payload, {
+          secret: process.env.JWT_REFRESH_SECRET || 'SECRET',
+          expiresIn: '7d',
+        }),
+      ])
+    ).map((v) => 'Bearer ' + v);
+
     return {
-      token: 'Bearer ' + this.jwtService.sign(payload),
+      accessToken,
+      refreshToken,
     };
   }
 
@@ -62,12 +78,18 @@ export class AuthService {
       user.password,
     );
 
-    if (user && passwordEquals) {
+    if (passwordEquals) {
       return user;
     }
 
     throw new UnauthorizedException({
       message: 'Wrong email or password',
     });
+  }
+
+  async refreshTokens(userInfo: IGetUserInfo) {
+    const tokens = await this.generateToken(userInfo);
+
+    return tokens;
   }
 }

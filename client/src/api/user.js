@@ -1,25 +1,19 @@
-import axios from 'axios';
 import { baseApiUrl } from '../common/constants';
 import { handleError, handleSuccess } from '../helpers/handlers';
-import { getItem } from '../helpers/localStorage';
+import { useAxios } from './axiosConfig';
 
 const baseUrl = `${baseApiUrl}/users`;
 
-const authHeaders = () => {
-  const token = getItem('jwtToken');
-  return { Authorization: token };
-};
-
 export const getUser = async (onSuccess, onError) => {
-  axios
-    .get(`${baseUrl}/profile`, { headers: authHeaders() })
+  useAxios
+    .get('/profile')
     .then((response) => handleSuccess(response, onSuccess))
     .catch((error) => handleError(error, onError));
 };
 
 export const updateUser = async (params, onSuccess, onError) => {
-  axios
-    .put(`${baseUrl}/profile`, params, { headers: authHeaders() })
+  useAxios
+    .put(`${baseUrl}/profile`, params)
     .then((response) => handleSuccess(response, onSuccess))
     .catch((error) => handleError(error, onError));
 };

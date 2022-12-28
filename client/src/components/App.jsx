@@ -24,6 +24,7 @@ const App = () => {
       dispatch(setGlobalState({ sidebarVisible: true }));
 
       const onSuccess = (data) => {
+        console.log(data)
         dispatch(
           setUser({
             ...data,
