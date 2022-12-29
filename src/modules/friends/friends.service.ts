@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ExceptionDictionary } from 'src/common/dictionary/ExceptionDictonary';
+import { ExceptionDictionary } from 'src/common/dictionary/ExceptionDictionary';
 import { Repository } from 'typeorm';
 import { FriendRequest } from './friend-requests.entity';
 
