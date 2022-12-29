@@ -6,6 +6,7 @@ import { join } from 'path';
 import { IGetUser, IGetUserInfo } from 'src/common/types/user';
 import { UserService } from 'src/users/user.service';
 import { Repository } from 'typeorm';
+import { User } from '../users/user.entity';
 import { Media } from './media.entity';
 
 @Injectable()
@@ -14,17 +15,16 @@ export class MediaService {
     @InjectRepository(Media)
     private mediaRepository: Repository<Media>,
     private minIO: MinioService,
-    private userService: UserService,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
   async updateProfileImage(file: Express.Multer.File, userInfo: IGetUserInfo) {
     const { id: userId } = userInfo;
-    const user = await this.userService.findOne(userId);
+    const user: any = await this.userRepository.findOneBy({ id: userId });
 
     if (!user) throw new HttpException('No such user', HttpStatus.BAD_REQUEST);
 
-    const mediaToDelete = await this.mediaRepository.findOneBy({
-      user,
-    });
+    const mediaToDelete = await this.mediaRepository.findOneBy({ user });
 
     if (mediaToDelete) {
       await this.mediaRepository.remove(mediaToDelete);
@@ -47,7 +47,7 @@ export class MediaService {
 
     if (!image) {
       const file = createReadStream(
-        join(__dirname, '..', 'assets', 'Default.png'),
+        join(__dirname, '..', '..', 'assets', 'Default.png'),
       );
 
       return file;
