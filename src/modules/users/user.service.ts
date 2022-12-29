@@ -52,10 +52,7 @@ export class UserService {
       });
 
       if (isUserNameExists) {
-        throw new HttpException(
-          'User with this user name already exists',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new HttpException('User with this user name already exists', HttpStatus.BAD_REQUEST);
       }
     }
 
@@ -65,10 +62,7 @@ export class UserService {
       });
 
       if (isEmailExists) {
-        throw new HttpException(
-          'User with this email already exists',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new HttpException('User with this email already exists', HttpStatus.BAD_REQUEST);
       }
     }
 

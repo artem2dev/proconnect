@@ -1,24 +1,15 @@
-import {
-  ForbiddenException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { IGetUserInfo } from 'src/common/types/user';
-import { CreateUserDto } from 'src/users/dto/create.user.dto';
-import { LoginUserDto } from 'src/users/dto/login.user.dto';
-import { User } from 'src/users/user.entity';
-import { UserService } from 'src/users/user.service';
+import { CreateUserDto } from 'src/modules/users/dto/create.user.dto';
+import { LoginUserDto } from 'src/modules/users/dto/login.user.dto';
+import { User } from 'src/modules/users/user.entity';
+import { UserService } from '../users/user.service';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private userService: UserService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private userService: UserService, private jwtService: JwtService) {}
 
   async login(userDto: LoginUserDto) {
     const user = await this.validateUser(userDto);
@@ -29,10 +20,7 @@ export class AuthService {
   async registration(userDto: CreateUserDto) {
     const candidate = await this.userService.getUserByEmail(userDto.email);
     if (candidate) {
-      throw new HttpException(
-        'User with this email already exists',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('User with this email already exists', HttpStatus.BAD_REQUEST);
     }
 
     const hashPassword = await bcrypt.hash(userDto.password, 5);
@@ -51,7 +39,7 @@ export class AuthService {
       await Promise.all([
         this.jwtService.signAsync(payload, {
           secret: process.env.JWT_ACCESS_SECRET || 'SECRET',
-          expiresIn: '10s',
+          expiresIn: '2h',
         }),
         this.jwtService.signAsync(payload, {
           secret: process.env.JWT_REFRESH_SECRET || 'SECRET',
@@ -73,10 +61,7 @@ export class AuthService {
       throw new HttpException('No such user', HttpStatus.BAD_REQUEST);
     }
 
-    const passwordEquals = await bcrypt.compare(
-      userDto.password,
-      user.password,
-    );
+    const passwordEquals = await bcrypt.compare(userDto.password, user.password);
 
     if (passwordEquals) {
       return user;

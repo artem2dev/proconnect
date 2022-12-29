@@ -23,7 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../../api/auth';
 import { getUser } from '../../api/user';
 import { ReactComponent as Logo } from '../../assets/logo.svg';
-import { onLogin as onLoginSuccess } from '../../helpers/auth';
+import { removeItem, setItem } from '../../helpers/localStorage';
 import { setGlobalState } from '../../redux/globalState';
 import { setUser } from '../../redux/usersSlice';
 import { OAuthButtonGroup } from './OAuthButtonGroup';
@@ -109,11 +109,11 @@ const Login = () => {
 
     const params = { email, password };
 
-    const onSuccess = (data) => {
-      onLoginSuccess(data);
+    const onSuccess = ({ data }) => {
+      setItem('jwtToken', data);
       setIsLoading(false);
 
-      const onSuccess = (data) => {
+      const onSuccess = ({ data }) => {
         dispatch(setGlobalState({ sidebarVisible: true }));
         dispatch(
           setUser({
@@ -129,20 +129,21 @@ const Login = () => {
         console.error(err);
       };
 
-      getUser(onSuccess, onError);
+      getUser().then(onSuccess).catch(onError);
 
       navigate('/');
     };
 
     const onError = (error) => {
       setIsLoading(false);
+      removeItem('jwtToken');
 
       console.error(error);
     };
 
     setIsLoading(true);
 
-    loginUser(params, onSuccess, onError);
+    loginUser(params, onSuccess, onError).then(onSuccess).catch(onError);
   };
 
   const navigateToSignUp = () => {
@@ -158,8 +159,8 @@ const Login = () => {
       justifyContent={'center'}
       bg={useColorModeValue('gray.50', 'gray.800')}
     >
-      <Stack spacing={8} maxW={'lg'} justify="center" minW={'500px'}>
-        <Stack spacing="6">
+      <Stack spacing={8} maxW={'lg'} justify='center' minW={'500px'}>
+        <Stack spacing='6'>
           <Center>
             <Logo />
           </Center>
@@ -169,7 +170,7 @@ const Login = () => {
               base: '2',
               md: '3',
             }}
-            textAlign="center"
+            textAlign='center'
           >
             <Heading
               size={useBreakpointValue({
@@ -179,13 +180,9 @@ const Login = () => {
             >
               Log in to your account
             </Heading>
-            <HStack spacing="1" justify="center">
-              <Text color="muted">Don't have an account?</Text>
-              <Button
-                variant="link"
-                colorScheme="blue"
-                onClick={navigateToSignUp}
-              >
+            <HStack spacing='1' justify='center'>
+              <Text color='muted'>Don't have an account?</Text>
+              <Button variant='link' colorScheme='blue' onClick={navigateToSignUp}>
                 Sign up
               </Button>
             </HStack>
@@ -200,7 +197,7 @@ const Login = () => {
             base: '4',
             sm: '10',
           }}
-          bg="white"
+          bg='white'
           boxShadow={{
             base: 'none',
             sm: useColorModeValue('lg', 'md-dark'),
@@ -210,69 +207,52 @@ const Login = () => {
             sm: 'xl',
           }}
         >
-          <Stack spacing="6">
+          <Stack spacing='6'>
             <FormControl isRequired>
-              <FormLabel
-                htmlFor="email"
-                color={isFieldError.email ? 'red' : 'black'}
-              >
+              <FormLabel htmlFor='email' color={isFieldError.email ? 'red' : 'black'}>
                 {labels.email}
               </FormLabel>
               <Input
-                id="email"
-                type="email"
-                variant="filled"
+                id='email'
+                type='email'
+                variant='filled'
                 onChange={onEmailChange}
                 value={email}
                 isInvalid={isFieldError.email}
               />
-              <InputGroup size="md" flexDirection="column" mt={'5'}>
-                <FormLabel
-                  htmlFor="password"
-                  color={isFieldError.password ? 'red' : 'black'}
-                >
+              <InputGroup size='md' flexDirection='column' mt={'5'}>
+                <FormLabel htmlFor='password' color={isFieldError.password ? 'red' : 'black'}>
                   {labels.password}
                 </FormLabel>
                 <Input
-                  pr="4.5rem"
-                  id="password"
-                  variant="filled"
+                  pr='4.5rem'
+                  id='password'
+                  variant='filled'
                   value={password}
                   type={showPassword ? 'text' : 'password'}
                   onChange={onPasswordChange}
                   isInvalid={isFieldError.password}
                 />
-                <InputRightElement width="4.5rem" marginTop="8">
-                  <Button
-                    p
-                    h="1.75rem"
-                    size="sm"
-                    variant="solid"
-                    colorScheme="blue"
-                    onClick={onShowPassword}
-                  >
+                <InputRightElement width='4.5rem' marginTop='8'>
+                  <Button p h='1.75rem' size='sm' variant='solid' colorScheme='blue' onClick={onShowPassword}>
                     {showPassword ? 'Hide' : 'Show'}
                   </Button>
                 </InputRightElement>
               </InputGroup>
             </FormControl>
-            <HStack justify="space-between">
+            <HStack justify='space-between'>
               <Checkbox defaultChecked>Remember me</Checkbox>
-              <Button variant="link" colorScheme="blue" size="sm">
+              <Button variant='link' colorScheme='blue' size='sm'>
                 Forgot password?
               </Button>
             </HStack>
-            <Stack spacing="6">
-              <Button
-                isLoading={isLoading}
-                colorScheme="blue"
-                onClick={onLogin}
-              >
+            <Stack spacing='6'>
+              <Button isLoading={isLoading} colorScheme='blue' onClick={onLogin}>
                 Login
               </Button>
               <HStack>
                 <Divider />
-                <Text fontSize="sm" whiteSpace="nowrap" color="muted">
+                <Text fontSize='sm' whiteSpace='nowrap' color='muted'>
                   or continue with
                 </Text>
                 <Divider />

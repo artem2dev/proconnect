@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Put,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put, Request, UseGuards } from '@nestjs/common';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { IGetUserInfoRequest, IUpdateUserInfo } from 'src/common/types/user';
 import { UserService } from './user.service';

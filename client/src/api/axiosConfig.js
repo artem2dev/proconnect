@@ -1,18 +1,17 @@
 import axios from 'axios';
 import { baseApiUrl } from '../common/constants';
-import { setItem, getItem } from '../helpers/localStorage';
+import { getItem, removeItem, setItem } from '../helpers/localStorage';
 import { refreshTokens } from './auth';
 
-const baseUrl = `${baseApiUrl}/users`;
-
-const authHeaders = () => {
-  const token = getItem('jwtToken');
-  return { Authorization: token };
-};
+const baseUrl = `${baseApiUrl}`;
 
 export const useAxios = axios.create({
   baseURL: `${baseUrl}`,
-  headers: authHeaders(),
+});
+useAxios.interceptors.request.use((config) => {
+  config.headers.Authorization = getItem('jwtToken');
+
+  return config;
 });
 
 useAxios.interceptors.response.use(
@@ -21,24 +20,20 @@ useAxios.interceptors.response.use(
   },
   async function (error) {
     const originalRequest = error.config;
+
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+      refreshTokens()
+        .then((data) => {
+          setItem('jwtToken', data.token);
 
-      const onSuccess = (token) => {
-        setItem('jwtToken', token);
-
-        (() => {
-          originalRequest.headers['Authorization'] = token;
-          
+          originalRequest.headers['Authorization'] = data.token;
           return useAxios.request(originalRequest);
-        })();
-      };
-
-      const onError = () => {
-        window.location.href = '/login';
-      };
-
-      refreshTokens(onSuccess, onError);
+        })
+        .catch(() => {
+          window.location.href = '/login';
+          removeItem('jwtToken');
+        });
     }
     return Promise.reject(error);
   },

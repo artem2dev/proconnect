@@ -1,12 +1,6 @@
-import { Article } from 'src/articles/article.entity';
-import { Media } from 'src/media/media.entity';
-import {
-  Column,
-  Entity,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Article } from 'src/modules/articles/article.entity';
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Media } from '../media/media.entity';
 
 @Entity()
 export class User {

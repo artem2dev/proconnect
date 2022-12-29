@@ -3,13 +3,13 @@ import { ConfigModule } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MinioModule } from 'nestjs-minio-client';
-import { Article } from './articles/article.entity';
-import { ArticleModule } from './articles/article.module';
-import { AuthModule } from './auth/auth.module';
-import { Media } from './media/media.entity';
-import { MediaModule } from './media/media.module';
-import { User } from './users/user.entity';
-import { UserModule } from './users/user.module';
+import { Article } from './modules/articles/article.entity';
+import { ArticleModule } from './modules/articles/article.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { Media } from './modules/media/media.entity';
+import { MediaModule } from './modules/media/media.module';
+import { User } from './modules/users/user.entity';
+import { UserModule } from './modules/users/user.module';
 @Module({
   imports: [
     ArticleModule,
