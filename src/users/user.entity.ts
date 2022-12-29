@@ -1,5 +1,6 @@
 import { Article } from 'src/articles/article.entity';
 import { Media } from 'src/media/media.entity';
+import { FriendRequest } from 'src/modules/friends/friend-requests.entity';
 import {
   Column,
   Entity,
@@ -36,4 +37,10 @@ export class User {
 
   @OneToMany(() => Article, (article) => article.author)
   articles: Article[];
+
+  @OneToMany(() => FriendRequest, (fr) => fr.requester)
+  requesterIn: FriendRequest[];
+
+  @OneToMany(() => FriendRequest, (fr) => fr.requestee)
+  requesteeIn: FriendRequest[];
 }

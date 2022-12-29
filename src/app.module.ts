@@ -5,11 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MinioModule } from 'nestjs-minio-client';
 import { Article } from './articles/article.entity';
 import { ArticleModule } from './articles/article.module';
+import { FriendRequest } from './modules/friends/friend-requests.entity';
 import { AuthModule } from './auth/auth.module';
 import { Media } from './media/media.entity';
 import { MediaModule } from './media/media.module';
 import { User } from './users/user.entity';
 import { UserModule } from './users/user.module';
+
 @Module({
   imports: [
     ArticleModule,
@@ -22,7 +24,7 @@ import { UserModule } from './users/user.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [User, Article, Media],
+      entities: [User, Article, Media, FriendRequest],
       synchronize: true,
       autoLoadEntities: true,
       logging: false,
