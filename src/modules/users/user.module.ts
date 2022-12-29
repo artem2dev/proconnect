@@ -1,7 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MediaModule } from 'src/media/media.module';
+import { MediaModule } from 'src/modules/media/media.module';
 import { UserController } from './user.controller';
 import { User } from './user.entity';
 import { UserService } from './user.service';
