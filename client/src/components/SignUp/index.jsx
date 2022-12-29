@@ -101,14 +101,7 @@ const SignUp = () => {
     setShowPassword({ ...showPassword, [name]: !showPassword[name] });
   };
 
-  const fieldsVerification = (
-    email,
-    userName,
-    firstName,
-    lastName,
-    password,
-    passwordVerify,
-  ) => {
+  const fieldsVerification = (email, userName, firstName, lastName, password, passwordVerify) => {
     if (!email.length) {
       setLabels({
         ...labels,
@@ -185,28 +178,17 @@ const SignUp = () => {
   const onSignUp = (e) => {
     e.preventDefault();
 
-    const { email, userName, firstName, lastName, password, passwordVerify } =
-      fields;
+    const { email, userName, firstName, lastName, password, passwordVerify } = fields;
 
-    if (
-      !fieldsVerification(
-        email,
-        userName,
-        firstName,
-        lastName,
-        password,
-        passwordVerify,
-      )
-    )
-      return;
+    if (!fieldsVerification(email, userName, firstName, lastName, password, passwordVerify)) return;
 
     const params = { email, userName, firstName, lastName, password };
 
-    const onSuccess = (data) => {
+    const onSuccess = ({ data }) => {
       setItem('jwtToken', data?.token);
       setIsLoading(false);
 
-      const onSuccess = (data) => {
+      const onSuccess = ({ data }) => {
         dispatch(setGlobalState({ sidebarVisible: true }));
         dispatch(
           setUser({
@@ -251,8 +233,8 @@ const SignUp = () => {
       justifyContent={'center'}
       bg={useColorModeValue('gray.50', 'gray.800')}
     >
-      <Stack spacing={8} maxW={'lg'} justify="center" minW={'520px'}>
-        <Stack spacing="6">
+      <Stack spacing={8} maxW={'lg'} justify='center' minW={'520px'}>
+        <Stack spacing='6'>
           <Center>
             <Logo />
           </Center>
@@ -262,7 +244,7 @@ const SignUp = () => {
               base: '2',
               md: '3',
             }}
-            textAlign="center"
+            textAlign='center'
           >
             <Heading
               size={useBreakpointValue({
@@ -272,13 +254,9 @@ const SignUp = () => {
             >
               Create an account
             </Heading>
-            <HStack spacing="1" justify="center">
-              <Text color="muted">Already have an account?</Text>
-              <Button
-                variant="link"
-                colorScheme="blue"
-                onClick={navigateToLogin}
-              >
+            <HStack spacing='1' justify='center'>
+              <Text color='muted'>Already have an account?</Text>
+              <Button variant='link' colorScheme='blue' onClick={navigateToLogin}>
                 Login
               </Button>
             </HStack>
@@ -293,7 +271,7 @@ const SignUp = () => {
             base: '4',
             sm: '10',
           }}
-          bg="white"
+          bg='white'
           boxShadow={{
             base: 'none',
             sm: useColorModeValue('lg', 'md-dark'),
@@ -303,38 +281,32 @@ const SignUp = () => {
             sm: 'xl',
           }}
         >
-          <Stack spacing="6">
-            <Stack spacing="5">
+          <Stack spacing='6'>
+            <Stack spacing='5'>
               <Flex justify={'space-between'}>
                 <FormControl maxW={'215px'} isRequired>
-                  <FormLabel
-                    htmlFor="email"
-                    color={isFieldError.email ? 'red' : 'black'}
-                  >
+                  <FormLabel htmlFor='email' color={isFieldError.email ? 'red' : 'black'}>
                     {labels.email}
                   </FormLabel>
                   <Input
-                    id="email"
-                    type="email"
-                    variant="filled"
-                    name="email"
+                    id='email'
+                    type='email'
+                    variant='filled'
+                    name='email'
                     onChange={onChange}
                     value={fields.email}
                     isInvalid={isFieldError.email}
                   />
                 </FormControl>
                 <FormControl maxW={'215px'} isRequired>
-                  <FormLabel
-                    htmlFor="userName"
-                    color={isFieldError.userName ? 'red' : 'black'}
-                  >
+                  <FormLabel htmlFor='userName' color={isFieldError.userName ? 'red' : 'black'}>
                     {labels.userName}
                   </FormLabel>
                   <Input
-                    id="userName"
-                    type="userName"
-                    variant="filled"
-                    name="userName"
+                    id='userName'
+                    type='userName'
+                    variant='filled'
+                    name='userName'
                     onChange={onChange}
                     value={fields.userName}
                     isInvalid={isFieldError.userName}
@@ -343,34 +315,28 @@ const SignUp = () => {
               </Flex>
               <Flex justify={'space-between'}>
                 <FormControl maxW={'215px'} isRequired>
-                  <FormLabel
-                    htmlFor="firstName"
-                    color={isFieldError.firstName ? 'red' : 'black'}
-                  >
+                  <FormLabel htmlFor='firstName' color={isFieldError.firstName ? 'red' : 'black'}>
                     {labels.firstName}
                   </FormLabel>
                   <Input
-                    id="firstName"
-                    type="firstName"
-                    variant="filled"
-                    name="firstName"
+                    id='firstName'
+                    type='firstName'
+                    variant='filled'
+                    name='firstName'
                     onChange={onChange}
                     value={fields.firstName}
                     isInvalid={isFieldError.firstName}
                   />
                 </FormControl>
                 <FormControl maxW={'215px'} isRequired>
-                  <FormLabel
-                    htmlFor="lastName"
-                    color={isFieldError.lastName ? 'red' : 'black'}
-                  >
+                  <FormLabel htmlFor='lastName' color={isFieldError.lastName ? 'red' : 'black'}>
                     {labels.lastName}
                   </FormLabel>
                   <Input
-                    id="lastName"
-                    type="lastName"
-                    variant="filled"
-                    name="lastName"
+                    id='lastName'
+                    type='lastName'
+                    variant='filled'
+                    name='lastName'
                     onChange={onChange}
                     value={fields.lastName}
                     isInvalid={isFieldError.lastName}
@@ -378,64 +344,58 @@ const SignUp = () => {
                 </FormControl>
               </Flex>
               <FormControl isRequired>
-                <InputGroup size="md" flexDirection="column">
-                  <FormLabel
-                    htmlFor="password"
-                    color={isFieldError.password ? 'red' : 'black'}
-                  >
+                <InputGroup size='md' flexDirection='column'>
+                  <FormLabel htmlFor='password' color={isFieldError.password ? 'red' : 'black'}>
                     {labels.password}
                   </FormLabel>
                   <Input
-                    pr="4.5rem"
-                    id="password"
-                    variant="filled"
-                    name="password"
+                    pr='4.5rem'
+                    id='password'
+                    variant='filled'
+                    name='password'
                     value={fields.password}
                     type={showPassword.password ? 'text' : 'password'}
                     onChange={onChange}
                     isInvalid={isFieldError.password}
                   />
-                  <InputRightElement width="4.5rem" marginTop="8">
+                  <InputRightElement width='4.5rem' marginTop='8'>
                     <Button
                       p
-                      h="1.75rem"
-                      w="4rem"
-                      size="sm"
-                      variant="solid"
-                      colorScheme="blue"
-                      name="password"
+                      h='1.75rem'
+                      w='4rem'
+                      size='sm'
+                      variant='solid'
+                      colorScheme='blue'
+                      name='password'
                       onClick={onShowPassword}
                     >
                       {showPassword.password ? 'Hide' : 'Show'}
                     </Button>
                   </InputRightElement>
                 </InputGroup>
-                <InputGroup size="md" flexDirection="column" marginTop="4">
-                  <FormLabel
-                    htmlFor="passwordVerify"
-                    color={isFieldError.passwordVerify ? 'red' : 'black'}
-                  >
+                <InputGroup size='md' flexDirection='column' marginTop='4'>
+                  <FormLabel htmlFor='passwordVerify' color={isFieldError.passwordVerify ? 'red' : 'black'}>
                     {labels.passwordVerify}
                   </FormLabel>
                   <Input
-                    pr="4.5rem"
-                    id="passwordVerify"
-                    name="passwordVerify"
-                    variant="filled"
+                    pr='4.5rem'
+                    id='passwordVerify'
+                    name='passwordVerify'
+                    variant='filled'
                     value={fields.passwordVerify}
                     type={showPassword.passwordVerify ? 'text' : 'password'}
                     onChange={onChange}
                     isInvalid={isFieldError.passwordVerify}
                   />
-                  <InputRightElement width="4.5rem" marginTop="8">
+                  <InputRightElement width='4.5rem' marginTop='8'>
                     <Button
                       p
-                      h="1.75rem"
-                      w="4rem"
-                      size="sm"
-                      variant="solid"
-                      colorScheme="blue"
-                      name="passwordVerify"
+                      h='1.75rem'
+                      w='4rem'
+                      size='sm'
+                      variant='solid'
+                      colorScheme='blue'
+                      name='passwordVerify'
                       onClick={onShowPassword}
                     >
                       {showPassword.passwordVerify ? 'Hide' : 'Show'}
@@ -447,17 +407,13 @@ const SignUp = () => {
             <Checkbox>
               <Button variant={'link'}>I agree with the privacy policy</Button>
             </Checkbox>
-            <Stack spacing="6">
-              <Button
-                isLoading={isLoading}
-                colorScheme="blue"
-                onClick={onSignUp}
-              >
+            <Stack spacing='6'>
+              <Button isLoading={isLoading} colorScheme='blue' onClick={onSignUp}>
                 Sign up
               </Button>
               <HStack>
                 <Divider />
-                <Text fontSize="sm" whiteSpace="nowrap" color="muted">
+                <Text fontSize='sm' whiteSpace='nowrap' color='muted'>
                   or continue with
                 </Text>
                 <Divider />

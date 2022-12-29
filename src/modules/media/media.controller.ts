@@ -21,10 +21,7 @@ export class MediaController {
   @UseGuards(AccessTokenGuard)
   @Post('image')
   @UseInterceptors(FileInterceptor('image'))
-  updateProfileImage(
-    @UploadedFile() file: Express.Multer.File,
-    @Request() req: IGetUserInfoRequest,
-  ) {
+  updateProfileImage(@UploadedFile() file: Express.Multer.File, @Request() req: IGetUserInfoRequest) {
     return this.mediaService.updateProfileImage(file, req.user);
   }
 

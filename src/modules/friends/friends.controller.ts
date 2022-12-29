@@ -1,6 +1,5 @@
 import { Controller, Param, Post, Req } from '@nestjs/common';
 import { IGetUserInfoRequest } from 'src/common/types/user';
-import { User } from 'src/users/user.entity';
 import { FriendsService } from './friends.service';
 
 @Controller('friends')

@@ -1,13 +1,7 @@
-import { Article } from 'src/articles/article.entity';
-import { Media } from 'src/media/media.entity';
-import { FriendRequest } from 'src/modules/friends/friend-requests.entity';
-import {
-  Column,
-  Entity,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Article } from '../articles/article.entity';
+import { FriendRequest } from '../friends/friend-requests.entity';
+import { Media } from '../media/media.entity';
 
 @Entity()
 export class User {

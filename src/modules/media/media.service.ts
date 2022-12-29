@@ -4,7 +4,6 @@ import { createReadStream } from 'fs';
 import { MinioService } from 'nestjs-minio-client';
 import { join } from 'path';
 import { IGetUser, IGetUserInfo } from 'src/common/types/user';
-import { UserService } from 'src/users/user.service';
 import { Repository } from 'typeorm';
 import { User } from '../users/user.entity';
 import { Media } from './media.entity';
@@ -27,8 +26,8 @@ export class MediaService {
     const mediaToDelete = await this.mediaRepository.findOneBy({ user });
 
     if (mediaToDelete) {
-      await this.mediaRepository.remove(mediaToDelete);
       await this.minIO.client.removeObject('media', mediaToDelete.id);
+      await this.mediaRepository.remove(mediaToDelete);
     }
 
     const media = await this.mediaRepository.save({
@@ -46,9 +45,7 @@ export class MediaService {
     const image = await this.mediaRepository.findOneBy({ user });
 
     if (!image) {
-      const file = createReadStream(
-        join(__dirname, '..', '..', 'assets', 'Default.png'),
-      );
+      const file = createReadStream(join(__dirname, '..', '..', 'assets', 'Default.png'));
 
       return file;
     }

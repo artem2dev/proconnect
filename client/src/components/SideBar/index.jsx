@@ -32,7 +32,10 @@ import {
 } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { onSignOut as onSignOutSuccess } from '../../helpers/auth';
+import { signOut } from '../../api/auth';
+import { removeItem } from '../../helpers/localStorage';
+import { setGlobalState } from '../../redux/globalState';
+import { setUser } from '../../redux/usersSlice';
 
 const LinkItems = [
   { name: 'Home', icon: FiHome },
@@ -50,7 +53,7 @@ export default function SidebarWithHeader({ children }) {
 
   return (
     <>
-      <Box minH="100vh" bg={bg}>
+      <Box minH='100vh' bg={bg}>
         {globalState?.sidebarVisible && (
           <>
             <SidebarContent
@@ -60,11 +63,11 @@ export default function SidebarWithHeader({ children }) {
             <Drawer
               autoFocus={false}
               isOpen={isOpen}
-              placement="left"
+              placement='left'
               onClose={onClose}
               returnFocusOnClose={false}
               onOverlayClick={onClose}
-              size="full"
+              size='full'
             >
               <DrawerContent>
                 <SidebarContent onClose={onClose} />
@@ -87,17 +90,17 @@ export default function SidebarWithHeader({ children }) {
 const SidebarContent = ({ onClose, ...rest }) => {
   return (
     <Box
-      transition="3s ease"
+      transition='3s ease'
       bg={useColorModeValue('white', 'gray.900')}
-      borderRight="1px"
+      borderRight='1px'
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
       w={{ base: 'full', md: 60 }}
-      pos="fixed"
-      h="full"
+      pos='fixed'
+      h='full'
       {...rest}
     >
-      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
+      <Flex h='20' alignItems='center' mx='8' justifyContent='space-between'>
+        <Text fontSize='2xl' fontFamily='monospace' fontWeight='bold'>
           Logo
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
@@ -114,17 +117,17 @@ const SidebarContent = ({ onClose, ...rest }) => {
 const NavItem = ({ icon, children, ...rest }) => {
   return (
     <Link
-      href="#"
+      href='#'
       style={{ textDecoration: 'none' }}
       _focus={{ boxShadow: 'none' }}
     >
       <Flex
-        align="center"
-        p="4"
-        mx="4"
-        borderRadius="lg"
-        role="group"
-        cursor="pointer"
+        align='center'
+        p='4'
+        mx='4'
+        borderRadius='lg'
+        role='group'
+        cursor='pointer'
         _hover={{
           bg: 'cyan.400',
           color: 'white',
@@ -133,8 +136,8 @@ const NavItem = ({ icon, children, ...rest }) => {
       >
         {icon && (
           <Icon
-            mr="4"
-            fontSize="16"
+            mr='4'
+            fontSize='16'
             _groupHover={{
               color: 'white',
             }}
@@ -156,8 +159,14 @@ const MobileNav = ({ onOpen, user, ...rest }) => {
   };
 
   const onSignOut = () => {
-    navigate('/login');
-    onSignOutSuccess(dispatch);
+    const onSuccess = () => {
+      removeItem('jwtToken');
+      navigate('/login');
+      dispatch(setUser({}));
+      dispatch(setGlobalState({ sidebarVisible: false }));
+    };
+
+    signOut().then(onSuccess);
   };
 
   return (
@@ -165,10 +174,10 @@ const MobileNav = ({ onOpen, user, ...rest }) => {
       <Flex
         ml={{ base: 0, md: 60 }}
         px={{ base: 4, md: 4 }}
-        height="20"
-        alignItems="center"
+        height='20'
+        alignItems='center'
         bg={useColorModeValue('white', 'gray.900')}
-        borderBottomWidth="1px"
+        borderBottomWidth='1px'
         borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
         justifyContent={{ base: 'space-between', md: 'flex-end' }}
         {...rest}
@@ -176,44 +185,51 @@ const MobileNav = ({ onOpen, user, ...rest }) => {
         <IconButton
           display={{ base: 'flex', md: 'none' }}
           onClick={onOpen}
-          variant="outline"
-          aria-label="open menu"
+          variant='outline'
+          aria-label='open menu'
           icon={<FiMenu />}
         />
 
         <Text
           display={{ base: 'flex', md: 'none' }}
-          fontSize="2xl"
-          fontFamily="monospace"
-          fontWeight="bold"
+          fontSize='2xl'
+          fontFamily='monospace'
+          fontWeight='bold'
         >
           Logo
         </Text>
 
         <HStack spacing={{ base: '0', md: '6' }}>
           <IconButton
-            size="lg"
-            variant="ghost"
-            aria-label="open menu"
+            size='lg'
+            variant='ghost'
+            aria-label='open menu'
             icon={<FiBell />}
           />
           <Flex alignItems={'center'}>
             <Menu>
               <MenuButton
                 py={2}
-                transition="all 0.3s"
+                transition='all 0.3s'
                 _focus={{ boxShadow: 'none' }}
               >
                 <HStack>
-                  <Avatar size={'sm'} src={''} />
+                  <Avatar
+                    size='md'
+                    src={
+                      user?.id
+                        ? 'http://localhost:5000/media/image/' + user?.id
+                        : ''
+                    }
+                  />
                   <VStack
                     display={{ base: 'none', md: 'flex' }}
-                    alignItems="flex-start"
-                    spacing="1px"
-                    ml="2"
+                    alignItems='flex-start'
+                    spacing='1px'
+                    ml='2'
                   >
-                    <Text fontSize="sm">{`${user?.firstName} ${user?.lastName}`}</Text>
-                    <Text fontSize="xs" color="gray.600">
+                    <Text fontSize='sm'>{`${user?.firstName} ${user?.lastName}`}</Text>
+                    <Text fontSize='xs' color='gray.600'>
                       {user?.userName}
                     </Text>
                   </VStack>

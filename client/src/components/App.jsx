@@ -23,8 +23,7 @@ const App = () => {
     if (getItem('jwtToken')) {
       dispatch(setGlobalState({ sidebarVisible: true }));
 
-      const onSuccess = (data) => {
-        console.log(data)
+      const onSuccess = ({ data }) => {
         dispatch(
           setUser({
             ...data,
@@ -32,29 +31,27 @@ const App = () => {
         );
       };
 
-      const onError = (err) => {
+      const onError = () => {
         dispatch(setGlobalState({ sidebarVisible: false }));
         dispatch(setUser({}));
-
-        console.error(err);
       };
 
-      getUser(onSuccess, onError);
+      getUser().then(onSuccess).catch(onError);
     }
   }, [dispatch]);
 
   return (
     <ChakraProvider theme={theme}>
       <Router basename={process.env.PUBLIC_URL}>
-        <div className="App">
+        <div className='App'>
           <SidebarWithHeader>
             <Routes>
               <Route element={<PrivateRoute />}>
-                <Route path="/" element={<ArticleCard />} />
-                <Route path="/profile" element={<ProfileSettings />} />
+                <Route path='/' element={<ArticleCard />} />
+                <Route path='/profile' element={<ProfileSettings />} />
               </Route>
-              <Route path="/register" element={<SignUp />} />
-              <Route path="/login" element={<Login />} />
+              <Route path='/register' element={<SignUp />} />
+              <Route path='/login' element={<Login />} />
             </Routes>
           </SidebarWithHeader>
         </div>

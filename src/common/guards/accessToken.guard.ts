@@ -1,8 +1,4 @@
-import {
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
@@ -13,15 +9,10 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
     super();
   }
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     try {
       const req = context.switchToHttp().getRequest();
-      const [bearer, token] = req.headers.authorization?.split(' ') || [
-        null,
-        null,
-      ];
+      const [bearer, token] = req.headers.authorization?.split(' ') || [null, null];
 
       if (bearer !== 'Bearer' || !token) {
         throw new UnauthorizedException();
