@@ -23,6 +23,7 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
       });
 
       req.user = user;
+      req.UserLanguage = 'en';
 
       return true;
     } catch (err) {

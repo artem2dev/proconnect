@@ -1,18 +1,15 @@
 import { ExtendedBaseEntity } from 'src/common/entities/extended-base.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../users/user.entity';
 
 @Entity()
-export class FriendRequest extends ExtendedBaseEntity {
+export class UserFriends extends ExtendedBaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ManyToOne(() => User, (user) => user.id)
-  requestor: User | string;
+  user1: User | string;
 
   @ManyToOne(() => User, (user) => user.id)
-  requestee: User | string;
-
-  @Column({ default: false })
-  fulfilled: Boolean;
+  user2: User | string;
 }

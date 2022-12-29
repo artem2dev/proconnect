@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Article } from '../articles/article.entity';
 import { FriendRequest } from '../friends/friend-requests.entity';
+import { UserFriends } from '../friends/user-friends.entity';
 import { Media } from '../media/media.entity';
 
 @Entity()
@@ -32,9 +33,14 @@ export class User {
   @OneToMany(() => Article, (article) => article.author)
   articles: Article[];
 
-  @OneToMany(() => FriendRequest, (fr) => fr.requester)
+  @OneToMany(() => FriendRequest, (fr) => fr.requestor)
   requesterIn: FriendRequest[];
 
   @OneToMany(() => FriendRequest, (fr) => fr.requestee)
   requesteeIn: FriendRequest[];
+
+  @OneToMany(() => FriendRequest, (fr) => fr.requestor)
+  userFriends1: UserFriends[];
+  @OneToMany(() => FriendRequest, (fr) => fr.requestee)
+  userFriends2: UserFriends[];
 }

@@ -1,6 +1,6 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { of } from 'rxjs';
+import { ExceptionDictionary } from 'src/common/dictionary/ExceptionDictonary';
 import { Repository } from 'typeorm';
 import { FriendRequest } from './friend-requests.entity';
 
@@ -11,16 +11,37 @@ export class FriendsService {
     private friendRequestRepository: Repository<FriendRequest>,
   ) {}
 
-  async createFriendRequest(requestorId: string, requesteeId: string) {
+  async createFriendRequest(requestor: string, requestee: string) {
     const foundFriendRequest = await this.friendRequestRepository.findOne({
       where: [
-        { requestee: requesteeId, requester: requestorId },
-        { requestee: requestorId, requester: requesteeId },
+        { requestee, requestor },
+        { requestee: requestor, requestor: requestee },
       ],
     });
 
     if (foundFriendRequest) {
-      throw new ConflictException('Friend request already exists.');
+      throw new ConflictException(ExceptionDictionary.friendRequest.alreadyExists);
     }
+
+    const friendRequest = this.friendRequestRepository
+      .create({
+        requestor: requestor,
+        requestee,
+      })
+      .save();
+
+    return friendRequest;
+  }
+
+  async deleteFriendRequest(friendRequestId: string) {
+    const foundFriendRequest = await this.friendRequestRepository.findOne({ where: { id: friendRequestId } });
+
+    if (!foundFriendRequest) {
+      throw new NotFoundException(ExceptionDictionary.friendRequest.notFound);
+    }
+
+    foundFriendRequest.remove();
+
+    return {};
   }
 }

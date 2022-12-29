@@ -7,6 +7,7 @@ import { Article } from './modules/articles/article.entity';
 import { ArticleModule } from './modules/articles/article.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { FriendRequest } from './modules/friends/friend-requests.entity';
+import { UserFriends } from './modules/friends/user-friends.entity';
 import { Media } from './modules/media/media.entity';
 import { MediaModule } from './modules/media/media.module';
 import { User } from './modules/users/user.entity';
@@ -24,10 +25,10 @@ import { UserModule } from './modules/users/user.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [User, Article, Media, FriendRequest],
+      entities: [User, Article, Media, FriendRequest, UserFriends],
       synchronize: true,
       autoLoadEntities: true,
-      logging: false,
+      logging: true,
     }),
     MinioModule.register({
       endPoint: '127.0.0.1',
