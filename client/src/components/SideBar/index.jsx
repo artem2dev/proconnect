@@ -19,20 +19,26 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import React from 'react';
-import { FiChevronDown, FiCompass, FiHome, FiSettings, FiStar, FiTrendingUp } from 'react-icons/fi';
+import { AiOutlineHome } from 'react-icons/ai';
+import { FiChevronDown, FiCompass, FiSettings, FiUsers } from 'react-icons/fi';
+import { IoMdCreate, IoMdNotificationsOutline } from 'react-icons/io';
+import { RxEnvelopeClosed } from 'react-icons/rx';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from '../../api/auth';
+import { ReactComponent as Logo } from '../../assets/logo.svg';
 import { removeItem } from '../../helpers/localStorage';
 import { setGlobalState } from '../../redux/globalState';
 import { setUser } from '../../redux/usersSlice';
 
 const LinkItems = [
-  { name: 'Home', icon: FiHome },
-  { name: 'Users', icon: FiTrendingUp },
-  { name: 'Explore', icon: FiCompass },
-  { name: 'Notifications', icon: FiStar },
-  { name: 'Settings', icon: FiSettings },
+  { name: 'Home', icon: AiOutlineHome, hover: { bg: 'gray.100' } },
+  { name: 'Notifications', icon: IoMdNotificationsOutline, hover: { bg: 'gray.100' } },
+  { name: 'Messages', icon: RxEnvelopeClosed, hover: { bg: 'gray.100' } },
+  { name: 'Users', icon: FiUsers, hover: { bg: 'gray.100' } },
+  { name: 'Explore', icon: FiCompass, hover: { bg: 'gray.100' } },
+  { name: 'Settings', icon: FiSettings, hover: { bg: 'gray.100' } },
+  { name: 'Create post', icon: IoMdCreate, bgColor: 'gray.900', color: 'white', hover: { bg: 'gray.700' } },
 ];
 
 export default function SidebarWithHeader({ children }) {
@@ -94,7 +100,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
       transition='3s ease'
       bg={useColorModeValue('white', 'gray.900')}
       borderRight='1px'
-      borderRightColor={useColorModeValue('gray.200', 'gray.700')}
+      borderRightColor={useColorModeValue('gray.200', 'gray.800')}
       w={{ base: 'full', md: 60 }}
       pos='fixed'
       h='full'
@@ -104,13 +110,12 @@ const SidebarContent = ({ onClose, ...rest }) => {
     >
       <Box>
         <Flex h='20' alignItems='center' mx='8' justifyContent='space-between'>
-          <Text fontSize='2xl' fontFamily='monospace' fontWeight='bold'>
-            Logo
-          </Text>
+          <Logo width='60px' height='60px' />
+
           <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
         </Flex>
         {LinkItems.map((link) => (
-          <NavItem key={link.name} icon={link.icon}>
+          <NavItem key={link.name} icon={link.icon} bgColor={link.bgColor} color={link.color} _hover={link.hover}>
             {link.name}
           </NavItem>
         ))}
@@ -159,16 +164,7 @@ const NavItem = ({ icon, children, ...rest }) => {
         }}
         {...rest}
       >
-        {icon && (
-          <Icon
-            mr='4'
-            fontSize='16'
-            _groupHover={{
-              color: 'black',
-            }}
-            as={icon}
-          />
-        )}
+        {icon && <Icon mr='4' fontSize='20' as={icon} />}
         {children}
       </Flex>
     </Link>
