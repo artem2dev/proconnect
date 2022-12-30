@@ -7,6 +7,7 @@ import ArticleCard from './Card';
 import Login from './Login';
 import PrivateRoute from './PrivateRoute';
 import ProfileSettings from './ProfileSettings';
+import RequestTester from './RequestTester';
 import SidebarWithHeader from './SideBar';
 import SignUp from './SignUp';
 import { useEffect } from 'react';
@@ -49,6 +50,7 @@ const App = () => {
               <Route element={<PrivateRoute />}>
                 <Route path='/' element={<ArticleCard />} />
                 <Route path='/profile' element={<ProfileSettings />} />
+                <Route path='/request-test' element={<RequestTester />} />
               </Route>
               <Route path='/register' element={<SignUp />} />
               <Route path='/login' element={<Login />} />

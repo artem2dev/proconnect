@@ -13,17 +13,16 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
     try {
       const req = context.switchToHttp().getRequest();
       const [bearer, token] = req.headers.authorization?.split(' ') || [null, null];
-
       if (bearer !== 'Bearer' || !token) {
         throw new UnauthorizedException();
       }
 
+      console.log(bearer, 1, token);
       const user = this.jwtService.verify(token, {
         secret: process.env.JWT_ACCESS_SECRET || 'SECRET',
       });
 
       req.user = user;
-      req.UserLanguage = 'en';
 
       return true;
     } catch (err) {

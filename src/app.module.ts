@@ -7,6 +7,7 @@ import { Article } from './modules/articles/article.entity';
 import { ArticleModule } from './modules/articles/article.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { FriendRequest } from './modules/friends/friend-requests.entity';
+import { FriendsModule } from './modules/friends/friends.module';
 import { UserFriends } from './modules/friends/user-friends.entity';
 import { Media } from './modules/media/media.entity';
 import { MediaModule } from './modules/media/media.module';
@@ -41,6 +42,7 @@ import { UserModule } from './modules/users/user.module';
     MulterModule.register({ dest: '/temp' }),
     AuthModule,
     MediaModule,
+    FriendsModule,
   ],
   controllers: [],
   providers: [],

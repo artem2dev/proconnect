@@ -4,7 +4,6 @@ enum SupportedUserLanguages {
 
 export interface IGetUserInfoRequest extends Request {
   user: IGetUserInfo;
-  UserLanguage: SupportedUserLanguages;
 }
 
 export interface IGetUserInfo extends Request {
