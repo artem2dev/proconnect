@@ -24,7 +24,7 @@ import { loginUser } from '../../api/auth';
 import { getUser } from '../../api/user';
 import { ReactComponent as Logo } from '../../assets/logo.svg';
 import { removeItem, setItem } from '../../helpers/localStorage';
-import { setGlobalState } from '../../redux/globalState';
+import { setGlobalState } from '../../redux/globalStateSlice';
 import { setUser } from '../../redux/usersSlice';
 import { OAuthButtonGroup } from './OAuthButtonGroup';
 
@@ -162,7 +162,7 @@ const Login = () => {
       <Stack spacing={8} maxW={'lg'} justify='center' minW={'500px'}>
         <Stack spacing='6'>
           <Center>
-            <Logo />
+            <Logo width='100' height='100' />
           </Center>
 
           <Stack

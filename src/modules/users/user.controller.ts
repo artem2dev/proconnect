@@ -14,6 +14,12 @@ export class UserController {
   }
 
   @UseGuards(AccessTokenGuard)
+  @Get('profile/:userName')
+  async getUserInfo(@Param('userName') userName: string) {
+    return await this.userService.getUserInfoByUserName(userName);
+  }
+
+  @UseGuards(AccessTokenGuard)
   @Put('profile')
   async updateUser(@Body() body: IUpdateUserInfo) {
     return this.userService.updateUser(body);

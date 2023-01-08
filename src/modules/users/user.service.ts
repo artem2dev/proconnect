@@ -28,6 +28,14 @@ export class UserService {
     return user;
   }
 
+  async getUserInfoByUserName(userName: string) {
+    const user = await this.userRepository.findOneBy({ userName });
+
+    if (!user) throw new HttpException('No such user', HttpStatus.BAD_REQUEST);
+
+    return user;
+  }
+
   async createUser(dto: CreateUserDto) {
     const user = this.userRepository.save(dto);
 

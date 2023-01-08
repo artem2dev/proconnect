@@ -1,21 +1,22 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import { ChakraProvider } from '@chakra-ui/react';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { getUser } from '../api/user';
 import { theme } from '../helpers/chakraTheme';
+import { getItem } from '../helpers/localStorage';
+import { setGlobalState } from '../redux/globalStateSlice';
+import { setUser } from '../redux/usersSlice';
 import './App.css';
-import ArticleCard from './Card';
 import Login from './Login';
 import PrivateRoute from './PrivateRoute';
+import Profile from './Profile';
 import ProfileSettings from './ProfileSettings';
-import RequestTester from './RequestTester';
 import SidebarWithHeader from './SideBar';
 import SignUp from './SignUp';
-import { useEffect } from 'react';
-import { getUser } from '../api/user';
-import { useDispatch } from 'react-redux';
-import { setUser } from '../redux/usersSlice';
-import { getItem } from '../helpers/localStorage';
-import { setGlobalState } from '../redux/globalState';
+import UserList from './UsersList';
+import Notifications from './Notifications';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -48,9 +49,11 @@ const App = () => {
           <SidebarWithHeader>
             <Routes>
               <Route element={<PrivateRoute />}>
-                <Route path='/' element={<ArticleCard />} />
+                <Route path='/' element={<div />} />
+                <Route path='/users' element={<UserList />} />
+                <Route path='/notifications' element={<Notifications />} />
                 <Route path='/profile' element={<ProfileSettings />} />
-                <Route path='/request-test' element={<RequestTester />} />
+                <Route path='profile/:userName' element={<Profile />} />
               </Route>
               <Route path='/register' element={<SignUp />} />
               <Route path='/login' element={<Login />} />

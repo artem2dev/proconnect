@@ -23,7 +23,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser, updateUser } from '../../api/user';
-import { setGlobalState } from '../../redux/globalState';
+import { setGlobalState } from '../../redux/globalStateSlice';
 import { setUser } from '../../redux/usersSlice';
 
 const fieldsInitialState = {

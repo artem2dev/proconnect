@@ -26,7 +26,7 @@ import { registerUser } from '../../api/auth';
 import { getUser } from '../../api/user';
 import { ReactComponent as Logo } from '../../assets/logo.svg';
 import { setItem } from '../../helpers/localStorage';
-import { setGlobalState } from '../../redux/globalState';
+import { setGlobalState } from '../../redux/globalStateSlice';
 import { setUser } from '../../redux/usersSlice';
 import { OAuthButtonGroup } from '../Login/OAuthButtonGroup';
 
@@ -185,7 +185,7 @@ const SignUp = () => {
     const params = { email, userName, firstName, lastName, password };
 
     const onSuccess = ({ data }) => {
-      setItem('jwtToken', data?.token);
+      setItem('jwtToken', data);
       setIsLoading(false);
 
       const onSuccess = ({ data }) => {
@@ -204,7 +204,7 @@ const SignUp = () => {
         console.error(err);
       };
 
-      getUser(onSuccess, onError);
+      getUser().then(onSuccess).catch(onError);
 
       navigate('/');
     };
@@ -217,7 +217,7 @@ const SignUp = () => {
 
     setIsLoading(true);
 
-    registerUser(params, onSuccess, onError);
+    registerUser(params).then(onSuccess).catch(onError);
   };
 
   const navigateToLogin = () => {
@@ -236,7 +236,7 @@ const SignUp = () => {
       <Stack spacing={8} maxW={'lg'} justify='center' minW={'520px'}>
         <Stack spacing='6'>
           <Center>
-            <Logo />
+            <Logo width='100' height='100' />
           </Center>
 
           <Stack
