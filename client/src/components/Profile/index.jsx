@@ -25,11 +25,11 @@ const Profile = () => {
 
   const addToFriends = () => {
     const onSuccess = () => {
-      console.log('success');
+      console.info('success');
     };
 
     const onError = (error) => {
-      console.log(error);
+      console.error(error);
     };
 
     addToFriendsRequest(user?.id || '')
@@ -62,47 +62,13 @@ const Profile = () => {
             </VStack>
           </Flex>
           <Flex w={'320px'} justifyContent={'space-between'}>
-            <Button
-              w={'130px'}
-              padding={5}
-              bg={colors.button}
-              color={'white'}
-              rounded={'md'}
-              _hover={{
-                backgroundColor: '#343434',
-                transform: 'translateY(-1px)',
-                boxShadow: 'lg',
-              }}
-              onClick={addToFriends}
-            >
+            <Button w={'130px'} variant={'black'} onClick={addToFriends}>
               Add to friends
             </Button>
-            <Button
-              w={'130px'}
-              padding={5}
-              bg={colors.button}
-              color={'white'}
-              rounded={'md'}
-              _hover={{
-                backgroundColor: '#343434',
-                transform: 'translateY(-1px)',
-                boxShadow: 'lg',
-              }}
-            >
+            <Button w={'130px'} variant={'black'}>
               Message
             </Button>
-            <Button
-              w={'10px'}
-              padding={5}
-              bg={colors.button}
-              color={'white'}
-              rounded={'md'}
-              _hover={{
-                backgroundColor: '#343434',
-                transform: 'translateY(-1px)',
-                boxShadow: 'lg',
-              }}
-            >
+            <Button w={'10px'} variant={'black'}>
               ...
             </Button>
           </Flex>

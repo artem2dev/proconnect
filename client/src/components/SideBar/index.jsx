@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   CloseButton,
   Drawer,
   DrawerContent,
@@ -129,6 +130,10 @@ const SidebarContent = ({ onClose, ...rest }) => {
             {link.name}
           </NavItem>
         ))}
+        <Button w={210} variant={'black'} p={7} p={1} rounded='3xl' justifyContent={'flex-start'}>
+          {IoMdCreate && <Icon mr='4' fontSize='20' as={IoMdCreate} />}
+          Create post
+        </Button>
       </Box>
 
       <Box display={'flex'} justifyContent={'flex-start'} paddingLeft='25px' paddingBottom={'10px'}>

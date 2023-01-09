@@ -19,7 +19,7 @@ const Notifications = () => {
   }, [user]);
 
   return (
-    <Flex>
+    <Flex direction={'column'}>
       {friendRequests.map((request, index) => {
         return <NotificationItem key={index} request={request} />;
       })}

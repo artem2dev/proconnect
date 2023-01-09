@@ -33,7 +33,7 @@ const App = () => {
         );
       };
 
-      const onError = () => {
+      const onError = (err) => {
         dispatch(setGlobalState({ sidebarVisible: false }));
         dispatch(setUser({}));
       };

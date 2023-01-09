@@ -29,7 +29,7 @@ import { UserModule } from './modules/users/user.module';
       entities: [User, Article, Media, FriendRequest, UserFriends],
       synchronize: true,
       autoLoadEntities: true,
-      logging: false,
+      logging: true,
     }),
     MinioModule.register({
       endPoint: '127.0.0.1',

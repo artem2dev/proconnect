@@ -1,8 +1,9 @@
-import { extendTheme } from '@chakra-ui/react'
+import { extendTheme } from '@chakra-ui/react';
 
 export const theme = extendTheme({
   colors: {
     brand: {
+      black: '#151f21',
       blue: '#4164e3',
       cadet: '#8998a8',
       dark: '#243156',
@@ -51,6 +52,24 @@ export const theme = extendTheme({
           _active: { bg: 'brand.light' },
           _focus: { boxShadow: 'none' },
         },
+        black: {
+          p: '5',
+          color: 'white',
+          _focus: { boxShadow: 'none' },
+          size: 'sm',
+          bgColor: '#151f21',
+          width: 'full',
+          rounded: 'md',
+          _hover: {
+            transform: 'scale(1.02)',
+            boxShadow: 'lg',
+          },
+          _active: {
+            transform: 'scale(0.97)',
+            boxShadow: 'md',
+          },
+          boxShadow: 'md',
+        },
       },
     },
     Tabs: {
@@ -63,4 +82,4 @@ export const theme = extendTheme({
       },
     },
   },
-})
+});

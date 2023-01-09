@@ -34,13 +34,13 @@ export class User {
   articles: Article[];
 
   @OneToMany(() => FriendRequest, (fr) => fr.requestor)
-  requesterIn: FriendRequest[];
+  requestorIn: FriendRequest[];
 
   @OneToMany(() => FriendRequest, (fr) => fr.requestee)
   requesteeIn: FriendRequest[];
 
-  @OneToMany(() => FriendRequest, (fr) => fr.requestor)
+  @OneToMany(() => UserFriends, (uf) => uf.user1)
   userFriends1: UserFriends[];
-  @OneToMany(() => FriendRequest, (fr) => fr.requestee)
+  @OneToMany(() => UserFriends, (uf) => uf.user2)
   userFriends2: UserFriends[];
 }

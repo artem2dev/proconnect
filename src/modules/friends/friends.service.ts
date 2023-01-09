@@ -15,7 +15,12 @@ export class FriendsService {
     private userFriendsRepository: Repository<UserFriends>,
   ) {}
   async getAllFriendRequests(user: IGetUser) {
-    return this.friendRequestRepository.find({ where: { requestee: user.id } });
+    return await this.friendRequestRepository
+      .createQueryBuilder('fr')
+      .select()
+      .leftJoinAndSelect('fr.requestor', 'requestor')
+      .where('fr.requestee = :userId', { userId: user.id })
+      .getMany();
   }
 
   async getAllFriends(user: IGetUser) {
@@ -31,6 +36,23 @@ export class FriendsService {
    * @param requestee - user id to be requested friendship of.
    */
   async createFriendRequest(requestor: string, requestee: string) {
+    if (requestee === requestor) {
+      throw new ConflictException(ExceptionDictionary.friendRequest.cannotAddSelf);
+    }
+
+    const foundFriendship = await this.userFriendsRepository
+      .createQueryBuilder('uf')
+      .select()
+      .where('(uf.user1 = :user1 AND uf.user2 = :user2) OR (uf.user1 = :user2 AND uf.user2 = :user1)', {
+        user1: requestee,
+        user2: requestor,
+      })
+      .getOne();
+
+    if (foundFriendship) {
+      throw new ConflictException(ExceptionDictionary.userFriends.alreadyFriends);
+    }
+
     const foundFriendRequest = await this.friendRequestRepository
       .createQueryBuilder('fr')
       .select()
@@ -44,14 +66,12 @@ export class FriendsService {
       throw new ConflictException(ExceptionDictionary.friendRequest.alreadyExists);
     }
 
-    const friendRequest = await this.friendRequestRepository
+    return await this.friendRequestRepository
       .create({
         requestor: requestor,
         requestee,
       })
       .save();
-
-    return friendRequest;
   }
 
   async deleteFriendRequest(user: IGetUser, friendRequestId: string) {
@@ -69,7 +89,12 @@ export class FriendsService {
   }
 
   async declineFriendRequest(user: IGetUser, friendRequestId: string) {
-    const foundFriendRequest = await this.friendRequestRepository.findOne({ where: { id: friendRequestId } });
+    const foundFriendRequest = await this.friendRequestRepository
+      .createQueryBuilder('fr')
+      .select()
+      .where('fr.id = :friendRequestId AND fr.requestee = :userId', { friendRequestId, userId: user.id })
+      .loadRelationIdAndMap('requestor', 'fr.requestor')
+      .getOne();
 
     if (!foundFriendRequest) {
       throw new NotFoundException(ExceptionDictionary.friendRequest.notFound);
@@ -81,29 +106,34 @@ export class FriendsService {
   }
 
   async acceptFriendRequest(user: IGetUser, friendRequestId: string) {
-    const foundFriendRequest = await this.friendRequestRepository.findOne({
-      where: { id: friendRequestId, requestee: user.id },
-    });
+    const foundFriendRequest = await this.friendRequestRepository
+      .createQueryBuilder('fr')
+      .select()
+      .where('fr.id = :friendRequestId AND fr.requestee = :userId', { friendRequestId, userId: user.id })
+      .loadRelationIdAndMap('requestor', 'fr.requestor')
+      .getOne();
 
     if (!foundFriendRequest) {
       throw new NotFoundException(ExceptionDictionary.friendRequest.notFound);
     }
 
-    return await this.userFriendsRepository.create({ user1: user.id, user2: foundFriendRequest.requestor }).save();
+    const userFriends = await this.userFriendsRepository
+      .create({ user1: user.id, user2: foundFriendRequest.requestor })
+      .save();
+
+    await foundFriendRequest.remove();
+
+    return userFriends;
   }
 
   async removeFromFriends(user: IGetUser, friendId: string) {
     const foundFriendRequest = await this.userFriendsRepository
       .createQueryBuilder('fr')
       .select()
-      .where(
-        `
-      (fr.user1 = :userId AND fr.user2 = :friendId)
-      OR
-      (fr.user2 = :userId AND fr.user1 = :friendId)
-      `,
-        { userId: user.id, friendId },
-      )
+      .where('(fr.user1 = :userId AND fr.user2 = :friendId) OR (fr.user2 = :userId AND fr.user1 = :friendId)', {
+        userId: user.id,
+        friendId,
+      })
       .getOne();
 
     if (!foundFriendRequest) {

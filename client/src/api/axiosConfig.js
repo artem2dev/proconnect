@@ -23,11 +23,12 @@ useAxios.interceptors.response.use(
 
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      refreshTokens()
-        .then((data) => {
-          setItem('jwtToken', data.token);
 
-          originalRequest.headers['Authorization'] = data.token;
+      return refreshTokens()
+        .then(({ data }) => {
+          setItem('jwtToken', data);
+
+          originalRequest.headers['Authorization'] = data;
           return useAxios.request(originalRequest);
         })
         .catch(() => {
