@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IUpdateUserInfo } from 'src/common/types/user';
 import { Repository } from 'typeorm';
+import { FriendsService } from '../friends/friends.service';
 import { CreateUserDto } from './dto/create.user.dto';
 import { User } from './user.entity';
 
@@ -10,6 +11,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private friendsService: FriendsService,
   ) {}
 
   getUserByEmail(email: string) {
@@ -31,6 +33,8 @@ export class UserService {
   async getUserInfoByUserName(userName: string) {
     const user = await this.userRepository.findOneBy({ userName });
 
+    const userFriends = await this.friendsService.getAllFriends(user);
+    console.log(1123, userFriends);
     if (!user) throw new HttpException('No such user', HttpStatus.BAD_REQUEST);
 
     return user;

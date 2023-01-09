@@ -41,7 +41,6 @@ const LinkItems = [
   { name: 'Users', icon: FiUsers, hover: { bg: 'gray.100' }, href: '/users' },
   { name: 'Explore', icon: FiCompass, hover: { bg: 'gray.100' } },
   { name: 'Settings', icon: FiSettings, hover: { bg: 'gray.100' } },
-  { name: 'Create post', icon: IoMdCreate, bgColor: 'gray.900', color: 'white', hover: { bg: 'gray.700' } },
 ];
 
 export default function SidebarWithHeader({ children }) {
@@ -98,6 +97,10 @@ const SidebarContent = ({ onClose, ...rest }) => {
     signOut().then(onSuccess);
   };
 
+  const onCreatePost = () => {
+    return;
+  };
+
   return (
     <Box
       transition='3s ease'
@@ -130,7 +133,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
             {link.name}
           </NavItem>
         ))}
-        <Button w={210} variant={'black'} p={7} p={1} rounded='3xl' justifyContent={'flex-start'}>
+        <Button w={210} variant={'black'} py={7} rounded='3xl' justifyContent={'flex-start'} onClick={onCreatePost}>
           {IoMdCreate && <Icon mr='4' fontSize='20' as={IoMdCreate} />}
           Create post
         </Button>

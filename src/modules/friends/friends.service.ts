@@ -30,6 +30,11 @@ export class FriendsService {
       .where('uf.user1 = :userId OR uf.user2 = :userId', { userId: user.id })
       .getMany();
   }
+
+  async getFriendsCount(user: IGetUser) {
+    return this.userFriendsRepository.count({where: {user1: user.id}})
+  }
+
   /**
    * Creates friends request from requestor to requestee.
    * @param requestor - user id that requests friendship.
