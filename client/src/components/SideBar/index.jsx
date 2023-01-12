@@ -34,13 +34,13 @@ import { setGlobalState } from '../../redux/globalStateSlice';
 import { setUser } from '../../redux/usersSlice';
 
 const LinkItems = [
-  { name: 'Home', icon: AiOutlineHome, hover: { bg: 'gray.100' }, href: '/' },
-  { name: 'Profile', icon: FaRegUserCircle, hover: { bg: 'gray.100' }, href: '' },
-  { name: 'Notifications', icon: IoMdNotificationsOutline, hover: { bg: 'gray.100' } },
-  { name: 'Messages', icon: RxEnvelopeClosed, hover: { bg: 'gray.100' } },
-  { name: 'Users', icon: FiUsers, hover: { bg: 'gray.100' }, href: '/users' },
-  { name: 'Explore', icon: FiCompass, hover: { bg: 'gray.100' } },
-  { name: 'Settings', icon: FiSettings, hover: { bg: 'gray.100' } },
+  { name: 'Home', icon: AiOutlineHome, hover: { bg: 'RGBA(0, 0, 0, 0.5)' }, href: '/' },
+  { name: 'Profile', icon: FaRegUserCircle, hover: { bg: 'RGBA(0, 0, 0, 0.5)' }, href: '' },
+  { name: 'Notifications', icon: IoMdNotificationsOutline, hover: { bg: 'RGBA(0, 0, 0, 0.5)' } },
+  { name: 'Messages', icon: RxEnvelopeClosed, hover: { bg: 'RGBA(0, 0, 0, 0.5)' } },
+  { name: 'Users', icon: FiUsers, hover: { bg: 'RGBA(0, 0, 0, 0.5)' }, href: '/users' },
+  { name: 'Explore', icon: FiCompass, hover: { bg: 'RGBA(0, 0, 0, 0.5)' } },
+  { name: 'Settings', icon: FiSettings, hover: { bg: 'RGBA(0, 0, 0, 0.5)' } },
 ];
 
 export default function SidebarWithHeader({ children }) {
@@ -106,7 +106,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
       transition='3s ease'
       bg={useColorModeValue('white', 'gray.900')}
       borderRight='1px'
-      borderRightColor={useColorModeValue('gray.200', 'gray.800')}
+      borderRightColor={useColorModeValue('gray.200', 'gray.700')}
       w={{ base: 'full', md: 60 }}
       pos='fixed'
       h='full'
@@ -114,29 +114,32 @@ const SidebarContent = ({ onClose, ...rest }) => {
       justifyContent='space-between'
       {...rest}
     >
-      <Box>
+      <Box h={'82%'}>
         <Flex h='20' alignItems='center' mx='8' justifyContent='space-between'>
           <Logo width='60px' height='60px' />
-
           <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
         </Flex>
-        {LinkItems.map((link) => (
-          <NavItem
-            key={link.name}
-            icon={link.icon}
-            href={link.name === 'Profile' ? user?.userName : link?.href}
-            user={user}
-            bgColor={link.bgColor}
-            color={link.color}
-            _hover={link.hover}
-          >
-            {link.name}
-          </NavItem>
-        ))}
-        <Button w={210} variant={'black'} py={7} rounded='3xl' justifyContent={'flex-start'} onClick={onCreatePost}>
-          {IoMdCreate && <Icon mr='4' fontSize='20' as={IoMdCreate} />}
-          Create post
-        </Button>
+        <Flex h={'100%'} flexDirection={'column'} justifyContent={'space-between'} alignItems={''}>
+          <Box>
+            {LinkItems.map((link) => (
+              <NavItem
+                key={link.name}
+                icon={link.icon}
+                href={link.name === 'Profile' ? user?.userName : link?.href}
+                user={user}
+                bgColor={link.bgColor}
+                color={link.color}
+                _hover={link.hover}
+              >
+                {link.name}
+              </NavItem>
+            ))}
+          </Box>
+          <Button w={210} ml={3} py={7} rounded='3xl' justifyContent={'flex-start'} onClick={onCreatePost}>
+            {IoMdCreate && <Icon mr='4' fontSize='20' as={IoMdCreate} />}
+            Create post
+          </Button>
+        </Flex>
       </Box>
 
       <Box display={'flex'} justifyContent={'flex-start'} paddingLeft='25px' paddingBottom={'10px'}>

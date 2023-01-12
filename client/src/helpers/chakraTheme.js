@@ -1,6 +1,9 @@
 import { extendTheme } from '@chakra-ui/react';
 
 export const theme = extendTheme({
+  config: {
+    initialColorMode: 'dark',
+  },
   colors: {
     brand: {
       black: '#151f21',
@@ -57,19 +60,23 @@ export const theme = extendTheme({
           color: 'white',
           _focus: { boxShadow: 'none' },
           size: 'sm',
-          bgColor: '#151f21',
+          bgColor: '#4164e3',
           width: 'full',
           rounded: 'md',
           _hover: {
-            transform: 'scale(1.02)',
+            transform: 'translateY(-1px)',
             boxShadow: 'lg',
           },
           _active: {
-            transform: 'scale(0.97)',
+            transform: 'translateY(1px)',
             boxShadow: 'md',
+            bgColor: 'RGBA(65, 100, 227, 0.9)',
           },
           boxShadow: 'md',
         },
+      },
+      defaultProps: {
+        variant: 'black',
       },
     },
     Tabs: {

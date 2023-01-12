@@ -43,7 +43,7 @@ export class MediaService {
 
   async getImage(user: IGetUser) {
     const image = await this.mediaRepository.findOneBy({ user });
-    console.log(image)
+
     if (!image) {
       const file = createReadStream(join(__dirname, '..', '..', 'assets', 'Default.png'));
 

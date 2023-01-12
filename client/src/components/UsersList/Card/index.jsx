@@ -64,13 +64,6 @@ export default function UserCard({ user }) {
           <Button
             w={'full'}
             mt={8}
-            bg={useColorModeValue('#151f21', 'gray.900')}
-            color={'white'}
-            rounded={'md'}
-            _hover={{
-              transform: 'translateY(-2px)',
-              boxShadow: 'lg',
-            }}
             onClick={() => {
               return;
             }}

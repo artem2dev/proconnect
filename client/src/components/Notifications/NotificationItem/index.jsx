@@ -38,7 +38,7 @@ const NotificationItem = ({ request }) => {
   };
 
   return (
-    <Box w={'full'} bgColor='#ffffff' borderColor={'#dbdbdb'} shadow={'md'} rounded={8} mb={4}>
+    <Box w={'full'} bgColor='RGBA(0, 0, 0, 0.2)' borderColor={'#2D3748'} shadow={'md'} rounded={8} mb={4}>
       <Stack
         w={'full'}
         direction={{ base: 'column', sm: 'row' }}
@@ -68,27 +68,10 @@ const NotificationItem = ({ request }) => {
           spacing={{ base: '3', sm: '2' }}
           align={{ base: 'stretch', sm: 'center' }}
         >
-          <Button
-            size={'sm'}
-            bgColor={'black'}
-            variant='primary'
-            width='full'
-            color={'white'}
-            rounded={'md'}
-            _hover={{
-              transform: 'scale(1.05)',
-              boxShadow: 'lg',
-            }}
-            _active={{
-              transform: 'scale(0.95)',
-              boxShadow: 'md',
-            }}
-            boxShadow={'md'}
-            onClick={onAcceptRequest}
-          >
+          <Button onClick={onAcceptRequest}>
             <ImCheckmark color='white' />
           </Button>
-          <Button variant={'black'} onClick={onDeclineRequest}>
+          <Button onClick={onDeclineRequest}>
             <ImCross color='white' />
           </Button>
         </Stack>

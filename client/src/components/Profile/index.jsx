@@ -1,13 +1,10 @@
-import { Avatar, Button, Flex, Heading, Text, useColorModeValue, VStack } from '@chakra-ui/react';
+import { Avatar, Button, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getUser } from '../../api/user';
 import { addToFriends as addToFriendsRequest } from '../../api/friend';
+import { getUser } from '../../api/user';
 
 const Profile = () => {
-  const colors = {
-    button: useColorModeValue('#151f21', 'gray.900'),
-  };
   const { userName } = useParams();
   const [user, setUser] = useState({});
 
@@ -43,17 +40,18 @@ const Profile = () => {
         <Flex
           alignItems={'center'}
           justifyContent={'space-between'}
-          bgColor='#ffffff'
+          bgColor='RGBA(0, 0, 0, 0.2)'
           rounded={8}
           padding={8}
           w={'full'}
           border={'1px'}
-          borderColor={'#dbdbdb'}
+          color={'white'}
+          borderColor={'#2D3748'}
         >
           <Flex w={'400px'} alignItems='center' justifyContent={'space-between'}>
             <Avatar height={150} width={150} src={user?.id ? 'http://localhost:5000/media/image/' + user?.id : ''} />
             <VStack spacing={1} display={'flex'} alignItems={'flex-start'} w='220px'>
-              <Heading as='h3' fontSize='xl' color='brand.dark' maxW={'220px'}>
+              <Heading as='h3' fontSize='xl' maxW={'220px'}>
                 {user?.userName}
               </Heading>
               <Text color='brand.gray' fontSize='sm' maxW={'220px'}>
@@ -62,15 +60,11 @@ const Profile = () => {
             </VStack>
           </Flex>
           <Flex w={'320px'} justifyContent={'space-between'}>
-            <Button w={'130px'} variant={'black'} onClick={addToFriends}>
+            <Button w={'130px'} onClick={addToFriends}>
               Add to friends
             </Button>
-            <Button w={'130px'} variant={'black'}>
-              Message
-            </Button>
-            <Button w={'10px'} variant={'black'}>
-              ...
-            </Button>
+            <Button w={'130px'}>Message</Button>
+            <Button w={'10px'}>...</Button>
           </Flex>
         </Flex>
       )}

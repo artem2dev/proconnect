@@ -34,7 +34,7 @@ export class UserService {
     const user = await this.userRepository.findOneBy({ userName });
 
     const userFriends = await this.friendsService.getAllFriends(user);
-    console.log(1123, userFriends);
+
     if (!user) throw new HttpException('No such user', HttpStatus.BAD_REQUEST);
 
     return user;
