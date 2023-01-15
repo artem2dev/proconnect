@@ -9,19 +9,19 @@ import { FriendsService } from './friends.service';
 export class FriendsController {
   constructor(private friendsService: FriendsService) {}
 
-  @Get()
-  getAllFriends(@UserBody() user: IGetUser) {
-    return this.friendsService.getAllFriends(user);
-  }
-
   @Get('requests')
   getAllFriendRequests(@UserBody() user: IGetUser) {
     return this.friendsService.getAllFriendRequests(user);
   }
 
+  @Get(':userName')
+  getAllFriends(@UserBody() user: IGetUser, @Param('userName') userName: string) {
+    return this.friendsService.getAllFriends(userName);
+  }
+
   @Post('add/:userId')
   createFriendRequest(@Param('userId') userId: string, @UserBody() user: IGetUser) {
-    return this.friendsService.createFriendRequest(user.id, userId);
+    return this.friendsService.createFriendRequest(user, { id: userId });
   }
 
   @Post('decline/:friendRequestId')

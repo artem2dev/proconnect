@@ -8,8 +8,8 @@ export class UserFriends extends ExtendedBaseEntity {
   id: string;
 
   @ManyToOne(() => User, (user) => user.id)
-  user1: User | string;
+  user1: User;
 
   @ManyToOne(() => User, (user) => user.id)
-  user2: User | string;
+  user2: User;
 }

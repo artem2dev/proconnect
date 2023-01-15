@@ -231,7 +231,7 @@ const SignUp = () => {
       minW={'100%'}
       align={'center'}
       justifyContent={'center'}
-      bg={useColorModeValue('gray.50', 'gray.800')}
+      bgColor='RGBA(0, 0, 0, 0.2)'
     >
       <Stack spacing={8} maxW={'lg'} justify='center' minW={'520px'}>
         <Stack spacing='6'>
@@ -271,7 +271,7 @@ const SignUp = () => {
             base: '4',
             sm: '10',
           }}
-          bg='white'
+          bgColor='RGBA(0, 0, 0, 0.2)'
           boxShadow={{
             base: 'none',
             sm: useColorModeValue('lg', 'md-dark'),
@@ -285,7 +285,7 @@ const SignUp = () => {
             <Stack spacing='5'>
               <Flex justify={'space-between'}>
                 <FormControl maxW={'215px'} isRequired>
-                  <FormLabel htmlFor='email' color={isFieldError.email ? 'red' : 'black'}>
+                  <FormLabel htmlFor='email' color={isFieldError.email ? 'red' : 'white'}>
                     {labels.email}
                   </FormLabel>
                   <Input
@@ -299,7 +299,7 @@ const SignUp = () => {
                   />
                 </FormControl>
                 <FormControl maxW={'215px'} isRequired>
-                  <FormLabel htmlFor='userName' color={isFieldError.userName ? 'red' : 'black'}>
+                  <FormLabel htmlFor='userName' color={isFieldError.userName ? 'red' : 'white'}>
                     {labels.userName}
                   </FormLabel>
                   <Input
@@ -315,7 +315,7 @@ const SignUp = () => {
               </Flex>
               <Flex justify={'space-between'}>
                 <FormControl maxW={'215px'} isRequired>
-                  <FormLabel htmlFor='firstName' color={isFieldError.firstName ? 'red' : 'black'}>
+                  <FormLabel htmlFor='firstName' color={isFieldError.firstName ? 'red' : 'white'}>
                     {labels.firstName}
                   </FormLabel>
                   <Input
@@ -329,7 +329,7 @@ const SignUp = () => {
                   />
                 </FormControl>
                 <FormControl maxW={'215px'} isRequired>
-                  <FormLabel htmlFor='lastName' color={isFieldError.lastName ? 'red' : 'black'}>
+                  <FormLabel htmlFor='lastName' color={isFieldError.lastName ? 'red' : 'white'}>
                     {labels.lastName}
                   </FormLabel>
                   <Input
@@ -345,7 +345,7 @@ const SignUp = () => {
               </Flex>
               <FormControl isRequired>
                 <InputGroup size='md' flexDirection='column'>
-                  <FormLabel htmlFor='password' color={isFieldError.password ? 'red' : 'black'}>
+                  <FormLabel htmlFor='password' color={isFieldError.password ? 'red' : 'white'}>
                     {labels.password}
                   </FormLabel>
                   <Input
@@ -374,7 +374,7 @@ const SignUp = () => {
                   </InputRightElement>
                 </InputGroup>
                 <InputGroup size='md' flexDirection='column' marginTop='4'>
-                  <FormLabel htmlFor='passwordVerify' color={isFieldError.passwordVerify ? 'red' : 'black'}>
+                  <FormLabel htmlFor='passwordVerify' color={isFieldError.passwordVerify ? 'red' : 'white'}>
                     {labels.passwordVerify}
                   </FormLabel>
                   <Input

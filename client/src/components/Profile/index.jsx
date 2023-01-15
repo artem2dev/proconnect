@@ -1,10 +1,12 @@
 import { Avatar, Button, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { addToFriends as addToFriendsRequest } from '../../api/friend';
 import { getUser } from '../../api/user';
+import { config } from '../../common/config';
 
 const Profile = () => {
+  const navigate = useNavigate();
   const { userName } = useParams();
   const [user, setUser] = useState({});
 
@@ -34,6 +36,10 @@ const Profile = () => {
       .catch(onError);
   };
 
+  const onFriendsCounter = () => {
+    navigate(`/profile/${userName}/friends`);
+  };
+
   return (
     <Flex>
       {user?.id && (
@@ -48,9 +54,9 @@ const Profile = () => {
           color={'white'}
           borderColor={'#2D3748'}
         >
-          <Flex w={'400px'} alignItems='center' justifyContent={'space-between'}>
-            <Avatar height={150} width={150} src={user?.id ? 'http://localhost:5000/media/image/' + user?.id : ''} />
-            <VStack spacing={1} display={'flex'} alignItems={'flex-start'} w='220px'>
+          <Flex w={'350px'} alignItems='center' justifyContent={'space-between'}>
+            <Avatar height={150} width={150} src={user?.id ? config.API + '/media/image/' + user?.id : ''} />
+            <VStack spacing={1} display={'flex'} alignItems={'flex-start'} w='180px'>
               <Heading as='h3' fontSize='xl' maxW={'220px'}>
                 {user?.userName}
               </Heading>
@@ -58,6 +64,14 @@ const Profile = () => {
                 {`${user?.firstName} ${user?.lastName}`}
               </Text>
             </VStack>
+          </Flex>
+          <Flex>
+            <Button variant={'link'} onClick={onFriendsCounter} maxW={80}>
+              <Text fontWeight={700}>{user?.userFriendsCount}</Text>
+              <Text fontWeight={200} ml={2}>
+                {user?.userFriendsCount === 1 ? 'friend' : 'friends'}
+              </Text>
+            </Button>
           </Flex>
           <Flex w={'320px'} justifyContent={'space-between'}>
             <Button w={'130px'} onClick={addToFriends}>

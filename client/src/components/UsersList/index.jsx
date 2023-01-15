@@ -1,4 +1,4 @@
-import { Grid, GridItem } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getUsers } from '../../api/user';
@@ -21,12 +21,9 @@ const UserList = () => {
   }, []);
 
   return (
-    <Grid templateColumns='repeat(4, 1fr)' gap={6}>
-      {userList.map(
-        (userItem, index) =>
-          userItem?.id !== user?.id && <GridItem key={index}>{<UserCard user={userItem} />}</GridItem>,
-      )}
-    </Grid>
+    <Flex w={'full'} wrap={'wrap'}>
+      {userList.map((userItem, index) => userItem?.id !== user?.id && <UserCard key={index} user={userItem} />)}
+    </Flex>
   );
 };
 

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ExceptionDictionary } from 'src/common/dictionary/ExceptionDictionary';
 import { IGetUser } from 'src/common/types/user';
 import { Repository } from 'typeorm';
+import { User } from '../users/user.entity';
 import { FriendRequest } from './friend-requests.entity';
 import { UserFriends } from './user-friends.entity';
 
@@ -13,8 +14,11 @@ export class FriendsService {
     private friendRequestRepository: Repository<FriendRequest>,
     @InjectRepository(UserFriends)
     private userFriendsRepository: Repository<UserFriends>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
   async getAllFriendRequests(user: IGetUser) {
+    console.log(11123123123, user)
     return await this.friendRequestRepository
       .createQueryBuilder('fr')
       .select()
@@ -23,34 +27,47 @@ export class FriendsService {
       .getMany();
   }
 
-  async getAllFriends(user: IGetUser) {
+  async getAllFriends(userName: string) {
+    const user = await this.userRepository.findOneBy({ userName });
+
+    if (!user) {
+      throw new ConflictException(ExceptionDictionary.user.noSuchUser);
+    }
+
+    const friends = await this.userFriendsRepository
+      .createQueryBuilder('uf')
+      .select()
+      .leftJoinAndSelect('uf.user1', 'user1')
+      .leftJoinAndSelect('uf.user2', 'user2')
+      .where('uf.user1 = :userId OR uf.user2 = :userId', { userId: user.id })
+      .getMany();
+
+    const filteredFriends = friends.map((friend) =>
+      friend.user1.userName === userName ? { ...friend.user2 } : { ...friend.user1 },
+    );
+
+    return filteredFriends;
+  }
+
+  async getUserFriendsCount(user: IGetUser) {
     return this.userFriendsRepository
       .createQueryBuilder('uf')
       .select()
       .where('uf.user1 = :userId OR uf.user2 = :userId', { userId: user.id })
-      .getMany();
+      .getCount();
   }
 
-  async getFriendsCount(user: IGetUser) {
-    return this.userFriendsRepository.count({where: {user1: user.id}})
-  }
-
-  /**
-   * Creates friends request from requestor to requestee.
-   * @param requestor - user id that requests friendship.
-   * @param requestee - user id to be requested friendship of.
-   */
-  async createFriendRequest(requestor: string, requestee: string) {
-    if (requestee === requestor) {
+  async createFriendRequest(requestor: IGetUser, requestee: IGetUser) {
+    if (requestee.id === requestor.id) {
       throw new ConflictException(ExceptionDictionary.friendRequest.cannotAddSelf);
     }
-
+    console.log(requestee, requestor);
     const foundFriendship = await this.userFriendsRepository
       .createQueryBuilder('uf')
       .select()
       .where('(uf.user1 = :user1 AND uf.user2 = :user2) OR (uf.user1 = :user2 AND uf.user2 = :user1)', {
-        user1: requestee,
-        user2: requestor,
+        user1: requestee.id,
+        user2: requestor.id,
       })
       .getOne();
 
@@ -63,7 +80,7 @@ export class FriendsService {
       .select()
       .where(
         '(fr.requestee = :requestor AND fr.requestor = :requestee) OR (fr.requestee = :requestee AND fr.requestor = :requestor) ',
-        { requestor, requestee },
+        { requestor: requestor.id, requestee: requestee.id },
       )
       .getOne();
 
@@ -73,7 +90,7 @@ export class FriendsService {
 
     return await this.friendRequestRepository
       .create({
-        requestor: requestor,
+        requestor,
         requestee,
       })
       .save();
@@ -81,7 +98,7 @@ export class FriendsService {
 
   async deleteFriendRequest(user: IGetUser, friendRequestId: string) {
     const foundFriendRequest = await this.friendRequestRepository.findOne({
-      where: { id: friendRequestId, requestor: user.id },
+      where: { id: friendRequestId, requestor: user },
     });
 
     if (!foundFriendRequest) {
@@ -123,7 +140,7 @@ export class FriendsService {
     }
 
     const userFriends = await this.userFriendsRepository
-      .create({ user1: user.id, user2: foundFriendRequest.requestor })
+      .create({ user1: user, user2: foundFriendRequest.requestor })
       .save();
 
     await foundFriendRequest.remove();

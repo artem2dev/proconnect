@@ -1,5 +1,6 @@
-import { Avatar, Box, Button, Center, Flex, Heading, Stack, Text, useColorModeValue } from '@chakra-ui/react';
+import { Avatar, Box, Button, Center, Flex, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { addToFriends as addToFriendsRequest } from '../../../api/friend';
 
 export default function UserCard({ user }) {
   const navigate = useNavigate();
@@ -8,16 +9,23 @@ export default function UserCard({ user }) {
     e.target?.type !== 'button' && navigate(`/profile/${user?.userName}`);
   };
 
+  const addToFriends = () => {
+    const onSuccess = () => {
+      console.info('success');
+    };
+
+    const onError = (error) => {
+      console.error(error);
+    };
+
+    addToFriendsRequest(user?.id || '')
+      .then(onSuccess)
+      .catch(onError);
+  };
+
   return (
-    <Center py={6} onClick={onClick} cursor='pointer'>
-      <Box
-        maxW={'270px'}
-        w={'full'}
-        bg={useColorModeValue('white', 'gray.800')}
-        boxShadow={'2xl'}
-        rounded={'md'}
-        overflow={'hidden'}
-      >
+    <Center w={276} px={3} py={6} onClick={onClick} cursor='pointer'>
+      <Box w={'full'} bg={useColorModeValue('white', 'gray.800')} boxShadow={'2xl'} rounded={'md'} overflow={'hidden'}>
         {/* <Image
           h={'120px'}
           w={'full'}
@@ -40,10 +48,26 @@ export default function UserCard({ user }) {
 
         <Box p={6}>
           <Stack spacing={0} align={'center'} mb={5}>
-            <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
+            <Text
+              maxW={235}
+              textAlign={'center'}
+              fontSize={'2xl'}
+              fontWeight={500}
+              fontFamily={'body'}
+              whiteSpace={'nowrap'}
+              overflow={'hidden'}
+              textOverflow={'ellipsis'}
+            >
               {`${user?.firstName} ${user?.lastName}`}
-            </Heading>
-            <Text fontWeight={'bold'} color={'gray.500'}>{`@${user?.userName}`}</Text>
+            </Text>
+            <Text
+              color={'gray.500'}
+              maxW={235}
+              textAlign={'center'}
+              whiteSpace={'nowrap'}
+              overflow={'hidden'}
+              textOverflow={'ellipsis'}
+            >{`@${user?.userName}`}</Text>
           </Stack>
 
           <Stack direction={'row'} justify={'center'} spacing={6}>
@@ -61,13 +85,7 @@ export default function UserCard({ user }) {
             </Stack>
           </Stack>
 
-          <Button
-            w={'full'}
-            mt={8}
-            onClick={() => {
-              return;
-            }}
-          >
+          <Button w={'full'} mt={8} onClick={addToFriends}>
             Add to friends
           </Button>
         </Box>

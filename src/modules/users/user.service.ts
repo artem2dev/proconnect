@@ -33,11 +33,11 @@ export class UserService {
   async getUserInfoByUserName(userName: string) {
     const user = await this.userRepository.findOneBy({ userName });
 
-    const userFriends = await this.friendsService.getAllFriends(user);
+    const userFriendsCount = await this.friendsService.getUserFriendsCount(user);
 
     if (!user) throw new HttpException('No such user', HttpStatus.BAD_REQUEST);
 
-    return user;
+    return { ...user, userFriendsCount };
   }
 
   async createUser(dto: CreateUserDto) {

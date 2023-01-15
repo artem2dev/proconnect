@@ -157,7 +157,7 @@ const Login = () => {
       minW={'100%'}
       align={'center'}
       justifyContent={'center'}
-      bg={useColorModeValue('gray.50', 'gray.800')}
+      bgColor='RGBA(0, 0, 0, 0.2)'
     >
       <Stack spacing={8} maxW={'lg'} justify='center' minW={'500px'}>
         <Stack spacing='6'>
@@ -181,7 +181,7 @@ const Login = () => {
               Log in to your account
             </Heading>
             <HStack spacing='1' justify='center'>
-              <Text color='muted'>Don't have an account?</Text>
+              <Text color='white'>Don't have an account?</Text>
               <Button variant='link' colorScheme='blue' onClick={navigateToSignUp}>
                 Sign up
               </Button>
@@ -197,7 +197,7 @@ const Login = () => {
             base: '4',
             sm: '10',
           }}
-          bg='white'
+          bg='RGBA(0, 0, 0, 0.2)'
           boxShadow={{
             base: 'none',
             sm: useColorModeValue('lg', 'md-dark'),
@@ -209,7 +209,7 @@ const Login = () => {
         >
           <Stack spacing='6'>
             <FormControl isRequired>
-              <FormLabel htmlFor='email' color={isFieldError.email ? 'red' : 'black'}>
+              <FormLabel htmlFor='email' color={isFieldError.email ? 'red' : 'white'}>
                 {labels.email}
               </FormLabel>
               <Input
@@ -221,7 +221,7 @@ const Login = () => {
                 isInvalid={isFieldError.email}
               />
               <InputGroup size='md' flexDirection='column' mt={'5'}>
-                <FormLabel htmlFor='password' color={isFieldError.password ? 'red' : 'black'}>
+                <FormLabel htmlFor='password' color={isFieldError.password ? 'red' : 'white'}>
                   {labels.password}
                 </FormLabel>
                 <Input

@@ -9,14 +9,14 @@ import { getItem } from '../helpers/localStorage';
 import { setGlobalState } from '../redux/globalStateSlice';
 import { setUser } from '../redux/usersSlice';
 import './App.css';
+import Friends from './Friends';
 import Login from './Login';
+import Notifications from './Notifications';
 import PrivateRoute from './PrivateRoute';
 import Profile from './Profile';
 import ProfileSettings from './ProfileSettings';
-import SidebarWithHeader from './SideBar';
 import SignUp from './SignUp';
 import UserList from './UsersList';
-import Notifications from './Notifications';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -46,19 +46,20 @@ const App = () => {
     <ChakraProvider theme={theme}>
       <Router basename={process.env.PUBLIC_URL}>
         <div className='App'>
-          <SidebarWithHeader>
+          <div className='container'>
             <Routes>
               <Route element={<PrivateRoute />}>
-                <Route path='/' element={<div />} />
-                <Route path='/users' element={<UserList />} />
-                <Route path='/notifications' element={<Notifications />} />
-                <Route path='/profile' element={<ProfileSettings />} />
+                <Route path='' element={<div />} />
+                <Route path='users' element={<UserList />} />
+                <Route path='notifications' element={<Notifications />} />
+                <Route path='profile' element={<ProfileSettings />} />
+                <Route path='profile/:userName/friends' element={<Friends />} />
                 <Route path='profile/:userName' element={<Profile />} />
               </Route>
-              <Route path='/register' element={<SignUp />} />
-              <Route path='/login' element={<Login />} />
+              <Route path='register' element={<SignUp />} />
+              <Route path='login' element={<Login />} />
             </Routes>
-          </SidebarWithHeader>
+          </div>
         </div>
       </Router>
     </ChakraProvider>

@@ -99,11 +99,11 @@ const Sidebar = () => {
       flex={1}
       mr={{ base: 0, md: 5 }}
       mb={{ base: 5, md: 0 }}
-      bg='white'
       rounded='md'
       borderWidth={1}
-      borderColor='brand.light'
       style={{ transform: 'translateY(-100px)' }}
+      bgColor='RGBA(0, 0, 0, 0.2)'
+      borderColor={'#2D3748'}
     >
       <VStack spacing={3} py={5} borderBottomWidth={1} borderColor='brand.light'>
         <Avatar
@@ -166,7 +166,7 @@ const Sidebar = () => {
             alignItems='center'
             justifyContent='space-between'
             borderBottomWidth={1}
-            borderColor='brand.light'
+            borderColor={'#2D3748'}
           >
             <Text color='brand.dark'>{item.name}</Text>
             <Text color={`brand.${item.color}`} fontWeight='bold'>

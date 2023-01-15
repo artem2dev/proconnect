@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserFriends } from './user-friends.entity';
 import { FriendRequest } from './friend-requests.entity';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '../users/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([FriendRequest, UserFriends])],
+  imports: [TypeOrmModule.forFeature([FriendRequest, UserFriends, User])],
   providers: [FriendsService, JwtService],
   controllers: [FriendsController],
   exports: [FriendsService],

@@ -191,8 +191,9 @@ const Content = () => {
       bg='white'
       rounded='md'
       borderWidth={1}
-      borderColor='gray.200'
       style={{ transform: 'translateY(-100px)' }}
+      bgColor='RGBA(0, 0, 0, 0.2)'
+      borderColor={'#2D3748'}
     >
       <Tabs>
         <TabList px={5}>

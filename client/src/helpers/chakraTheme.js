@@ -50,9 +50,11 @@ export const theme = extendTheme({
           p: '0',
           height: 'full',
           bg: 'transparent',
-          color: 'gray.500',
+          color: 'gray.300',
           rounded: 'none',
-          _active: { bg: 'brand.light' },
+          fontWeight: 400,
+          textDecoration: 'none',
+          _hover: { color: '#0d6efd', textDecoration: 'none' },
           _focus: { boxShadow: 'none' },
         },
         black: {

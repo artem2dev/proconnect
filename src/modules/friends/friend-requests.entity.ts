@@ -9,9 +9,9 @@ export class FriendRequest extends ExtendedBaseEntity {
 
   @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
   @JoinColumn()
-  requestor: string;
+  requestor: User;
 
   @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
   @JoinColumn()
-  requestee: string;
+  requestee: User;
 }
