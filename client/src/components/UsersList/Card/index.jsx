@@ -48,16 +48,7 @@ export default function UserCard({ user }) {
 
         <Box p={6}>
           <Stack spacing={0} align={'center'} mb={5}>
-            <Text
-              maxW={235}
-              textAlign={'center'}
-              fontSize={'2xl'}
-              fontWeight={500}
-              fontFamily={'body'}
-              whiteSpace={'nowrap'}
-              overflow={'hidden'}
-              textOverflow={'ellipsis'}
-            >
+            <Text maxW={235} textAlign={'center'} fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
               {`${user?.firstName} ${user?.lastName}`}
             </Text>
             <Text

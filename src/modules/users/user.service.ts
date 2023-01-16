@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IUpdateUserInfo } from 'src/common/types/user';
 import { Repository } from 'typeorm';
 import { FriendsService } from '../friends/friends.service';
 import { CreateUserDto } from './dto/create.user.dto';
+import { UpdateUserDto } from './dto/update.user.dto';
 import { User } from './user.entity';
 
 @Injectable()
@@ -50,7 +50,7 @@ export class UserService {
     return this.userRepository.find();
   }
 
-  async updateUser(userInfo: IUpdateUserInfo) {
+  async updateUser(userInfo: UpdateUserDto) {
     const { id } = userInfo;
     const user = await this.userRepository.findOneBy({ id });
 

@@ -10,7 +10,7 @@ export const theme = extendTheme({
       blue: '#4164e3',
       cadet: '#8998a8',
       dark: '#243156',
-      gray: '#a0acb9',
+      gray: '#2D3748',
       green: '#36c537',
       light: '#e9ebee',
       pure: '#fafafb',
@@ -79,6 +79,18 @@ export const theme = extendTheme({
       },
       defaultProps: {
         variant: 'black',
+      },
+    },
+    Text: {
+      variants: {
+        default: {
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        },
+      },
+      defaultProps: {
+        variant: 'default',
       },
     },
     Tabs: {

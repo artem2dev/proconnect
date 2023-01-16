@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Put, Request, UseGuards } from '@nestjs/common';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
-import { IGetUserInfoRequest, IUpdateUserInfo } from 'src/common/types/user';
+import { IGetUserInfoRequest } from 'src/common/types/user';
+import { UpdateUserDto } from './dto/update.user.dto';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -21,7 +22,7 @@ export class UserController {
 
   @UseGuards(AccessTokenGuard)
   @Put('profile')
-  async updateUser(@Body() body: IUpdateUserInfo) {
+  async updateUser(@Body() body: UpdateUserDto) {
     return this.userService.updateUser(body);
   }
 

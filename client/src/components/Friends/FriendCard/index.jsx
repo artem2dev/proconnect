@@ -29,7 +29,7 @@ const FriendCard = ({ friend, userName }) => {
 
   console.log(friend);
   return (
-    <Box w={'full'} bgColor='RGBA(0, 0, 0, 0.2)' borderColor={'#2D3748'} shadow={'md'} rounded={8} mb={4}>
+    <Box w={'full'} bgColor='RGBA(0, 0, 0, 0.2)' borderColor={'brand.gray'} shadow={'md'} rounded={8} mb={4}>
       <Stack
         w={'full'}
         direction={{ base: 'column', sm: 'row' }}

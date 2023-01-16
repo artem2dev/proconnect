@@ -21,6 +21,9 @@ export class User {
   @Column()
   lastName: string;
 
+  @Column({ nullable: true })
+  description: string;
+
   @Column({ default: false })
   banned: boolean;
 
