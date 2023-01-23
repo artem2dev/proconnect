@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Put, Request, UseGuards } from '@nestjs/common';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
-import { IGetUserInfoRequest } from 'src/common/types/user';
+import { IExtendedRequestWithUser } from 'src/common/types/interfaces';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { UserService } from './user.service';
 
@@ -10,7 +10,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('profile')
-  async getUserProfile(@Request() req: IGetUserInfoRequest) {
+  async getUserProfile(@Request() req: IExtendedRequestWithUser) {
     return await this.userService.getUserProfileInfo(req.user?.id);
   }
 

@@ -1,19 +1,21 @@
+import { User } from 'src/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from '../users/user.entity';
 
 @Entity()
-export class Message {
+export class Article {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
-  text: string;
+  title: string;
 
   @ManyToOne(() => User, (user) => user.id)
   @JoinColumn()
-  author: User | string;
+  author: User;
 
-  @ManyToOne(() => User, (user) => user.id)
-  @JoinColumn()
-  recipient: User | string;
+  @Column({ type: 'text' })
+  content: string;
+
+  @Column({ default: false })
+  isPrivate: boolean;
 }

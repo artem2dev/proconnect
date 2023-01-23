@@ -7,7 +7,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
-import { IExtendedSocket } from 'src/common/types/user';
+import { IExtendedSocket } from 'src/common/types/interfaces';
 import { ChatService } from './chat.service';
 import { SendMessageDto } from './dto/send.message.dto';
 
@@ -41,10 +41,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   handleConnection(socket: IExtendedSocket) {
     socket.join(socket.userId);
 
-    console.log(`Connected: ${socket.userId}`);
+    console.info('\x1b[32m', `Connected: ${socket.userId}`);
   }
 
   handleDisconnect(socket: IExtendedSocket) {
-    console.log(`Disconnected: ${socket.userId}`);
+    console.info('\x1b[31m', `Disconnected: ${socket.userId}`);
   }
 }

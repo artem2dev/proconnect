@@ -4,7 +4,7 @@ import { ImCross } from 'react-icons/im';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { deleteFromFriends } from '../../../api/friend';
-import { config } from '../../../common/config';
+import { config } from '../../../config/app.config';
 
 const FriendCard = ({ friend, userName }) => {
   const user = useSelector((state) => state.users);

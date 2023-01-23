@@ -2,6 +2,9 @@ import { ExecutionContext, ForbiddenException, Injectable, UnauthorizedException
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
+import { config } from 'src/config/app.config';
+
+const { JWT_REFRESH_SECRET } = config;
 
 @Injectable()
 export class RefreshTokenGuard extends AuthGuard('jwt-refresh') {
@@ -20,7 +23,7 @@ export class RefreshTokenGuard extends AuthGuard('jwt-refresh') {
       }
 
       const decoded = this.jwtService.verify(token, {
-        secret: process.env.JWT_REFRESH_SECRET || 'SECRET',
+        secret: JWT_REFRESH_SECRET,
       });
 
       req.user = { ...decoded, refreshToken: token };

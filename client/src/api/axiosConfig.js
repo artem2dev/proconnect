@@ -1,12 +1,10 @@
 import axios from 'axios';
-import { baseApiUrl } from '../common/constants';
+import { config } from '../config/app.config';
 import { getItem, removeItem, setItem } from '../helpers/localStorage';
 import { refreshTokens } from './auth';
 
-const baseUrl = `${baseApiUrl}`;
-
 export const useAxios = axios.create({
-  baseURL: `${baseUrl}`,
+  baseURL: config.API,
 });
 useAxios.interceptors.request.use((config) => {
   config.headers.Authorization = getItem('jwtToken');

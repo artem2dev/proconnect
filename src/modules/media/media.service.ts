@@ -3,21 +3,21 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { createReadStream } from 'fs';
 import { MinioService } from 'nestjs-minio-client';
 import { join } from 'path';
-import { IGetUser, IGetUserInfo } from 'src/common/types/user';
+import { IId, IUserIdAndEmail } from 'src/common/types/interfaces';
 import { Repository } from 'typeorm';
-import { User } from '../users/user.entity';
-import { Media } from './media.entity';
+import { User } from '../../entities/user.entity';
+import { Media } from '../../entities/media.entity';
 
 @Injectable()
 export class MediaService {
   constructor(
     @InjectRepository(Media)
     private mediaRepository: Repository<Media>,
-    private minIO: MinioService,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private minIO: MinioService,
   ) {}
-  async updateProfileImage(file: Express.Multer.File, userInfo: IGetUserInfo) {
+  async updateProfileImage(file: Express.Multer.File, userInfo: IUserIdAndEmail) {
     const { id: userId } = userInfo;
     const user: any = await this.userRepository.findOneBy({ id: userId });
 
@@ -41,7 +41,7 @@ export class MediaService {
     return media;
   }
 
-  async getImage(user: IGetUser) {
+  async getImage(user: IId) {
     const image = await this.mediaRepository.findOneBy({ user });
 
     if (!image) {

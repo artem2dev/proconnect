@@ -2,6 +2,9 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
+import { config } from './config/app.config';
+
+const { PORT } = config;
 
 async function start() {
   const logger = new Logger('SERVER');
@@ -13,8 +16,6 @@ async function start() {
   app.use(cookieParser());
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
-
-  const PORT = process.env.PORT || 3000;
 
   await app.listen(PORT, () => logger.log(`Blog app successfully started on port ${PORT}`));
 }

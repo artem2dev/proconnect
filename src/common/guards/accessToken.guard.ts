@@ -2,6 +2,9 @@ import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/com
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
+import { config } from 'src/config/app.config';
+
+const { JWT_ACCESS_SECRET } = config;
 
 @Injectable()
 export class AccessTokenGuard extends AuthGuard('jwt') {
@@ -12,13 +15,15 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     try {
       const req = context.switchToHttp().getRequest();
+
       const [bearer, token] = req.headers.authorization?.split(' ') || [null, null];
+
       if (bearer !== 'Bearer' || !token) {
         throw new UnauthorizedException();
       }
 
       const user = this.jwtService.verify(token, {
-        secret: process.env.JWT_ACCESS_SECRET || 'SECRET',
+        secret: JWT_ACCESS_SECRET,
       });
 
       req.user = user;

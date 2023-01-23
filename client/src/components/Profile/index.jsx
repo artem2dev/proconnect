@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { addToFriends as addToFriendsRequest } from '../../api/friend';
 import { getUser } from '../../api/user';
-import { config } from '../../common/config';
+import { config } from '../../config/app.config';
 
 const Profile = () => {
   const userInfo = useSelector((state) => state.users);

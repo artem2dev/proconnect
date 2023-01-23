@@ -1,9 +1,9 @@
 import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Article } from '../articles/article.entity';
-import { Message } from '../chat/message.entity';
-import { FriendRequest } from '../friends/friend-requests.entity';
-import { UserFriends } from '../friends/user-friends.entity';
-import { Media } from '../media/media.entity';
+import { Article } from './article.entity';
+import { Message } from './message.entity';
+import { FriendRequest } from './friend-requests.entity';
+import { UserFriends } from './user-friends.entity';
+import { Media } from './media.entity';
 
 @Entity()
 export class User {
