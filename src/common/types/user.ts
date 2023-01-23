@@ -1,6 +1,4 @@
-enum SupportedUserLanguages {
-  en = 'en',
-}
+import { Socket } from 'socket.io';
 
 export interface IGetUserInfoRequest extends Request {
   user: IGetUserInfo;
@@ -21,4 +19,8 @@ export interface IUpdateUserInfo extends Body {
   userName?: string;
   firstName?: string;
   lastName?: string;
+}
+
+export interface IExtendedSocket extends Socket {
+  userId: string;
 }

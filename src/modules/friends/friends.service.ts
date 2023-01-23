@@ -18,7 +18,6 @@ export class FriendsService {
     private userRepository: Repository<User>,
   ) {}
   async getAllFriendRequests(user: IGetUser) {
-    console.log(11123123123, user)
     return await this.friendRequestRepository
       .createQueryBuilder('fr')
       .select()
@@ -61,7 +60,7 @@ export class FriendsService {
     if (requestee.id === requestor.id) {
       throw new ConflictException(ExceptionDictionary.friendRequest.cannotAddSelf);
     }
-    console.log(requestee, requestor);
+
     const foundFriendship = await this.userFriendsRepository
       .createQueryBuilder('uf')
       .select()

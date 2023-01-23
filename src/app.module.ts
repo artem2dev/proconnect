@@ -6,6 +6,8 @@ import { MinioModule } from 'nestjs-minio-client';
 import { Article } from './modules/articles/article.entity';
 import { ArticleModule } from './modules/articles/article.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { Message } from './modules/chat/message.entity';
+import { ChatModule } from './modules/chat/chat.module';
 import { FriendRequest } from './modules/friends/friend-requests.entity';
 import { FriendsModule } from './modules/friends/friends.module';
 import { UserFriends } from './modules/friends/user-friends.entity';
@@ -16,8 +18,6 @@ import { UserModule } from './modules/users/user.module';
 
 @Module({
   imports: [
-    ArticleModule,
-    UserModule,
     ConfigModule.forRoot({ envFilePath: `.${process.env.NODE_ENV}.env` }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -26,10 +26,10 @@ import { UserModule } from './modules/users/user.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [User, Article, Media, FriendRequest, UserFriends],
+      entities: [User, Article, Media, FriendRequest, UserFriends, Message],
       synchronize: true,
       autoLoadEntities: true,
-      logging: true,
+      logging: false,
     }),
     MinioModule.register({
       endPoint: '127.0.0.1',
@@ -40,9 +40,12 @@ import { UserModule } from './modules/users/user.module';
       isGlobal: true,
     }),
     MulterModule.register({ dest: '/temp' }),
+    ArticleModule,
+    UserModule,
     AuthModule,
     MediaModule,
     FriendsModule,
+    ChatModule,
   ],
   controllers: [],
   providers: [],

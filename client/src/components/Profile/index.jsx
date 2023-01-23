@@ -42,6 +42,10 @@ const Profile = () => {
     navigate(`/profile/${userName}/friends`);
   };
 
+  const navigateToMessages = () => {
+    navigate(`/messages/${userName}`);
+  };
+
   return (
     <Flex>
       {user?.id && (
@@ -88,7 +92,9 @@ const Profile = () => {
               <Button w={'130px'} onClick={addToFriends}>
                 Add to friends
               </Button>
-              <Button w={'130px'}>Message</Button>
+              <Button w={'130px'} onClick={navigateToMessages}>
+                Message
+              </Button>
               <Button w={'10px'}>...</Button>
             </Flex>
           ) : (

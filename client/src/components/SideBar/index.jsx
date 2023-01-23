@@ -37,7 +37,7 @@ const LinkItems = [
   { name: 'Home', icon: AiOutlineHome, hover: { bg: 'RGBA(0, 0, 0, 0.5)' }, href: '/' },
   { name: 'Profile', icon: FaRegUserCircle, hover: { bg: 'RGBA(0, 0, 0, 0.5)' }, href: '' },
   { name: 'Notifications', icon: IoMdNotificationsOutline, hover: { bg: 'RGBA(0, 0, 0, 0.5)' } },
-  { name: 'Messages', icon: RxEnvelopeClosed, hover: { bg: 'RGBA(0, 0, 0, 0.5)' } },
+  { name: 'Messages', icon: RxEnvelopeClosed, hover: { bg: 'RGBA(0, 0, 0, 0.5)' }, href: '/messages' },
   { name: 'Users', icon: FiUsers, hover: { bg: 'RGBA(0, 0, 0, 0.5)' }, href: '/users' },
   { name: 'Explore', icon: FiCompass, hover: { bg: 'RGBA(0, 0, 0, 0.5)' } },
   { name: 'Settings', icon: FiSettings, hover: { bg: 'RGBA(0, 0, 0, 0.5)' } },

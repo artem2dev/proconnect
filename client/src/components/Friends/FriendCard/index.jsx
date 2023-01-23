@@ -27,7 +27,6 @@ const FriendCard = ({ friend, userName }) => {
     deleteFromFriends(friend?.id).then(onSuccess).catch(onError);
   };
 
-  console.log(friend);
   return (
     <Box w={'full'} bgColor='RGBA(0, 0, 0, 0.2)' borderColor={'brand.gray'} shadow={'md'} rounded={8} mb={4}>
       <Stack

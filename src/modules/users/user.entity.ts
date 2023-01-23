@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Article } from '../articles/article.entity';
+import { Message } from '../chat/message.entity';
 import { FriendRequest } from '../friends/friend-requests.entity';
 import { UserFriends } from '../friends/user-friends.entity';
 import { Media } from '../media/media.entity';
@@ -35,6 +36,12 @@ export class User {
 
   @OneToMany(() => Article, (article) => article.author)
   articles: Article[];
+
+  @OneToMany(() => Message, (message) => message.author)
+  messageAuthor: Message[];
+
+  @OneToMany(() => Message, (message) => message.recipient)
+  messageRecipient: Message[];
 
   @OneToMany(() => FriendRequest, (fr) => fr.requestor)
   requestorIn: FriendRequest[];

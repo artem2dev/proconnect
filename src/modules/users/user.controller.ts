@@ -4,35 +4,31 @@ import { IGetUserInfoRequest } from 'src/common/types/user';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { UserService } from './user.service';
 
+@UseGuards(AccessTokenGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @UseGuards(AccessTokenGuard)
   @Get('profile')
-  async getUser(@Request() req: IGetUserInfoRequest) {
-    return await this.userService.getUserInfo(req.user?.id);
+  async getUserProfile(@Request() req: IGetUserInfoRequest) {
+    return await this.userService.getUserProfileInfo(req.user?.id);
   }
 
-  @UseGuards(AccessTokenGuard)
   @Get('profile/:userName')
   async getUserInfo(@Param('userName') userName: string) {
-    return await this.userService.getUserInfoByUserName(userName);
+    return await this.userService.getUserProfileInfoByUserName(userName);
   }
 
-  @UseGuards(AccessTokenGuard)
   @Put('profile')
   async updateUser(@Body() body: UpdateUserDto) {
     return this.userService.updateUser(body);
   }
 
-  @UseGuards(AccessTokenGuard)
   @Get('all')
   async getAllUsers() {
     return await this.userService.findAll();
   }
 
-  @UseGuards(AccessTokenGuard)
   @Delete(':id')
   async deleteUser(@Param('id') id: string) {
     return await this.userService.deleteUser(id);

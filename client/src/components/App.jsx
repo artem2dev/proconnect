@@ -8,9 +8,12 @@ import { theme } from '../helpers/chakraTheme';
 import { getItem } from '../helpers/localStorage';
 import { setGlobalState } from '../redux/globalStateSlice';
 import { setUser } from '../redux/usersSlice';
+import socket from '../socket';
 import './App.css';
 import Friends from './Friends';
 import Login from './Login';
+import Messages from './Messages';
+import Chat from './Messages/Chat';
 import Notifications from './Notifications';
 import PrivateRoute from './PrivateRoute';
 import Profile from './Profile';
@@ -31,6 +34,9 @@ const App = () => {
             ...data,
           }),
         );
+
+        socket.auth = { userId: data.id };
+        socket.connect();
       };
 
       const onError = (err) => {
@@ -39,12 +45,16 @@ const App = () => {
       };
 
       getUser().then(onSuccess).catch(onError);
+
+      return () => {
+        socket.disconnect();
+      };
     }
   }, [dispatch]);
 
   return (
     <ChakraProvider theme={theme}>
-      <Router basename={process.env.PUBLIC_URL}>
+      <Router basename={'/'}>
         <div className='App'>
           <div className='container'>
             <Routes>
@@ -53,6 +63,8 @@ const App = () => {
                 <Route path='users' element={<UserList />} />
                 <Route path='notifications' element={<Notifications />} />
                 <Route path='profile' element={<ProfileSettings />} />
+                <Route path='messages' element={<Messages />} />
+                <Route path='messages/:userName' element={<Chat />} />
                 <Route path='profile/:userName/friends' element={<Friends />} />
                 <Route path='profile/:userName' element={<Profile />} />
               </Route>

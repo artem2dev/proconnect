@@ -76,7 +76,7 @@ const Content = () => {
         lastName: user?.lastName,
         email: user?.email,
         userName: user?.userName,
-        profileDescription: user?.description,
+        profileDescription: user?.description || '',
       }));
   }, [user, setFields]);
 

@@ -14,15 +14,19 @@ export class UserService {
     private friendsService: FriendsService,
   ) {}
 
-  getUserByEmail(email: string) {
-    return this.userRepository.findOneBy({ email });
+  async getUserById(id: string) {
+    return await this.userRepository.findOneBy({ id });
   }
 
-  getUserById(id: string) {
-    return this.userRepository.findOneBy({ id });
+  async getUserByEmail(email: string) {
+    return await this.userRepository.findOneBy({ email });
   }
 
-  async getUserInfo(userId: string) {
+  async getUserByUserName(userName: string) {
+    return await this.userRepository.findOneBy({ userName });
+  }
+
+  async getUserProfileInfo(userId: string) {
     const user = await this.userRepository.findOneBy({ id: userId });
 
     if (!user) throw new HttpException('No such user', HttpStatus.BAD_REQUEST);
@@ -30,7 +34,7 @@ export class UserService {
     return user;
   }
 
-  async getUserInfoByUserName(userName: string) {
+  async getUserProfileInfoByUserName(userName: string) {
     const user = await this.userRepository.findOneBy({ userName });
 
     const userFriendsCount = await this.friendsService.getUserFriendsCount(user);
@@ -60,7 +64,7 @@ export class UserService {
 
     if (userName !== userInfo.userName) {
       const isUserNameExists = await this.userRepository.findOneBy({
-        userName,
+        userName: userInfo.userName,
       });
 
       if (isUserNameExists) {
@@ -70,7 +74,7 @@ export class UserService {
 
     if (email !== userInfo.email) {
       const isEmailExists = await this.userRepository.findOneBy({
-        email,
+        email: userInfo.email,
       });
 
       if (isEmailExists) {
