@@ -1,39 +1,59 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { of } from 'rxjs';
+import { ExceptionDictionary } from 'src/common/dictionary/ExceptionDictionary';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { Article } from '../../entities/article.entity';
-import { CreateArticleDto } from './dto/create-article.dto';
+import { MediaService } from '../media/media.service';
+import { ArticleDto } from './dto/article.dto';
+import { UpdateArticleDto } from './dto/update-article.dto';
 
 @Injectable()
 export class ArticleService {
   constructor(
     @InjectRepository(Article)
     private articleRepository: Repository<Article>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private mediaService: MediaService,
   ) {}
 
-  async createArticle(dto: CreateArticleDto) {
-    const user = await this.userRepository.findOneBy({ id: dto.author });
-    if (!user) throw new Error('User not exist');
-
+  async createArticle(user: User, dto: ArticleDto, image: Express.Multer.File) {
     const article = this.articleRepository.create({ ...dto, author: user });
+    this.mediaService;
+    const savedArticle = await this.articleRepository.save(article);
 
-    const { raw: res } = await this.articleRepository.insert(article);
+    savedArticle.omit('author');
 
-    return res[0];
+    return savedArticle;
   }
 
-  findAll() {
+  async findAll() {
     return this.articleRepository.find();
   }
 
-  findOne(id: string) {
-    return this.articleRepository.findOneBy({ id });
+  async findOne(id: string) {
+    const foundArticle = await this.articleRepository.findOneBy({ id });
+
+    if (!foundArticle) {
+      throw new NotFoundException(ExceptionDictionary.articles.notFound);
+    }
+
+    return foundArticle;
   }
 
-  async deleteUser(id: number) {
-    await this.articleRepository.delete(id);
+  async deleteArticle(user: User, id: string) {
+    const foundArticle = await this.articleRepository.findOneBy({ id, authorId: user.id });
+
+    foundArticle.remove();
+  }
+
+  async updateArticle(id: string, user: User, dto: UpdateArticleDto) {
+    const foundArticle = await this.articleRepository.findOneBy({ id, authorId: user.id });
+
+    if (!foundArticle) {
+      throw new NotFoundException(ExceptionDictionary.articles.notFound);
+    }
+
+    return await foundArticle.update({ ...dto });
   }
 }

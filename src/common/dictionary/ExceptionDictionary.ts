@@ -10,4 +10,7 @@ export const ExceptionDictionary = {
   userFriends: {
     alreadyFriends: 'Already friends.',
   },
+  articles: {
+    notFound: 'Article not found',
+  },
 };

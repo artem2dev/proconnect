@@ -12,12 +12,31 @@ import {
   Image,
   Text,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BiChat, BiLike, BiShare } from 'react-icons/bi';
+import { useParams } from 'react-router-dom';
+import { getArticle } from '../../../api/articles';
 
-const Post = () => {
+export const Article = () => {
+  const { id } = useParams();
+  const [articleData, setArticleData] = useState(null);
+
+  useEffect(() => {
+    if (!articleData) {
+      getArticle(id)
+        .then(({ data }) => {
+          setArticleData(data);
+        })
+        .catch(console.log);
+    }
+  });
+
+  useEffect(() => {
+    console.log(articleData);
+  }, [articleData]);
+
   return (
-    <Card maxW='md'>
+    <Card maxW='md' maxH={'100%'}>
       <CardHeader>
         <Flex spacing='4'>
           <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
@@ -25,16 +44,15 @@ const Post = () => {
 
             <Box>
               <Heading size='sm'>Segun Adebayo</Heading>
-              <Text>Creator, Chakra UI</Text>
+              <Text>{articleData?.title}</Text>
             </Box>
           </Flex>
           {/* <IconButton variant='ghost' colorScheme='gray' aria-label='See menu' icon={<BsThreeDotsVertical />} /> */}
         </Flex>
       </CardHeader>
-      <CardBody>
-        <Text>
-          With Chakra UI, I wanted to sync the speed of development with the speed of design. I wanted the developer to
-          be just as excited as the designer to create a screen.
+      <CardBody maxH={'100%'}>
+        <Text maxH={'100%'} textOverflow={'initial'}>
+          {articleData?.content}
         </Text>
       </CardBody>
       <Image
@@ -52,13 +70,13 @@ const Post = () => {
           },
         }}
       >
-        <Button flex='1' variant='ghost' leftIcon={<BiLike />}>
+        <Button flex='0.5' variant='ghost' leftIcon={<BiLike />}>
           Like
         </Button>
-        <Button flex='1' variant='ghost' leftIcon={<BiChat />}>
+        <Button flex='0.5' variant='ghost' leftIcon={<BiChat />}>
           Comment
         </Button>
-        <Button flex='1' variant='ghost' leftIcon={<BiShare />}>
+        <Button flex='0.5' variant='ghost' leftIcon={<BiShare />}>
           Share
         </Button>
       </CardFooter>
@@ -66,4 +84,4 @@ const Post = () => {
   );
 };
 
-export default Post;
+export default Article;

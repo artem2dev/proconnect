@@ -102,5 +102,15 @@ export const theme = extendTheme({
         },
       },
     },
+    Card: {
+      variants: {
+        default: {
+          bgColor: 'RGBA(65, 100, 227, 0.9)',
+        },
+      },
+      defaultProps: {
+        variant: 'default',
+      },
+    },
   },
 });

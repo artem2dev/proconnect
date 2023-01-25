@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createReadStream } from 'fs';
 import { MinioService } from 'nestjs-minio-client';
@@ -7,6 +7,7 @@ import { IId, IUserIdAndEmail } from 'src/common/types/interfaces';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/user.entity';
 import { Media } from '../../entities/media.entity';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class MediaService {
@@ -42,14 +43,42 @@ export class MediaService {
   }
 
   async getImage(user: IId) {
-    const image = await this.mediaRepository.findOneBy({ user });
+    try {
+      const image = await this.mediaRepository.findOneBy({ user });
 
-    if (!image) {
+      if (!image) {
+        const file = createReadStream(join(__dirname, '..', '..', 'assets', 'Default.png'));
+
+        return file;
+      }
+
+      return await this.minIO.client.getObject('media', image.id);
+    } catch (err) {
       const file = createReadStream(join(__dirname, '..', '..', 'assets', 'Default.png'));
 
       return file;
     }
+  }
 
-    return await this.minIO.client.getObject('media', image.id);
+  async getStaticImage(imageId: string) {
+    // Todo add support for media entity being more of an image instead of just user profile.
+    try {
+      return await this.minIO.client.getObject('static', imageId);
+    } catch (err) {
+      if (err?.code === 'NotFound' || err?.code === 'NoSuchKey') {
+        throw new NotFoundException();
+      }
+
+      throw err;
+    }
+  }
+
+  async saveStaticImage(imageBuffer: Buffer, id?: string) {
+    // Todo add support for media entity being more of an image instead of just user profile.
+    const newId = id ?? randomUUID();
+
+    await this.minIO.client.putObject('static', newId, imageBuffer);
+
+    return newId;
   }
 }

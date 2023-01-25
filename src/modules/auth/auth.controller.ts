@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post, Req, Response, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Response as Res } from 'express';
 import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
 import { IExtendedRequestWithUser } from 'src/common/types/interfaces';
@@ -9,7 +10,7 @@ import { LoginUserDto } from 'src/modules/users/dto/login.user.dto';
 import { AuthService } from './auth.service';
 
 const { DOMAIN, REFRESH_TOKEN_EXPIRES_DAYS_IN_MILLISECONDS } = config;
-
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}

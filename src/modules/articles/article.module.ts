@@ -4,9 +4,10 @@ import { User } from 'src/entities/user.entity';
 import { ArticleController } from './article.controller';
 import { Article } from '../../entities/article.entity';
 import { ArticleService } from './article.service';
+import { MediaModule } from '../media/media.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Article, User])],
+  imports: [MediaModule, TypeOrmModule.forFeature([Article, User])],
   controllers: [ArticleController],
   providers: [ArticleService],
 })

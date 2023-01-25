@@ -1,9 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Put, Request, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { IExtendedRequestWithUser } from 'src/common/types/interfaces';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { UserService } from './user.service';
 
+//Fix endpoints
+@ApiBearerAuth('access-token')
 @UseGuards(AccessTokenGuard)
 @Controller('users')
 export class UserController {
