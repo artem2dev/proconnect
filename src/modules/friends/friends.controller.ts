@@ -1,9 +1,12 @@
 import { Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserBody } from 'src/common/decorators/user.decorator';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { IId } from 'src/common/types/interfaces';
 import { FriendsService } from './friends.service';
 
+@ApiTags('Friends')
+@ApiBearerAuth()
 @UseGuards(AccessTokenGuard)
 @Controller('friends')
 export class FriendsController {

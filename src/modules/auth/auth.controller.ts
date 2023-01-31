@@ -10,6 +10,7 @@ import { LoginUserDto } from 'src/modules/users/dto/login.user.dto';
 import { AuthService } from './auth.service';
 
 const { DOMAIN, REFRESH_TOKEN_EXPIRES_DAYS_IN_MILLISECONDS } = config;
+
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {

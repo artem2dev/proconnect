@@ -8,7 +8,6 @@ import {
   CardHeader,
   Flex,
   Heading,
-  IconButton,
   Image,
   Text,
 } from '@chakra-ui/react';
@@ -17,12 +16,13 @@ import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import { useParams } from 'react-router-dom';
 import { getArticle } from '../../../api/articles';
 
-export const Article = () => {
+export const Article = ({ article }) => {
   const { id } = useParams();
-  const [articleData, setArticleData] = useState(null);
+  const [articleData, setArticleData] = useState(article ?? null);
+  const [imageToggle, setImageToggle] = useState(false);
 
   useEffect(() => {
-    if (!articleData) {
+    if (id && !articleData) {
       getArticle(id)
         .then(({ data }) => {
           setArticleData(data);
@@ -31,35 +31,37 @@ export const Article = () => {
     }
   });
 
-  useEffect(() => {
-    console.log(articleData);
-  }, [articleData]);
-
   return (
-    <Card maxW='md' maxH={'100%'}>
+    <Card maxW='xl' maxH={'100%'} mt={'5'}>
       <CardHeader>
         <Flex spacing='4'>
           <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
             <Avatar name='Segun Adebayo' src='https://bit.ly/sage-adebayo' />
 
-            <Box>
-              <Heading size='sm'>Segun Adebayo</Heading>
+            <Box display={'flex'} alignItems={'flex-start'} flexDirection={'column'}>
+              <Heading size='sm'>{articleData?.author?.firstName + ' ' + articleData?.author?.lastName}</Heading>
               <Text>{articleData?.title}</Text>
             </Box>
           </Flex>
           {/* <IconButton variant='ghost' colorScheme='gray' aria-label='See menu' icon={<BsThreeDotsVertical />} /> */}
         </Flex>
       </CardHeader>
-      <CardBody maxH={'100%'}>
+      <CardBody maxH={'300px'} padding='0px 20px 10px 20px'>
         <Text maxH={'100%'} textOverflow={'initial'}>
           {articleData?.content}
         </Text>
       </CardBody>
-      <Image
-        objectFit='cover'
-        src='https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-        alt='Chakra UI'
-      />
+      {articleData?.media && (
+        <Image
+          objectFit='cover'
+          src={`http://localhost:5000/media/static/image/${articleData?.media.bucketName}`}
+          alt='Chakra UI'
+          height='300px'
+          style={{ objectFit: 'scale-down' }}
+          onClick={() => setImageToggle(!imageToggle)}
+          transition='all 0.2s'
+        />
+      )}
 
       <CardFooter
         justify='space-between'
@@ -70,13 +72,13 @@ export const Article = () => {
           },
         }}
       >
-        <Button flex='0.5' variant='ghost' leftIcon={<BiLike />}>
+        <Button flex='0.25' variant='ghost' leftIcon={<BiLike />}>
           Like
         </Button>
-        <Button flex='0.5' variant='ghost' leftIcon={<BiChat />}>
+        <Button flex='0.25' variant='ghost' leftIcon={<BiChat />}>
           Comment
         </Button>
-        <Button flex='0.5' variant='ghost' leftIcon={<BiShare />}>
+        <Button flex='0.25' variant='ghost' leftIcon={<BiShare />}>
           Share
         </Button>
       </CardFooter>

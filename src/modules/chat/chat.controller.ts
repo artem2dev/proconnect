@@ -1,8 +1,10 @@
 import { Controller, Get, Param, Request, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { IExtendedRequestWithUser } from 'src/common/types/interfaces';
 import { ChatService } from './chat.service';
 
+@ApiTags('Chat')
 @UseGuards(AccessTokenGuard)
 @Controller('messages')
 export class ChatController {

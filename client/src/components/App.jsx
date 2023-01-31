@@ -21,6 +21,7 @@ import ProfileSettings from './ProfileSettings';
 import SignUp from './SignUp';
 import UserList from './UsersList';
 import Article from './Articles/Article/Article';
+import ArticlesScroll from './Articles';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -68,7 +69,8 @@ const App = () => {
                 <Route path='messages/:userName' element={<Chat />} />
                 <Route path='profile/:userName/friends' element={<Friends />} />
                 <Route path='profile/:userName' element={<Profile />} />
-                <Route path='post/:id' element={<Article />} />
+                <Route path='articles' element={<ArticlesScroll />} />
+                <Route path='article/:id' element={<Article />} />
               </Route>
               <Route path='register' element={<SignUp />} />
               <Route path='login' element={<Login />} />

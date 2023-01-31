@@ -31,9 +31,6 @@ export class User {
   @Column()
   password: string;
 
-  @OneToOne(() => Media, (media) => media.user)
-  avatar: Media;
-
   @OneToMany(() => Article, (article) => article.author)
   articles: Article[];
 
@@ -51,6 +48,7 @@ export class User {
 
   @OneToMany(() => UserFriends, (uf) => uf.user1)
   userFriends1: UserFriends[];
+
   @OneToMany(() => UserFriends, (uf) => uf.user2)
   userFriends2: UserFriends[];
 }

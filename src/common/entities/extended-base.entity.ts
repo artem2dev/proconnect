@@ -1,4 +1,5 @@
 import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type';
+import { Exclude } from 'class-transformer';
 import {
   BaseEntity,
   CreateDateColumn,
@@ -39,7 +40,7 @@ export class ExtendedBaseEntity extends BaseEntity {
    * @param newData - this objects properties
    * @returns Promise of an updated entity
    */
-  update(newData: Partial<typeof this>): Promise<this> {
+  update(newData: Partial<this>): Promise<this> {
     Object.keys(newData).forEach((key) => (this[key] = newData[key]));
 
     return this.save();

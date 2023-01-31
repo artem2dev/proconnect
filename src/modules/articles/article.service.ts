@@ -19,7 +19,11 @@ export class ArticleService {
 
   async createArticle(user: User, dto: ArticleDto, image: Express.Multer.File) {
     const article = this.articleRepository.create({ ...dto, author: user });
-    this.mediaService;
+    console.log(image);
+    if (image) {
+      article.media = await this.mediaService.saveStaticImage(image, user);
+    }
+
     const savedArticle = await this.articleRepository.save(article);
 
     savedArticle.omit('author');
@@ -28,7 +32,7 @@ export class ArticleService {
   }
 
   async findAll() {
-    return this.articleRepository.find();
+    return this.articleRepository.find({ relations: ['author', 'media'] });
   }
 
   async findOne(id: string) {

@@ -13,6 +13,6 @@ export class ArticleDto {
   @IsString()
   content: string;
 
-  @ApiProperty({ type: 'string', format: 'binary', required: true })
+  @ApiProperty({ type: 'string', format: 'binary', required: false, name: 'image' })
   image: Express.Multer.File;
 }

@@ -84,9 +84,9 @@ export const theme = extendTheme({
     Text: {
       variants: {
         default: {
-          whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
+          textAlign: 'left',
         },
       },
       defaultProps: {

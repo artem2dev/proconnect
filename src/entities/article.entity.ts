@@ -1,14 +1,15 @@
 import { ExtendedBaseEntity } from 'src/common/entities/extended-base.entity';
 import { User } from 'src/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Media } from './media.entity';
 
 @Entity()
 export class Article extends ExtendedBaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'uuid', nullable: true })
-  imageId: string;
+  @ManyToOne(() => Media, (m) => m.id, { nullable: true })
+  media: Media;
 
   @Column()
   title: string;

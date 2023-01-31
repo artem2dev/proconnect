@@ -1,8 +1,9 @@
+import { ExtendedBaseEntity } from 'src/common/entities/extended-base.entity';
 import { User } from 'src/entities/user.entity';
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Media {
+export class Media extends ExtendedBaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -10,9 +11,12 @@ export class Media {
   originalName: string;
 
   @Column()
+  bucketName: string;
+
+  @Column()
   createdAt: Date;
 
-  @OneToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.id)
   @JoinColumn()
-  user: User;
+  uploader: User;
 }
