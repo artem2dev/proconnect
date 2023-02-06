@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Article } from './article.entity';
 import { Message } from './message.entity';
 import { FriendRequest } from './friend-requests.entity';
@@ -28,7 +28,7 @@ export class User {
   @Column({ default: false })
   banned: boolean;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @OneToMany(() => Article, (article) => article.author)
@@ -51,4 +51,10 @@ export class User {
 
   @OneToMany(() => UserFriends, (uf) => uf.user2)
   userFriends2: UserFriends[];
+
+  @ManyToMany(() => Article, (a) => a.id)
+  likedArticles: Article[];
+
+  @ManyToMany(() => User, (u) => u.id, { cascade: true })
+  likedComments: User[];
 }

@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { ArticleComment } from 'src/entities/article-comment.entity';
 import { Article } from 'src/entities/article.entity';
 import { FriendRequest } from 'src/entities/friend-requests.entity';
 import { Media } from 'src/entities/media.entity';
@@ -17,10 +18,10 @@ export const typeOrmModuleOptions: TypeOrmModuleOptions = {
   username: DB_USER,
   password: DB_PASSWORD,
   database: DB_DATABASE,
-  entities: [User, Article, Media, FriendRequest, UserFriends, Message],
+  entities: [User, Article, Media, FriendRequest, UserFriends, Message, ArticleComment],
   synchronize: true,
   autoLoadEntities: true,
-  logging: false,
+  logging: true,
 };
 
 export const OrmConfig = {

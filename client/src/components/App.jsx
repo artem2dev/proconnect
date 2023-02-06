@@ -22,6 +22,7 @@ import SignUp from './SignUp';
 import UserList from './UsersList';
 import Article from './Articles/Article/Article';
 import ArticlesScroll from './Articles';
+import CreateArticle from './Articles/Create/CreateArticle';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -61,7 +62,7 @@ const App = () => {
           <div className='container'>
             <Routes>
               <Route element={<PrivateRoute />}>
-                <Route path='' element={<div />} />
+                <Route path='' element={<ArticlesScroll />} />
                 <Route path='users' element={<UserList />} />
                 <Route path='notifications' element={<Notifications />} />
                 <Route path='profile' element={<ProfileSettings />} />
@@ -70,6 +71,7 @@ const App = () => {
                 <Route path='profile/:userName/friends' element={<Friends />} />
                 <Route path='profile/:userName' element={<Profile />} />
                 <Route path='articles' element={<ArticlesScroll />} />
+                <Route path='article/create' element={<CreateArticle />} />
                 <Route path='article/:id' element={<Article />} />
               </Route>
               <Route path='register' element={<SignUp />} />

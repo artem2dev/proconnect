@@ -1,5 +1,6 @@
 import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type';
 import { Exclude } from 'class-transformer';
+import { isArray } from 'class-validator';
 import {
   BaseEntity,
   CreateDateColumn,
@@ -21,13 +22,49 @@ export class ExtendedBaseEntity extends BaseEntity {
 
   /**
    * Omits properties from an entity.
+   *
+   * Property names can include nested children properties. I.E "author.password"
    * @param {string | string[]} field - property key string or string array of properties to omit from an entity.
    */
   omit(field: string | string[]): void {
+    const omitNested = (splittedString: string[]) => {
+      if (splittedString?.length > 0) {
+        let tempObj = this;
+
+        splittedString.forEach((key, index) => {
+          if (!tempObj[key]) {
+            throw new Error('Property name does not exist');
+          }
+
+          if (index === splittedString.length - 1) {
+            delete tempObj[key];
+            return;
+          }
+
+          tempObj = tempObj[key];
+        });
+      }
+    };
+
     if (Array.isArray(field)) {
       field.forEach((key) => {
+        const splittedString = key.split('.');
+
+        if (splittedString?.length > 1) {
+          omitNested(splittedString);
+          return;
+        }
+
         this[key] = undefined;
       });
+
+      return;
+    }
+
+    const splittedString = field.split('.');
+
+    if (splittedString?.length > 1) {
+      omitNested(splittedString);
       return;
     }
 

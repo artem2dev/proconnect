@@ -88,6 +88,9 @@ export const theme = extendTheme({
           textOverflow: 'ellipsis',
           textAlign: 'left',
         },
+        title: {
+          fontSize: '24px !important',
+        },
       },
       defaultProps: {
         variant: 'default',

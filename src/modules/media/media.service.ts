@@ -85,7 +85,7 @@ export class MediaService {
       bucketName: newId,
     });
     const saved = await (await this.mediaRepository.insert(newMedia)).raw[0];
-    console.log(saved);
+
     return saved;
   }
 }
