@@ -1,6 +1,6 @@
 import { ExtendedBaseEntity } from 'src/common/entities/extended-base.entity';
 import { User } from 'src/entities/user.entity';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Media extends ExtendedBaseEntity {

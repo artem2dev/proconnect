@@ -15,6 +15,7 @@ import React, { useEffect, useState } from 'react';
 import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import { useParams } from 'react-router-dom';
 import { getArticle } from '../../../api/articles';
+import { config } from '../../../config/app.config';
 
 export const Article = ({ article }) => {
   const { id } = useParams();
@@ -54,7 +55,7 @@ export const Article = ({ article }) => {
       {articleData?.media && (
         <Image
           objectFit='cover'
-          src={`http://localhost:5000/media/static/image/${articleData?.media.bucketName}`}
+          src={`${config.API}/media/static/image/${articleData?.media.bucketName}`}
           alt='Chakra UI'
           height='300px'
           style={{ objectFit: 'scale-down' }}

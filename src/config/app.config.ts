@@ -19,6 +19,7 @@ export const config = {
   DB_DATABASE: process.env.POSTGRES_DB ?? isRequired('POSTGRES_DB'),
   POSTGRES_DB_DATA_SOURCE_HOST: process.env.POSTGRES_DB_DATA_SOURCE_HOST ?? isRequired('POSTGRES_DB_DATA_SOURCE_HOST'),
   MINIO_HOST: process.env.MINIO_HOST ?? isRequired('MINIO_HOST'),
+  MINIO_STATIC_BUCKET: process.env.MINIO_STATIC_BUCKET ?? isRequired('MINIO_STATIC_BUCKET'),
   MINIO_PORT: Number(process.env.MINIO_PORT) ?? isRequired('MINIO_PORT'),
   MINIO_ROOT_USER: process.env.MINIO_ROOT_USER ?? isRequired('MINIO_ROOT_USER'),
   MINIO_ROOT_PASSWORD: process.env.MINIO_ROOT_PASSWORD ?? isRequired('MINIO_ROOT_PASSWORD'),

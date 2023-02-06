@@ -29,6 +29,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from '../../api/auth';
 import { ReactComponent as Logo } from '../../assets/logo.svg';
+import { config } from '../../config/app.config';
 import { removeItem } from '../../helpers/localStorage';
 import { setGlobalState } from '../../redux/globalStateSlice';
 import { setUser } from '../../redux/usersSlice';
@@ -78,7 +79,7 @@ export default function SidebarWithHeader({ children }) {
 }
 
 const SidebarContent = ({ onClose, ...rest }) => {
-  const user = useSelector((state) => state.users);
+  const user = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -147,7 +148,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
         <Menu>
           <MenuButton px={0} py={2} transition='all 0.3s' _focus={{ boxShadow: 'none' }}>
             <HStack>
-              <Avatar size='sm' src={user?.id ? 'http://localhost:5000/media/image/' + user?.id : ''} />
+              <Avatar size='sm' src={user?.id ? `${config.API}/media/image/` + user?.id : ''} />
               <VStack display={{ base: 'none', md: 'flex' }} alignItems='flex-start' spacing='1px' ml='2'>
                 <Text fontSize='sm'>{`${user?.firstName} ${user?.lastName}`}</Text>
                 <Text fontSize='xs' color='gray.600'>

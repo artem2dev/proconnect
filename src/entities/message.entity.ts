@@ -1,19 +1,31 @@
+import { ExtendedBaseEntity } from 'src/common/entities/extended-base.entity';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Room } from './room.entity';
 import { User } from './user.entity';
 
 @Entity()
-export class Message {
+export class Message extends ExtendedBaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({
+    type: 'text',
+  })
   text: string;
 
-  @ManyToOne(() => User, (user) => user.id)
-  @JoinColumn()
-  author: User | string;
+  @Column({ type: 'boolean', default: false })
+  wasRead: boolean;
 
-  @ManyToOne(() => User, (user) => user.id)
+  @Column({ type: 'uuid' })
+  userId: string;
+
+  @Column({ type: 'uuid' })
+  roomId: string;
+
+  @ManyToOne(() => User)
   @JoinColumn()
-  recipient: User | string;
+  user: User;
+
+  @ManyToOne(() => Room, (room) => room.id, { onDelete: 'CASCADE' })
+  room: Room;
 }

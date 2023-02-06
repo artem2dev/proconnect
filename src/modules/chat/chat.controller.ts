@@ -10,16 +10,13 @@ import { ChatService } from './chat.service';
 export class ChatController {
   constructor(private chatService: ChatService) {}
 
-  @Get('/kd')
-  async getListOfRecipientsWithLastMessage(
-    @Request() req: IExtendedRequestWithUser,
-    @Param('userName') userName: string,
-  ) {
-    return await this.chatService.getListOfRecipientsWithLastMessage(req.user?.id, userName);
+  @Get('/chats')
+  async getChats(@Request() req: IExtendedRequestWithUser) {
+    return await this.chatService.getChats(req.user?.id);
   }
 
   @Get(':userId')
-  async getMessages(@Request() req: IExtendedRequestWithUser, @Param('userId') userId: string) {
-    return await this.chatService.getMessages(req.user?.id, userId);
+  async getMessages(@Request() req: IExtendedRequestWithUser, @Param('userId') userId: string, ) {
+    return await this.chatService.getSingleMessages(req.user?.id, userId);
   }
 }

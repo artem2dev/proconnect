@@ -24,6 +24,7 @@ import {
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { uploadImage } from '../../api/media';
+import { config } from '../../config/app.config';
 
 const list = [
   {
@@ -47,7 +48,7 @@ const list = [
 ];
 
 const Sidebar = () => {
-  const user = useSelector((state) => state.users);
+  const user = useSelector((state) => state.user);
   const value = `https://domain.com/${user?.userName}`;
   const { hasCopied, onCopy } = useClipboard(value);
 
@@ -110,7 +111,7 @@ const Sidebar = () => {
           size='2xl'
           cursor='pointer'
           onClick={openChooseImage}
-          src={user?.id ? 'http://localhost:5000/media/image/' + user?.id : ''}
+          src={user?.id ? `${config.API}/media/image/` + user?.id : ''}
         >
           <AvatarBadge bg='brand.blue' boxSize='1em'>
             <svg width='0.4em' fill='currentColor' viewBox='0 0 20 20'>

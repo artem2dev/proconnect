@@ -1,9 +1,8 @@
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Article } from './article.entity';
-import { Message } from './message.entity';
 import { FriendRequest } from './friend-requests.entity';
-import { UserFriends } from './user-friends.entity';
 import { Media } from './media.entity';
+import { UserFriends } from './user-friends.entity';
 
 @Entity()
 export class User {
@@ -31,14 +30,12 @@ export class User {
   @Column()
   password: string;
 
+  @ManyToOne(() => Media, (media) => media.id, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn()
+  avatar: Media;
+
   @OneToMany(() => Article, (article) => article.author)
   articles: Article[];
-
-  @OneToMany(() => Message, (message) => message.author)
-  messageAuthor: Message[];
-
-  @OneToMany(() => Message, (message) => message.recipient)
-  messageRecipient: Message[];
 
   @OneToMany(() => FriendRequest, (fr) => fr.requestor)
   requestorIn: FriendRequest[];

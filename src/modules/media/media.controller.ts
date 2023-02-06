@@ -26,15 +26,13 @@ export class MediaController {
   @Post('image')
   @UseInterceptors(FileInterceptor('image'))
   updateProfileImage(@UploadedFile() file: Express.Multer.File, @Request() req: IExtendedRequestWithUser) {
-    // return this.mediaService.updateProfileImage(file, req.user);
+    return this.mediaService.updateProfileImage(file, req.user.id);
   }
 
   @Get('image/:userId')
   async getProfileImage(@Param('userId') userId: string, @Response() res: any) {
-    // const imageStream = await this.mediaService.getImage({
-    //   id: userId,
-    // });
-    // imageStream.pipe(res);
+    const imageStream = await this.mediaService.getImage(userId);
+    imageStream.pipe(res);
   }
 
   @Get('static/image/:imageId')
@@ -43,6 +41,7 @@ export class MediaController {
 
     imageStream?.pipe(res);
   }
+
   @UseGuards(AccessTokenGuard)
   @Get('static/image')
   async saveStaticImage(@UserBody() user: User, @UploadedFile('image') image: Express.Multer.File) {

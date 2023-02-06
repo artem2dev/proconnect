@@ -1,15 +1,15 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class SendMessageDto {
+export class ReadChatDto {
   @IsNotEmpty()
   @IsString()
-  text: string;
+  singleChatId: string;
 
   @IsNotEmpty()
   @IsString()
-  author: { id: string };
+  roomId: string;
 
   @IsNotEmpty()
   @IsString()
-  recipient: { id: string };
+  userId: string;
 }

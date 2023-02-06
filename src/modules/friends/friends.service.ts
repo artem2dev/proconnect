@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExceptionDictionary } from 'src/common/dictionary/ExceptionDictionary';
-import { IId } from 'src/common/types/interfaces';
+import { I_Id } from 'src/common/types/interfaces';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/user.entity';
 import { FriendRequest } from '../../entities/friend-requests.entity';
@@ -17,7 +17,7 @@ export class FriendsService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
-  async getAllFriendRequests(user: IId) {
+  async getAllFriendRequests(user: I_Id) {
     return await this.friendRequestRepository
       .createQueryBuilder('fr')
       .select()
@@ -48,7 +48,7 @@ export class FriendsService {
     return filteredFriends;
   }
 
-  async getUserFriendsCount(user: IId) {
+  async getUserFriendsCount(user: I_Id) {
     return this.userFriendsRepository
       .createQueryBuilder('uf')
       .select()
@@ -56,7 +56,7 @@ export class FriendsService {
       .getCount();
   }
 
-  async createFriendRequest(requestor: IId, requestee: IId) {
+  async createFriendRequest(requestor: I_Id, requestee: I_Id) {
     if (requestee.id === requestor.id) {
       throw new ConflictException(ExceptionDictionary.friendRequest.cannotAddSelf);
     }
@@ -95,7 +95,7 @@ export class FriendsService {
       .save();
   }
 
-  async deleteFriendRequest(user: IId, friendRequestId: string) {
+  async deleteFriendRequest(user: I_Id, friendRequestId: string) {
     const foundFriendRequest = await this.friendRequestRepository.findOne({
       where: { id: friendRequestId, requestor: user },
     });
@@ -109,7 +109,7 @@ export class FriendsService {
     return {};
   }
 
-  async declineFriendRequest(user: IId, friendRequestId: string) {
+  async declineFriendRequest(user: I_Id, friendRequestId: string) {
     const foundFriendRequest = await this.friendRequestRepository
       .createQueryBuilder('fr')
       .select()
@@ -126,7 +126,7 @@ export class FriendsService {
     return {};
   }
 
-  async acceptFriendRequest(user: IId, friendRequestId: string) {
+  async acceptFriendRequest(user: I_Id, friendRequestId: string) {
     const foundFriendRequest = await this.friendRequestRepository
       .createQueryBuilder('fr')
       .select()
@@ -147,7 +147,7 @@ export class FriendsService {
     return userFriends;
   }
 
-  async removeFromFriends(user: IId, friendId: string) {
+  async removeFromFriends(user: I_Id, friendId: string) {
     const foundFriendRequest = await this.userFriendsRepository
       .createQueryBuilder('fr')
       .select()

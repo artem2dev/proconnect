@@ -7,7 +7,7 @@ import { getUser } from '../../api/user';
 import { config } from '../../config/app.config';
 
 const Profile = () => {
-  const userInfo = useSelector((state) => state.users);
+  const userInfo = useSelector((state) => state.user);
   const navigate = useNavigate();
   const { userName } = useParams();
   const [user, setUser] = useState({});

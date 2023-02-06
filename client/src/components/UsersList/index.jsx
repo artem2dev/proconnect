@@ -5,7 +5,7 @@ import { getUsers } from '../../api/user';
 import UserCard from './Card';
 
 const UserList = () => {
-  const user = useSelector((state) => state.users);
+  const user = useSelector((state) => state.user);
   const [userList, setUserList] = useState([]);
 
   useEffect(() => {
