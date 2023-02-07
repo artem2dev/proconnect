@@ -1,0 +1,62 @@
+import {
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+} from '@nestjs/websockets';
+import EventEmitter from 'events';
+import { Server } from 'socket.io';
+import { IExtendedSocket } from 'src/common/types/interfaces';
+import { ChatService } from './chat.service';
+import { CreateMessageDto } from './dto/create.message.dto';
+import { ReadChatDto } from './dto/read.chat.dto';
+
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+  },
+})
+export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+  constructor(private chatService: ChatService) {}
+
+  @WebSocketServer() server: Server;
+
+  @SubscribeMessage('message')
+  async handleSendMessage(socket: IExtendedSocket, data: CreateMessageDto): Promise<void> {
+    const message = await this.chatService.createMessage(data);
+
+    this.server.to(data.message.roomId).emit('message', { ...data, message });
+  }
+
+  @SubscribeMessage('chatRead')
+  async handleChatRead(socket: IExtendedSocket, data: ReadChatDto): Promise<void> {
+    console.log(data)
+    await this.chatService.handleReadChat(data);
+
+    this.server.to(data.roomId).emit('chatRead', data);
+  }
+
+  afterInit() {
+    this.server.use(async (socket: IExtendedSocket, next) => {
+      const userId = socket.handshake.auth.userId;
+
+      socket.userId = userId;
+
+      next();
+    });
+  }
+
+  async handleConnection(socket: IExtendedSocket) {
+    const rooms = await this.chatService.getSingleChats(socket.userId);
+
+    socket.join(rooms);
+
+    console.info('\x1b[32m', `Connected to room(s): ${rooms}`);
+  }
+
+  handleDisconnect(socket: IExtendedSocket) {
+    console.info('\x1b[31m', `Disconnected user: ${socket.userId}`);
+  }
+}
