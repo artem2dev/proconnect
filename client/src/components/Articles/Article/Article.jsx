@@ -155,7 +155,7 @@ export const Article = ({ article }) => {
       {articleData?.media && (
         <Image
           objectFit='cover'
-          src={`http://localhost:5000/media/static/image/${articleData?.media.bucketName}`}
+          src={`${config.API}/media/static/image/${articleData?.media.bucketName}`}
           alt='Chakra UI'
           height='300px'
           style={{ objectFit: 'scale-down' }}

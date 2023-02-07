@@ -61,7 +61,7 @@ const initialIsFieldError = {
 
 const Content = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.users);
+  const user = useSelector((state) => state.user);
   const [fields, setFields] = useState(fieldsInitialState);
   const [labels, setLabels] = useState(defaultLabels);
   const [isLoading, setIsLoading] = useState(false);

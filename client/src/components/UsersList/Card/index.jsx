@@ -1,6 +1,7 @@
 import { Avatar, Box, Button, Center, Flex, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { addToFriends as addToFriendsRequest } from '../../../api/friend';
+import { config } from '../../../config/app.config';
 
 export default function UserCard({ user }) {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ export default function UserCard({ user }) {
         <Flex justify={'center'} mt={10}>
           <Avatar
             size={'xl'}
-            src={user?.id ? 'http://localhost:5000/media/image/' + user?.id : ''}
+            src={user?.id ? `${config.API}/media/image/` + user?.id : ''}
             alt={'Author'}
             css={{
               border: '2px solid white',

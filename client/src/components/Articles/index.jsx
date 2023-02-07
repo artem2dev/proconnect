@@ -1,7 +1,5 @@
-import { Box, Flex } from '@chakra-ui/react';
-import { useState } from 'react';
-import { useCallback } from 'react';
-import { useEffect } from 'react';
+import { Flex } from '@chakra-ui/react';
+import { useCallback, useEffect, useState } from 'react';
 import { getArticles } from '../../api/articles';
 import Article from './Article/Article';
 
@@ -14,7 +12,8 @@ export default function ArticlesScroll() {
         setArticles(data);
       });
     }
-  }, []);
+  }, [articles?.length]);
+
   const articleItems = useCallback(
     () => articles?.map((article, index) => <Article {...{ article }} key={index} />),
     [articles],

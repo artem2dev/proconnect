@@ -7,7 +7,7 @@ import { deleteFromFriends } from '../../../api/friend';
 import { config } from '../../../config/app.config';
 
 const FriendCard = ({ friend, userName }) => {
-  const user = useSelector((state) => state.users);
+  const user = useSelector((state) => state.user);
   const navigate = useNavigate();
   const isMobile = useBreakpointValue({ base: true, md: false });
 

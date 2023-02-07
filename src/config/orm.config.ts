@@ -4,6 +4,8 @@ import { Article } from 'src/entities/article.entity';
 import { FriendRequest } from 'src/entities/friend-requests.entity';
 import { Media } from 'src/entities/media.entity';
 import { Message } from 'src/entities/message.entity';
+import { Room } from 'src/entities/room.entity';
+import { SingleChat } from 'src/entities/single-chat.entity';
 import { UserFriends } from 'src/entities/user-friends.entity';
 import { User } from 'src/entities/user.entity';
 
@@ -18,7 +20,7 @@ export const typeOrmModuleOptions: TypeOrmModuleOptions = {
   username: DB_USER,
   password: DB_PASSWORD,
   database: DB_DATABASE,
-  entities: [User, Article, Media, FriendRequest, UserFriends, Message, ArticleComment],
+  entities: [User, Article, Media, FriendRequest, UserFriends, Message, ArticleComment, SingleChat, Room],
   synchronize: true,
   autoLoadEntities: true,
   logging: true,

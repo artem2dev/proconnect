@@ -9,7 +9,8 @@ import {
 import { Server } from 'socket.io';
 import { IExtendedSocket } from 'src/common/types/interfaces';
 import { ChatService } from './chat.service';
-import { SendMessageDto } from './dto/send.message.dto';
+import { CreateMessageDto } from './dto/create.message.dto';
+import { ReadChatDto } from './dto/read.chat.dto';
 
 @WebSocketGateway({
   cors: {
@@ -22,10 +23,17 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @WebSocketServer() server: Server;
 
   @SubscribeMessage('message')
-  async handleSendMessage(socket: IExtendedSocket, messageInfo: SendMessageDto): Promise<void> {
-    this.server.to(messageInfo.recipient.id).emit('message', messageInfo);
+  async handleSendMessage(socket: IExtendedSocket, data: CreateMessageDto): Promise<void> {
+    const message = await this.chatService.createMessage(data);
 
-    await this.chatService.createMessage(messageInfo);
+    this.server.to(data.message.roomId).emit('message', { ...data, message });
+  }
+
+  @SubscribeMessage('chatRead')
+  async handleChatRead(socket: IExtendedSocket, data: ReadChatDto): Promise<void> {
+    const singleChat = await this.chatService.handleReadChat(data);
+
+    this.server.to(data.roomId).emit('chatRead', singleChat);
   }
 
   afterInit() {
@@ -38,13 +46,15 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     });
   }
 
-  handleConnection(socket: IExtendedSocket) {
-    socket.join(socket.userId);
+  async handleConnection(socket: IExtendedSocket) {
+    const rooms = await this.chatService.getSingleChats(socket.userId);
 
-    console.info('\x1b[32m', `Connected: ${socket.userId}`);
+    socket.join(rooms);
+
+    console.info('\x1b[32m', `Connected to room(s): ${rooms}`);
   }
 
   handleDisconnect(socket: IExtendedSocket) {
-    console.info('\x1b[31m', `Disconnected: ${socket.userId}`);
+    console.info('\x1b[31m', `Disconnected user: ${socket.userId}`);
   }
 }

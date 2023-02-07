@@ -5,7 +5,7 @@ import { getFriendRequests } from '../../api/friend';
 import NotificationItem from './NotificationItem';
 
 const Notifications = () => {
-  const user = useSelector((state) => state.users);
+  const user = useSelector((state) => state.user);
   const [friendRequests, setFriendRequests] = useState([]);
 
   useEffect(() => {

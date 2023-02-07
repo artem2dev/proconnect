@@ -9,10 +9,23 @@ export interface IUserIdAndEmail extends Request {
   email: string;
 }
 
-export interface IId {
+export interface I_Id {
   id: string;
 }
 
 export interface IExtendedSocket extends Socket {
   userId: string;
+}
+
+export interface IMessage {
+  text: string;
+  roomId: string;
+  userId: string;
+}
+
+export interface IUserInChatInfo {
+  id: string;
+  firstName: string;
+  lastName: string;
+  avatarId: string;
 }

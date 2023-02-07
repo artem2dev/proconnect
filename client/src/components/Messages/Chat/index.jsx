@@ -1,5 +1,5 @@
-import { Box, Button, Flex, Input } from '@chakra-ui/react';
-import { Message } from '@chatscope/chat-ui-kit-react';
+import { Box, Flex } from '@chakra-ui/react';
+import { Message, MessageInput } from '@chatscope/chat-ui-kit-react';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -11,18 +11,26 @@ import socket from '../../../socket';
 import './style.css';
 
 const Chat = () => {
-  const userInfo = useSelector((state) => state.users);
+  const userInfo = useSelector((state) => state.user);
   const { userName } = useParams();
   const [messages, setMessages] = useState([]);
   const [user, setUser] = useState({});
+  const [room, setRoom] = useState('');
   const [currentMessage, setCurrentMessage] = useState('');
 
   const messageListener = useCallback(
-    (message) => {
-      message.author.id === user.id && setMessages((prev) => [...prev, message]);
+    ({ message }) => {
+      room === message.roomId && setMessages((prev) => [...prev, message]);
+
+      socket.emit('readMessage', { id: messages[messages.length - 1] });
     },
-    [user.id],
+    // eslint-disable-next-line
+    [room],
   );
+
+  useEffect(() => {
+    socket.emit('readMessage', { id: messages[messages.length - 1] });
+  });
 
   useEffect(() => {
     const onSuccess = ({ data }) => {
@@ -38,29 +46,70 @@ const Chat = () => {
 
   useEffect(() => {
     const onSuccess = ({ data }) => {
-      setMessages(data);
+      setMessages(data.messages);
+      setRoom(data.room);
     };
 
     const onError = () => {};
 
     user.id && getMessages(user.id).then(onSuccess).catch(onError);
-  }, [userInfo.id, user]);
+  }, [user]);
 
   useEffect(() => {
     socket.on('message', messageListener);
   }, [messageListener]);
 
   const sendMessage = () => {
-    setMessages((prev) => [...prev, { author: { id: userInfo.id }, recipient: { id: user.id }, text: currentMessage }]);
-
-    socket.emit('message', { author: { id: userInfo.id }, recipient: { id: user.id }, text: currentMessage });
+    socket.emit('message', {
+      message: { roomId: room, userId: userInfo?.id, text: currentMessage },
+      user1: {
+        id: userInfo?.id,
+        firstName: userInfo?.firstName,
+        lastName: userInfo?.lastName,
+        avatarId: userInfo?.avatarId,
+      },
+      user2: {
+        id: user?.id,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        avatarId: user?.avatarId,
+      },
+    });
 
     setCurrentMessage('');
   };
 
+  const onKeyDown = (e) => {
+    if (e.code === 'Enter' || e.code === 'NumpadEnter') {
+      sendMessage();
+    }
+  };
+
+  const countDateAgo = (message) => {
+    const minutesAgo = Math.round((Date.now() - new Date(message?.createdAt)) / 1000 / 60);
+    const hoursAgo = Math.round(minutesAgo / 60);
+    const daysAgo = Math.round(hoursAgo / 24);
+    const monthsAgo = Math.round(daysAgo / 30);
+    const yearsAgo = Math.round(monthsAgo / 12);
+
+    if (minutesAgo <= 1) {
+      return 'just now';
+    } else if (minutesAgo <= 55) {
+      return `${minutesAgo} minutes`;
+    } else if (minutesAgo > 115 && minutesAgo <= 1380) {
+      return hoursAgo + (hoursAgo <= 1 ? ' hour' : ' hours');
+    } else if (hoursAgo >= 23 && hoursAgo <= 720) {
+      return daysAgo + (daysAgo <= 1 ? ' day' : ' days');
+    } else if (daysAgo >= 30 && daysAgo <= 364) {
+      return monthsAgo + (monthsAgo <= 1 ? ' month' : ' months');
+    } else {
+      return yearsAgo + (yearsAgo <= 1 ? ' year' : ' years');
+    }
+  };
+
   return (
-    <>
-      <Box height={800}>
+    <Flex direction={'column'} justifyContent={'space-between'}>
+      <Box height={850} style={{ backgroundColor: '#171923' }}>
         <ScrollableFeed className='chat-scrollbar'>
           {messages.map((message, index) => {
             return (
@@ -69,32 +118,50 @@ const Chat = () => {
                 style={{ marginLeft: '10px', marginRight: '10px' }}
                 model={{
                   position: 'single',
-                  message: `${message.text}`,
+                  message: `${message?.text}`,
                   sentTime: 'just now',
-                  sender: `${message.author.id}`,
-                  direction: message.author.id === userInfo.id ? 'outgoing' : 'incoming',
+                  direction: message?.userId === userInfo?.id ? 'outgoing' : 'incoming',
                 }}
               >
-                <Message.Footer sender={message.author.fullName} sentTime='just now' />
+                <Message.Footer
+                  // sender={
+                  //   message?.userId === user?.id
+                  //     ? `${userInfo?.firstName} ${userInfo?.lastName}`
+                  //     : `${user?.firstName} ${user?.lastName}`
+                  // }
+                  style={{ textAlign: 'center' }}
+                  
+                  sentTime={countDateAgo(message)}
+                />
               </Message>
             );
           })}
         </ScrollableFeed>
       </Box>
 
-      <Flex w={900} position={'fixed'} bottom={0} marginBottom={10} marginTop={60}>
+      {/* <Flex w={'full'} marginTop={10}>
         <Input
           type='text'
           value={currentMessage}
           onChange={(e) => {
             setCurrentMessage(e.target.value);
           }}
+          onKeyDown={onKeyDown}
         />
         <Button w={200} marginLeft={10} onClick={sendMessage}>
           Send message
         </Button>
-      </Flex>
-    </>
+      </Flex> */}
+      <MessageInput
+        onSend={sendMessage}
+        value={currentMessage}
+        onChange={setCurrentMessage}
+        style={{ textAlign: 'left', backgroundColor: '#171923', marginTop: '40px' }}
+        onKeyDown={onKeyDown}
+        placeholder='Type message here...'
+        autoFocus
+      />
+    </Flex>
   );
 };
 
