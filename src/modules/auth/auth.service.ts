@@ -1,11 +1,15 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ApiTags } from '@nestjs/swagger';
 import * as bcrypt from 'bcrypt';
-import { IGetUserInfo } from 'src/common/types/user';
+import { IUserIdAndEmail } from 'src/common/types/interfaces';
+import { config } from 'src/config/app.config';
+import { User } from 'src/entities/user.entity';
 import { CreateUserDto } from 'src/modules/users/dto/create.user.dto';
 import { LoginUserDto } from 'src/modules/users/dto/login.user.dto';
-import { User } from 'src/modules/users/user.entity';
 import { UserService } from '../users/user.service';
+
+const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, ACCESS_TOKEN_EXPIRES_HOURS, REFRESH_TOKEN_EXPIRES_DAYS } = config;
 
 @Injectable()
 export class AuthService {
@@ -32,21 +36,21 @@ export class AuthService {
     return await this.generateToken(user);
   }
 
-  private async generateToken(user: User | IGetUserInfo) {
+  private async generateToken(user: User | IUserIdAndEmail) {
     const payload = { email: user.email, id: user.id };
 
     const [accessToken, refreshToken] = (
       await Promise.all([
         this.jwtService.signAsync(payload, {
-          secret: process.env.JWT_ACCESS_SECRET || 'SECRET',
-          expiresIn: '2h',
+          secret: JWT_ACCESS_SECRET,
+          expiresIn: ACCESS_TOKEN_EXPIRES_HOURS + 'h',
         }),
         this.jwtService.signAsync(payload, {
-          secret: process.env.JWT_REFRESH_SECRET || 'SECRET',
-          expiresIn: '7d',
+          secret: JWT_REFRESH_SECRET,
+          expiresIn: REFRESH_TOKEN_EXPIRES_DAYS + 'd',
         }),
       ])
-    ).map((v) => 'Bearer ' + v);
+    ).map((token) => 'Bearer ' + token);
 
     return {
       accessToken,
@@ -72,7 +76,7 @@ export class AuthService {
     });
   }
 
-  async refreshTokens(userInfo: IGetUserInfo) {
+  async refreshTokens(userInfo: IUserIdAndEmail) {
     const tokens = await this.generateToken(userInfo);
 
     return tokens;

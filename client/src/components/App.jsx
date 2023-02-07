@@ -1,20 +1,30 @@
+import { ChakraProvider } from '@chakra-ui/react';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import { ChakraProvider } from '@chakra-ui/react';
-import { theme } from '../helpers/chakraTheme';
-import './App.css';
-import ArticleCard from './Card';
-import Login from './Login';
-import PrivateRoute from './PrivateRoute';
-import ProfileSettings from './ProfileSettings';
-import SidebarWithHeader from './SideBar';
-import SignUp from './SignUp';
-import { useEffect } from 'react';
 import { getUser } from '../api/user';
-import { useDispatch } from 'react-redux';
-import { setUser } from '../redux/usersSlice';
+import { theme } from '../helpers/chakraTheme';
 import { getItem } from '../helpers/localStorage';
-import { setGlobalState } from '../redux/globalState';
+import { setGlobalState } from '../redux/globalStateSlice';
+import { setUser } from '../redux/usersSlice';
+import socket from '../socket';
+import './App.css';
+import ArticlesScroll from './Articles';
+import Article from './Articles/Article/Article';
+import Friends from './Friends';
+import Login from './Login';
+import Messages from './Messages';
+import Chat from './Messages/Chat';
+import Notifications from './Notifications';
+import PrivateRoute from './PrivateRoute';
+import Profile from './Profile';
+import ProfileSettings from './ProfileSettings';
+import SignUp from './SignUp';
+import UserList from './UsersList';
+import Article from './Articles/Article/Article';
+import ArticlesScroll from './Articles';
+import CreateArticle from './Articles/Create/CreateArticle';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -29,31 +39,49 @@ const App = () => {
             ...data,
           }),
         );
+
+        
+
+        socket.auth = { userId: data.id };
+        socket.connect();
       };
 
-      const onError = () => {
+      const onError = (err) => {
         dispatch(setGlobalState({ sidebarVisible: false }));
         dispatch(setUser({}));
       };
 
       getUser().then(onSuccess).catch(onError);
+
+      return () => {
+        socket.disconnect();
+      };
     }
   }, [dispatch]);
 
   return (
     <ChakraProvider theme={theme}>
-      <Router basename={process.env.PUBLIC_URL}>
+      <Router basename={'/'}>
         <div className='App'>
-          <SidebarWithHeader>
+          <div className='container'>
             <Routes>
               <Route element={<PrivateRoute />}>
-                <Route path='/' element={<ArticleCard />} />
-                <Route path='/profile' element={<ProfileSettings />} />
+                <Route path='' element={<ArticlesScroll />} />
+                <Route path='users' element={<UserList />} />
+                <Route path='notifications' element={<Notifications />} />
+                <Route path='profile' element={<ProfileSettings />} />
+                <Route path='messages' element={<Messages />} />
+                <Route path='messages/:userName' element={<Chat />} />
+                <Route path='profile/:userName/friends' element={<Friends />} />
+                <Route path='profile/:userName' element={<Profile />} />
+                <Route path='articles' element={<ArticlesScroll />} />
+                <Route path='article/create' element={<CreateArticle />} />
+                <Route path='article/:id' element={<Article />} />
               </Route>
-              <Route path='/register' element={<SignUp />} />
-              <Route path='/login' element={<Login />} />
+              <Route path='register' element={<SignUp />} />
+              <Route path='login' element={<Login />} />
             </Routes>
-          </SidebarWithHeader>
+          </div>
         </div>
       </Router>
     </ChakraProvider>

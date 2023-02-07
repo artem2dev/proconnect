@@ -1,12 +1,16 @@
-import { extendTheme } from '@chakra-ui/react'
+import { extendTheme } from '@chakra-ui/react';
 
 export const theme = extendTheme({
+  config: {
+    initialColorMode: 'dark',
+  },
   colors: {
     brand: {
+      black: '#151f21',
       blue: '#4164e3',
       cadet: '#8998a8',
       dark: '#243156',
-      gray: '#a0acb9',
+      gray: '#2D3748',
       green: '#36c537',
       light: '#e9ebee',
       pure: '#fafafb',
@@ -46,11 +50,50 @@ export const theme = extendTheme({
           p: '0',
           height: 'full',
           bg: 'transparent',
-          color: 'gray.500',
+          color: 'gray.300',
           rounded: 'none',
-          _active: { bg: 'brand.light' },
+          fontWeight: 400,
+          textDecoration: 'none',
+          _hover: { color: '#0d6efd', textDecoration: 'none' },
           _focus: { boxShadow: 'none' },
         },
+        black: {
+          p: '5',
+          color: 'white',
+          _focus: { boxShadow: 'none' },
+          size: 'sm',
+          bgColor: '#4164e3',
+          width: 'full',
+          rounded: 'md',
+          _hover: {
+            transform: 'translateY(-1px)',
+            boxShadow: 'lg',
+          },
+          _active: {
+            transform: 'translateY(1px)',
+            boxShadow: 'md',
+            bgColor: 'RGBA(65, 100, 227, 0.9)',
+          },
+          boxShadow: 'md',
+        },
+      },
+      defaultProps: {
+        variant: 'black',
+      },
+    },
+    Text: {
+      variants: {
+        default: {
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          textAlign: 'left',
+        },
+        title: {
+          fontSize: '24px !important',
+        },
+      },
+      defaultProps: {
+        variant: 'default',
       },
     },
     Tabs: {
@@ -62,5 +105,15 @@ export const theme = extendTheme({
         },
       },
     },
+    Card: {
+      variants: {
+        default: {
+          bgColor: 'RGBA(65, 100, 227, 0.9)',
+        },
+      },
+      defaultProps: {
+        variant: 'default',
+      },
+    },
   },
-})
+});

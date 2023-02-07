@@ -21,9 +21,10 @@ import {
   Tabs,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
+import { MdOutlineMailOutline } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser, updateUser } from '../../api/user';
-import { setGlobalState } from '../../redux/globalState';
+import { setGlobalState } from '../../redux/globalStateSlice';
 import { setUser } from '../../redux/usersSlice';
 
 const fieldsInitialState = {
@@ -31,6 +32,7 @@ const fieldsInitialState = {
   lastName: '',
   email: '',
   userName: '',
+  profileDescription: '',
 };
 
 const defaultLabels = {
@@ -39,6 +41,7 @@ const defaultLabels = {
   firstName: 'First name',
   lastName: 'Last name',
   password: 'Password',
+  profileDescription: 'Profile description',
 };
 
 const defaultErrorLabels = {
@@ -53,11 +56,12 @@ const initialIsFieldError = {
   firstName: false,
   lastName: false,
   email: false,
+  profileDescription: false,
 };
 
 const Content = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.users);
+  const user = useSelector((state) => state.user);
   const [fields, setFields] = useState(fieldsInitialState);
   const [labels, setLabels] = useState(defaultLabels);
   const [isLoading, setIsLoading] = useState(false);
@@ -72,6 +76,7 @@ const Content = () => {
         lastName: user?.lastName,
         email: user?.email,
         userName: user?.userName,
+        profileDescription: user?.description || '',
       }));
   }, [user, setFields]);
 
@@ -141,11 +146,11 @@ const Content = () => {
   const onUpdate = (e) => {
     e.preventDefault();
 
-    const { email, userName, firstName, lastName, password, passwordVerify } = fields;
+    const { email, userName, firstName, lastName, profileDescription, password, passwordVerify } = fields;
 
     if (!fieldsVerification(email, userName, firstName, lastName, password, passwordVerify)) return;
 
-    const params = { id: user?.id, email, userName, firstName, lastName };
+    const params = { id: user?.id, email, userName, firstName, lastName, description: profileDescription };
 
     const onSuccess = () => {
       setIsLoading(false);
@@ -191,8 +196,9 @@ const Content = () => {
       bg='white'
       rounded='md'
       borderWidth={1}
-      borderColor='gray.200'
       style={{ transform: 'translateY(-100px)' }}
+      bgColor='RGBA(0, 0, 0, 0.2)'
+      borderColor={'brand.gray'}
     >
       <Tabs>
         <TabList px={5}>
@@ -203,10 +209,10 @@ const Content = () => {
               px={0}
               py={3}
               fontWeight='semibold'
-              color='brand.cadet'
+              color='white'
               borderBottomWidth={1}
               _active={{ bg: 'transparent' }}
-              _selected={{ color: 'brand.dark', borderColor: 'brand.blue' }}
+              _selected={{ color: 'brand.blue', borderColor: 'brand.blue' }}
             >
               {tab}
             </Tab>
@@ -217,7 +223,7 @@ const Content = () => {
           <TabPanel>
             <Grid templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }} gap={6}>
               <FormControl id='firstName'>
-                <FormLabel htmlFor='firstName' color={isFieldError.firstName ? 'red' : 'black'}>
+                <FormLabel htmlFor='firstName' color={isFieldError.firstName ? 'red' : 'white'}>
                   {labels.firstName}
                 </FormLabel>
                 <Input
@@ -232,7 +238,7 @@ const Content = () => {
                 />
               </FormControl>
               <FormControl id='lastName'>
-                <FormLabel htmlFor='lastName' color={isFieldError.lastName ? 'red' : 'black'}>
+                <FormLabel htmlFor='lastName' color={isFieldError.lastName ? 'red' : 'white'}>
                   {labels.lastName}
                 </FormLabel>
                 <Input
@@ -254,35 +260,51 @@ const Content = () => {
                   placeholder="(408) 996–1010"
                 />
               </FormControl> */}
-              <FormControl id='userName'>
-                <FormLabel htmlFor='userName' color={isFieldError.userName ? 'red' : 'black'}>
+              <FormControl id='companyId'>
+                <FormLabel htmlFor='userName' color={isFieldError.userName ? 'red' : 'white'}>
                   {labels.userName}
                 </FormLabel>
-                <Input
-                  id='userName'
-                  focusBorderColor='brand.blue'
-                  type='userName'
-                  placeholder='Aboba'
-                  value={fields.userName}
-                  name='userName'
-                  onChange={onFieldChange}
-                  isInvalid={isFieldError.userName}
-                />
+                <InputGroup>
+                  <InputLeftAddon color='white'>
+                    <svg width='1em' fill='currentColor' viewBox='0 0 20 20'>
+                      <path
+                        fillRule='evenodd'
+                        d='M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z'
+                        clipRule='evenodd'
+                      />
+                    </svg>
+                  </InputLeftAddon>
+                  <Input
+                    id='userName'
+                    focusBorderColor='brand.blue'
+                    type='userName'
+                    placeholder='Aboba'
+                    value={fields.userName}
+                    name='userName'
+                    onChange={onFieldChange}
+                    isInvalid={isFieldError.userName}
+                  />
+                </InputGroup>
               </FormControl>
               <FormControl id='emailAddress'>
-                <FormLabel htmlFor='email' color={isFieldError.email ? 'red' : 'black'}>
+                <FormLabel htmlFor='email' color={isFieldError.email ? 'red' : 'white'}>
                   {labels.email}
                 </FormLabel>
-                <Input
-                  id='email'
-                  focusBorderColor='brand.blue'
-                  type='email'
-                  placeholder='email@email.com'
-                  value={fields.email}
-                  name='email'
-                  onChange={onFieldChange}
-                  isInvalid={isFieldError.email}
-                />
+                <InputGroup>
+                  <InputLeftAddon color='white'>
+                    <MdOutlineMailOutline />
+                  </InputLeftAddon>
+                  <Input
+                    id='email'
+                    focusBorderColor='brand.blue'
+                    type='email'
+                    placeholder='email@email.com'
+                    value={fields.email}
+                    name='email'
+                    onChange={onFieldChange}
+                    isInvalid={isFieldError.email}
+                  />
+                </InputGroup>
               </FormControl>
               <FormControl id='city'>
                 <FormLabel>City</FormLabel>
@@ -305,13 +327,28 @@ const Content = () => {
                 </Select>
               </FormControl>
             </Grid>
+            <FormControl id='profileDescription' w={'full'} mt={5}>
+              <FormLabel htmlFor='profileDescription' color={isFieldError.profileDescription ? 'red' : 'white'}>
+                {labels.profileDescription}
+              </FormLabel>
+              <Input
+                id='profileDescription'
+                focusBorderColor='brand.blue'
+                type='text'
+                placeholder='Describe yourself...'
+                value={fields.profileDescription}
+                name='profileDescription'
+                onChange={onFieldChange}
+                isInvalid={isFieldError.profileDescription}
+              />
+            </FormControl>
           </TabPanel>
           <TabPanel>
             <Grid templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }} gap={6}>
               <FormControl id='companyId'>
                 <FormLabel>Company ID</FormLabel>
                 <InputGroup>
-                  <InputLeftAddon color='gray.500'>
+                  <InputLeftAddon color='white'>
                     <svg width='1em' fill='currentColor' viewBox='0 0 20 20'>
                       <path
                         fillRule='evenodd'
@@ -354,7 +391,7 @@ const Content = () => {
         </TabPanels>
       </Tabs>
 
-      <Box mt={5} py={5} px={8} borderTopWidth={1} borderColor='brand.light'>
+      <Box mt={5} py={5} px={8} borderTopWidth={1} borderColor='brand.gray'>
         <Button onClick={onUpdate} isLoading={isLoading}>
           Update
         </Button>
