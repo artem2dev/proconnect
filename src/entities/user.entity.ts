@@ -27,7 +27,7 @@ export class User {
   @Column({ default: false })
   banned: boolean;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @ManyToOne(() => Media, (media) => media.id, { nullable: true, onDelete: 'SET NULL' })
@@ -48,4 +48,10 @@ export class User {
 
   @OneToMany(() => UserFriends, (uf) => uf.user2)
   userFriends2: UserFriends[];
+
+  @ManyToMany(() => Article, (a) => a.id)
+  likedArticles: Article[];
+
+  @ManyToMany(() => User, (u) => u.id, { cascade: true })
+  likedComments: User[];
 }

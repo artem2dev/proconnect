@@ -36,7 +36,7 @@ export class MediaController {
   }
 
   @Get('static/image/:imageId')
-  async getStaticImage(@Param('imageId') imageId: string, @Response() res: any) {
+  async getStaticImage(@Param('imageId') imageId: string, @Response() res: any, @UserBody() user: User) {
     const imageStream = await this.mediaService.getStaticImage(imageId);
 
     imageStream?.pipe(res);

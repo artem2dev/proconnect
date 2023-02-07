@@ -67,7 +67,7 @@ export class AuthController {
       .end();
   }
 
-  @UseGuards(RefreshTokenGuard)
+  // @UseGuards(RefreshTokenGuard)
   @Get('sign-out')
   async signOut(@Response() res: Res) {
     res.clearCookie('refreshToken').send().end();
