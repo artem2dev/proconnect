@@ -43,14 +43,12 @@ const Chat = () => {
   );
 
   useEffect(() => {
-    if (!readNewMessagesMessages()?.length) return;
+    const newMessages = readNewMessagesMessages();
 
-    socket.emit('chatRead', { roomId: room, userId: userInfo?.id, messages: readNewMessagesMessages() });
+    if (!newMessages?.length) return;
+
+    socket.emit('chatRead', { userId: userInfo?.id, messages: newMessages, roomId: room });
   }, [readNewMessagesMessages, room, userInfo?.id]);
-
-  useEffect(() => {
-    socket.on('chatRead', { id: messages[messages.length - 1] });
-  });
 
   useEffect(() => {
     const onSuccess = ({ data }) => {
@@ -94,6 +92,7 @@ const Chat = () => {
         lastName: user?.lastName,
         avatarId: user?.avatarId,
       },
+      roomId: room,
     });
 
     setCurrentMessage('');
@@ -129,7 +128,7 @@ const Chat = () => {
 
   return (
     <Flex direction={'column'} justifyContent={'space-between'}>
-      <Box height={850} style={{ backgroundColor: '#171923' }}>
+      <Box height={window.innerHeight - 115} style={{ backgroundColor: '#171923' }}>
         <ScrollableFeed className='chat-scrollbar'>
           {messages.map((message, index) => {
             return (

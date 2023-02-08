@@ -1,7 +1,7 @@
 import { Button, Flex, FormLabel, Image, Input, Text, Textarea } from '@chakra-ui/react';
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createArticle, createArticles } from '../../../api/articles';
+import { createArticle } from '../../../api/articles';
 
 export const CreateArticle = () => {
   const [currentFile, setCurrentFile] = useState(null);

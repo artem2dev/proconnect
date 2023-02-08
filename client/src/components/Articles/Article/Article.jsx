@@ -19,6 +19,7 @@ import { BiChat, BiLike, BiSend, BiShare } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { useNavigate, useParams } from 'react-router-dom';
 import { commentArticle, dislikeArticle, getArticle, likeArticle } from '../../../api/articles';
+import { config } from '../../../config/app.config';
 
 const styles = {
   btnHover: { color: 'lime' },
@@ -93,6 +94,7 @@ export const Article = ({ article }) => {
         </Box>
       </Flex>
     ));
+    // eslint-disable-next-line
   }, [articleData?.comments]);
 
   return (

@@ -23,7 +23,7 @@ export const typeOrmModuleOptions: TypeOrmModuleOptions = {
   entities: [User, Article, Media, FriendRequest, UserFriends, Message, ArticleComment, SingleChat, Room],
   synchronize: true,
   autoLoadEntities: true,
-  logging: true,
+  logging: false,
 };
 
 export const OrmConfig = {

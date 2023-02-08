@@ -100,10 +100,6 @@ const SidebarContent = ({ onClose, ...rest }) => {
     signOut().then(onSuccess);
   };
 
-  const onCreatePost = () => {
-    return;
-  };
-
   const navigateLink = (link) => () => link && navigate(link);
 
   return (

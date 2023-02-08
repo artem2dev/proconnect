@@ -22,8 +22,6 @@ import Profile from './Profile';
 import ProfileSettings from './ProfileSettings';
 import SignUp from './SignUp';
 import UserList from './UsersList';
-import Article from './Articles/Article/Article';
-import ArticlesScroll from './Articles';
 import CreateArticle from './Articles/Create/CreateArticle';
 
 const App = () => {
