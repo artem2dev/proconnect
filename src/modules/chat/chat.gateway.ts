@@ -6,7 +6,6 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import EventEmitter from 'events';
 import { Server } from 'socket.io';
 import { IExtendedSocket } from 'src/common/types/interfaces';
 import { ChatService } from './chat.service';
@@ -32,7 +31,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('chatRead')
   async handleChatRead(socket: IExtendedSocket, data: ReadChatDto): Promise<void> {
-    console.log(data)
+    console.log(data);
     await this.chatService.handleReadChat(data);
 
     this.server.to(data.roomId).emit('chatRead', data);
