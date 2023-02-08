@@ -27,19 +27,7 @@ export class ChatService {
   }
 
   async handleReadChat(data: ReadChatDto) {
-    const singleChat = await this.singleChatRepository.findOneBy({ id: data.singleChatId });
-
-    if (singleChat.user1 === data.userId) {
-      singleChat.wasReadByUser1 = true;
-
-      singleChat.save();
-    } else if (singleChat.user2 === data.userId) {
-      singleChat.wasReadByUser2 = true;
-
-      singleChat.save();
-    }
-
-    return singleChat;
+    await this.messageRepository.update(data.messages, { wasRead: true });
   }
 
   async getSingleChats(userId: string) {
@@ -69,7 +57,10 @@ export class ChatService {
       return { room: newRoom.id, messages: [] };
     }
 
-    const messages = await this.messageRepository.findBy({ room: Equal(singleChat.room.id) });
+    const messages = await this.messageRepository.find({
+      where: { room: Equal(singleChat.room.id) },
+      order: { createdAt: 'ASC' },
+    });
 
     return { room: singleChat.room.id, messages };
   }

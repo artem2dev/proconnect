@@ -63,8 +63,8 @@ const Messages = () => {
           });
 
           return isChatExists
-            ? prev.sort((a, b) => (a?.message?.createdAt > b?.message?.createdAt ? 1 : -1))
-            : [data, ...prev].sort((a, b) => (a?.message?.createdAt > b?.message?.createdAt ? 1 : -1));
+            ? prev.sort((a, b) => (a?.message?.createdAt > b?.message?.createdAt ? -1 : 1))
+            : [data, ...prev].sort((a, b) => (a?.message?.createdAt > b?.message?.createdAt ? -1 : 1));
         });
       }
     },
@@ -119,7 +119,7 @@ const Messages = () => {
                       </Text>
                     </Box>
 
-                    {chat?.message?.wasRead === false && (
+                    {!chat?.message?.wasRead && chat?.message?.userId !== userInfo?.id && (
                       <Box
                         as='div'
                         h='20px'

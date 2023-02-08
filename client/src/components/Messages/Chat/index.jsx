@@ -18,18 +18,38 @@ const Chat = () => {
   const [room, setRoom] = useState('');
   const [currentMessage, setCurrentMessage] = useState('');
 
+  const readNewMessagesMessages = useCallback(() => {
+    const newMessages = [];
+
+    messages
+      .slice()
+      .reverse()
+      .forEach((message) => {
+        if (message.userId === userInfo?.id) {
+          return;
+        } else {
+          !message?.wasRead && message?.userId !== userInfo?.id && newMessages.push(message.id);
+        }
+      });
+
+    return newMessages;
+  }, [messages, userInfo?.id]);
+
   const messageListener = useCallback(
     ({ message }) => {
       room === message.roomId && setMessages((prev) => [...prev, message]);
-
-      socket.emit('readMessage', { id: messages[messages.length - 1] });
     },
-    // eslint-disable-next-line
     [room],
   );
 
   useEffect(() => {
-    socket.emit('readMessage', { id: messages[messages.length - 1] });
+    if (!readNewMessagesMessages()?.length) return;
+
+    socket.emit('chatRead', { roomId: room, userId: userInfo?.id, messages: readNewMessagesMessages() });
+  }, [readNewMessagesMessages, room, userInfo?.id]);
+
+  useEffect(() => {
+    socket.on('chatRead', { id: messages[messages.length - 1] });
   });
 
   useEffect(() => {
@@ -130,7 +150,6 @@ const Chat = () => {
                   //     : `${user?.firstName} ${user?.lastName}`
                   // }
                   style={{ textAlign: 'center' }}
-                  
                   sentTime={countDateAgo(message)}
                 />
               </Message>

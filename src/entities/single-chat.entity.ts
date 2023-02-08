@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { ExtendedBaseEntity } from 'src/common/entities/extended-base.entity';
 import { Room } from './room.entity';
@@ -8,18 +8,6 @@ import { User } from './user.entity';
 export class SingleChat extends ExtendedBaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @Column({
-    type: 'boolean',
-    default: false,
-  })
-  wasReadByUser1: boolean;
-
-  @Column({
-    type: 'boolean',
-    default: false,
-  })
-  wasReadByUser2: boolean;
 
   @ManyToOne(() => User, (user) => user.id)
   @JoinColumn()

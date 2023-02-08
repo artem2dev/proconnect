@@ -1,13 +1,13 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class ReadChatDto {
   @IsNotEmpty()
   @IsString()
-  singleChatId: string;
+  roomId: string;
 
   @IsNotEmpty()
-  @IsString()
-  roomId: string;
+  @IsArray()
+  messages: string[];
 
   @IsNotEmpty()
   @IsString()
