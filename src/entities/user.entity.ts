@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Article } from './article.entity';
 import { FriendRequest } from './friend-requests.entity';
 import { Media } from './media.entity';

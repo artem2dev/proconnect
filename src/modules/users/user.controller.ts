@@ -1,31 +1,34 @@
 import { Body, Controller, Delete, Get, Param, Put, Request, UseGuards } from '@nestjs/common';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
-import { IGetUserInfoRequest, IUpdateUserInfo } from 'src/common/types/user';
+import { IExtendedRequestWithUser } from 'src/common/types/interfaces';
+import { UpdateUserDto } from './dto/update.user.dto';
 import { UserService } from './user.service';
 
+@UseGuards(AccessTokenGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @UseGuards(AccessTokenGuard)
   @Get('profile')
-  async getUser(@Request() req: IGetUserInfoRequest) {
-    return await this.userService.getUserInfo(req.user?.id);
+  async getUserProfile(@Request() req: IExtendedRequestWithUser) {
+    return await this.userService.getUserProfileInfo(req.user?.id);
   }
 
-  @UseGuards(AccessTokenGuard)
+  @Get('profile/:userName')
+  async getUserInfo(@Param('userName') userName: string) {
+    return await this.userService.getUserProfileInfoByUserName(userName);
+  }
+
   @Put('profile')
-  async updateUser(@Body() body: IUpdateUserInfo) {
+  async updateUser(@Body() body: UpdateUserDto) {
     return this.userService.updateUser(body);
   }
 
-  @UseGuards(AccessTokenGuard)
   @Get('all')
   async getAllUsers() {
     return await this.userService.findAll();
   }
 
-  @UseGuards(AccessTokenGuard)
   @Delete(':id')
   async deleteUser(@Param('id') id: string) {
     return await this.userService.deleteUser(id);

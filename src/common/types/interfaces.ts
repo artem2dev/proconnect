@@ -19,7 +19,6 @@ export interface IExtendedSocket extends Socket {
 
 export interface IMessage {
   text: string;
-  roomId: string;
   userId: string;
 }
 

@@ -48,7 +48,7 @@ const list = [
 
 const Sidebar = () => {
   const user = useSelector((state) => state.users);
-  const value = 'https://apple.com/cook';
+  const value = `https://domain.com/${user?.userName}`;
   const { hasCopied, onCopy } = useClipboard(value);
 
   const profileUrl = useRef(null);
@@ -99,13 +99,13 @@ const Sidebar = () => {
       flex={1}
       mr={{ base: 0, md: 5 }}
       mb={{ base: 5, md: 0 }}
-      bg='white'
       rounded='md'
       borderWidth={1}
-      borderColor='brand.light'
       style={{ transform: 'translateY(-100px)' }}
+      bgColor='RGBA(0, 0, 0, 0.2)'
+      borderColor={'brand.gray'}
     >
-      <VStack spacing={3} py={5} borderBottomWidth={1} borderColor='brand.light'>
+      <VStack spacing={3} py={5} borderBottomWidth={1} borderColor='brand.gray'>
         <Avatar
           size='2xl'
           cursor='pointer'
@@ -131,7 +131,7 @@ const Sidebar = () => {
             <ModalBody>
               <Text>File not supported!</Text>
               <HStack mt={1}>
-                <Text color='brand.cadet' fontSize='sm'>
+                <Text color='white' fontSize='sm'>
                   Supported types:
                 </Text>
                 <Badge colorScheme='green'>PNG</Badge>
@@ -146,10 +146,10 @@ const Sidebar = () => {
           </ModalContent>
         </Modal>
         <VStack spacing={1}>
-          <Heading as='h3' fontSize='xl' color='brand.dark'>
+          <Heading as='h3' fontSize='xl' color='white'>
             {`${user?.firstName} ${user?.lastName}`}
           </Heading>
-          <Text color='brand.gray' fontSize='sm'>
+          <Text color='white' fontSize='sm'>
             {user?.userName}
           </Text>
         </VStack>
@@ -166,9 +166,9 @@ const Sidebar = () => {
             alignItems='center'
             justifyContent='space-between'
             borderBottomWidth={1}
-            borderColor='brand.light'
+            borderColor={'brand.gray'}
           >
-            <Text color='brand.dark'>{item.name}</Text>
+            <Text color='white'>{item.name}</Text>
             <Text color={`brand.${item.color}`} fontWeight='bold'>
               {item.value}
             </Text>
@@ -176,9 +176,7 @@ const Sidebar = () => {
         ))}
       </VStack>
       <VStack py={8} px={5} spacing={3}>
-        <Button w='full' variant='outline'>
-          View Public Profile
-        </Button>
+        <Button>View Public Profile</Button>
         <InputGroup>
           <Input
             ref={profileUrl}

@@ -1,9 +1,13 @@
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
+import { config } from './config/app.config';
+
+const { PORT } = config;
 
 async function start() {
+  const logger = new Logger('SERVER');
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: true,
@@ -13,8 +17,6 @@ async function start() {
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-  const PORT = process.env.PORT || 3000;
-
-  await app.listen(PORT, () => console.log('Blog app successfully started on port', PORT));
+  await app.listen(PORT, () => logger.log(`Blog app successfully started on port ${PORT}`));
 }
 start();

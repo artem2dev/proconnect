@@ -2,7 +2,7 @@ version: '3.3'
 services:
   postgres:
     image: postgres
-    env_file: ./.development.env
+    env_file: ./.env
     environment:
       POSTGRES_DB: 'blog-db'
       POSTGRES_USER: 'postgres'
@@ -14,7 +14,7 @@ services:
   minio-service:
     image: minio/minio
     container_name: minio-service
-    env_file: ./.development.env
+    env_file: ./.env
     ports:
       - 9000:9000
       - 9099:9099

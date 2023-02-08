@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   CloseButton,
   Drawer,
   DrawerContent,
@@ -20,6 +21,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { AiOutlineHome } from 'react-icons/ai';
+import { FaRegUserCircle } from 'react-icons/fa';
 import { FiChevronDown, FiCompass, FiSettings, FiUsers } from 'react-icons/fi';
 import { IoMdCreate, IoMdNotificationsOutline } from 'react-icons/io';
 import { RxEnvelopeClosed } from 'react-icons/rx';
@@ -28,17 +30,17 @@ import { useNavigate } from 'react-router-dom';
 import { signOut } from '../../api/auth';
 import { ReactComponent as Logo } from '../../assets/logo.svg';
 import { removeItem } from '../../helpers/localStorage';
-import { setGlobalState } from '../../redux/globalState';
+import { setGlobalState } from '../../redux/globalStateSlice';
 import { setUser } from '../../redux/usersSlice';
 
 const LinkItems = [
-  { name: 'Home', icon: AiOutlineHome, hover: { bg: 'gray.100' } },
-  { name: 'Notifications', icon: IoMdNotificationsOutline, hover: { bg: 'gray.100' } },
-  { name: 'Messages', icon: RxEnvelopeClosed, hover: { bg: 'gray.100' } },
-  { name: 'Users', icon: FiUsers, hover: { bg: 'gray.100' } },
-  { name: 'Explore', icon: FiCompass, hover: { bg: 'gray.100' } },
-  { name: 'Settings', icon: FiSettings, hover: { bg: 'gray.100' } },
-  { name: 'Create post', icon: IoMdCreate, bgColor: 'gray.900', color: 'white', hover: { bg: 'gray.700' } },
+  { name: 'Home', icon: AiOutlineHome, hover: { bg: 'RGBA(0, 0, 0, 0.5)' }, href: '/' },
+  { name: 'Profile', icon: FaRegUserCircle, hover: { bg: 'RGBA(0, 0, 0, 0.5)' }, href: '' },
+  { name: 'Notifications', icon: IoMdNotificationsOutline, hover: { bg: 'RGBA(0, 0, 0, 0.5)' } },
+  { name: 'Messages', icon: RxEnvelopeClosed, hover: { bg: 'RGBA(0, 0, 0, 0.5)' }, href: '/messages' },
+  { name: 'Users', icon: FiUsers, hover: { bg: 'RGBA(0, 0, 0, 0.5)' }, href: '/users' },
+  { name: 'Explore', icon: FiCompass, hover: { bg: 'RGBA(0, 0, 0, 0.5)' } },
+  { name: 'Settings', icon: FiSettings, hover: { bg: 'RGBA(0, 0, 0, 0.5)' } },
 ];
 
 export default function SidebarWithHeader({ children }) {
@@ -95,12 +97,17 @@ const SidebarContent = ({ onClose, ...rest }) => {
     signOut().then(onSuccess);
   };
 
+  const onCreatePost = () => {
+    return;
+  };
+
   return (
     <Box
       transition='3s ease'
       bg={useColorModeValue('white', 'gray.900')}
       borderRight='1px'
-      borderRightColor={useColorModeValue('gray.200', 'gray.800')}
+      borderLeft='1px'
+      borderColor={useColorModeValue('gray.200', 'gray.700')}
       w={{ base: 'full', md: 60 }}
       pos='fixed'
       h='full'
@@ -108,17 +115,32 @@ const SidebarContent = ({ onClose, ...rest }) => {
       justifyContent='space-between'
       {...rest}
     >
-      <Box>
+      <Box h={'82%'}>
         <Flex h='20' alignItems='center' mx='8' justifyContent='space-between'>
           <Logo width='60px' height='60px' />
-
           <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
         </Flex>
-        {LinkItems.map((link) => (
-          <NavItem key={link.name} icon={link.icon} bgColor={link.bgColor} color={link.color} _hover={link.hover}>
-            {link.name}
-          </NavItem>
-        ))}
+        <Flex h={'100%'} flexDirection={'column'} justifyContent={'space-between'} alignItems={''}>
+          <Box>
+            {LinkItems.map((link) => (
+              <NavItem
+                key={link.name}
+                icon={link.icon}
+                href={link.name === 'Profile' ? user?.userName : link?.href}
+                user={user}
+                bgColor={link.bgColor}
+                color={link.color}
+                _hover={link.hover}
+              >
+                {link.name}
+              </NavItem>
+            ))}
+          </Box>
+          <Button w={210} ml={3} py={7} rounded='3xl' justifyContent={'flex-start'} onClick={onCreatePost}>
+            {IoMdCreate && <Icon mr='4' fontSize='20' as={IoMdCreate} />}
+            Create post
+          </Button>
+        </Flex>
       </Box>
 
       <Box display={'flex'} justifyContent={'flex-start'} paddingLeft='25px' paddingBottom={'10px'}>
@@ -138,7 +160,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
             </HStack>
           </MenuButton>
           <MenuList bg={useColorModeValue('white', 'gray.900')} borderColor={useColorModeValue('gray.200', 'gray.700')}>
-            <MenuItem onClick={onShowProfileSettings}>Profile</MenuItem>
+            <MenuItem onClick={onShowProfileSettings}>Profile settings</MenuItem>
             <MenuDivider />
             <MenuItem onClick={onSignOut}>Sign out</MenuItem>
           </MenuList>
@@ -148,9 +170,27 @@ const SidebarContent = ({ onClose, ...rest }) => {
   );
 };
 
-const NavItem = ({ icon, children, ...rest }) => {
+const NavItem = ({ icon, href, user, children, ...rest }) => {
+  const navigate = useNavigate();
+
+  const onClick = () => {
+    if (children === 'Profile') {
+      navigate(`/profile/${user?.userName}`);
+
+      return;
+    }
+
+    if (children === 'Notifications') {
+      navigate(`/notifications`);
+
+      return;
+    }
+
+    navigate(href);
+  };
+
   return (
-    <Link href='#' style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+    <Link style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }} onClick={onClick}>
       <Flex
         align='center'
         p='4'

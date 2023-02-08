@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
-import { IGetUserInfoRequest } from 'src/common/types/user';
+import { IExtendedRequestWithUser } from 'src/common/types/interfaces';
 import { MediaService } from './media.service';
 
 @Controller('media')
@@ -21,7 +21,7 @@ export class MediaController {
   @UseGuards(AccessTokenGuard)
   @Post('image')
   @UseInterceptors(FileInterceptor('image'))
-  updateProfileImage(@UploadedFile() file: Express.Multer.File, @Request() req: IGetUserInfoRequest) {
+  updateProfileImage(@UploadedFile() file: Express.Multer.File, @Request() req: IExtendedRequestWithUser) {
     return this.mediaService.updateProfileImage(file, req.user);
   }
 

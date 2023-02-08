@@ -39,6 +39,6 @@ s3
 
 client/node_modules
 
-.env
-
 client/.env
+
+.env
