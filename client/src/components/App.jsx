@@ -1,8 +1,8 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-
 import { ChakraProvider } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
 import { getUser } from '../api/user';
 import { theme } from '../helpers/chakraTheme';
 import { getItem } from '../helpers/localStorage';
@@ -10,6 +10,8 @@ import { setGlobalState } from '../redux/globalStateSlice';
 import { setUser } from '../redux/usersSlice';
 import socket from '../socket';
 import './App.css';
+import ArticlesScroll from './Articles';
+import Article from './Articles/Article/Article';
 import Friends from './Friends';
 import Login from './Login';
 import Messages from './Messages';
@@ -20,6 +22,9 @@ import Profile from './Profile';
 import ProfileSettings from './ProfileSettings';
 import SignUp from './SignUp';
 import UserList from './UsersList';
+import Article from './Articles/Article/Article';
+import ArticlesScroll from './Articles';
+import CreateArticle from './Articles/Create/CreateArticle';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -34,6 +39,8 @@ const App = () => {
             ...data,
           }),
         );
+
+        
 
         socket.auth = { userId: data.id };
         socket.connect();
@@ -59,7 +66,7 @@ const App = () => {
           <div className='container'>
             <Routes>
               <Route element={<PrivateRoute />}>
-                <Route path='' element={<div />} />
+                <Route path='' element={<ArticlesScroll />} />
                 <Route path='users' element={<UserList />} />
                 <Route path='notifications' element={<Notifications />} />
                 <Route path='profile' element={<ProfileSettings />} />
@@ -67,6 +74,9 @@ const App = () => {
                 <Route path='messages/:userName' element={<Chat />} />
                 <Route path='profile/:userName/friends' element={<Friends />} />
                 <Route path='profile/:userName' element={<Profile />} />
+                <Route path='articles' element={<ArticlesScroll />} />
+                <Route path='article/create' element={<CreateArticle />} />
+                <Route path='article/:id' element={<Article />} />
               </Route>
               <Route path='register' element={<SignUp />} />
               <Route path='login' element={<Login />} />

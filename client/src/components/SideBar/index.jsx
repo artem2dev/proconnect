@@ -24,23 +24,26 @@ import { AiOutlineHome } from 'react-icons/ai';
 import { FaRegUserCircle } from 'react-icons/fa';
 import { FiChevronDown, FiCompass, FiSettings, FiUsers } from 'react-icons/fi';
 import { IoMdCreate, IoMdNotificationsOutline } from 'react-icons/io';
+import { MdOutlineArticle } from 'react-icons/md';
 import { RxEnvelopeClosed } from 'react-icons/rx';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from '../../api/auth';
 import { ReactComponent as Logo } from '../../assets/logo.svg';
+import { config } from '../../config/app.config';
 import { removeItem } from '../../helpers/localStorage';
 import { setGlobalState } from '../../redux/globalStateSlice';
 import { setUser } from '../../redux/usersSlice';
 
 const LinkItems = [
-  { name: 'Home', icon: AiOutlineHome, hover: { bg: 'RGBA(0, 0, 0, 0.5)' }, href: '/' },
-  { name: 'Profile', icon: FaRegUserCircle, hover: { bg: 'RGBA(0, 0, 0, 0.5)' }, href: '' },
-  { name: 'Notifications', icon: IoMdNotificationsOutline, hover: { bg: 'RGBA(0, 0, 0, 0.5)' } },
-  { name: 'Messages', icon: RxEnvelopeClosed, hover: { bg: 'RGBA(0, 0, 0, 0.5)' }, href: '/messages' },
-  { name: 'Users', icon: FiUsers, hover: { bg: 'RGBA(0, 0, 0, 0.5)' }, href: '/users' },
-  { name: 'Explore', icon: FiCompass, hover: { bg: 'RGBA(0, 0, 0, 0.5)' } },
-  { name: 'Settings', icon: FiSettings, hover: { bg: 'RGBA(0, 0, 0, 0.5)' } },
+  { name: 'Home', icon: AiOutlineHome, href: '/' },
+  { name: 'Profile', icon: FaRegUserCircle, href: '' },
+  { name: 'Notifications', icon: IoMdNotificationsOutline },
+  { name: 'Messages', icon: RxEnvelopeClosed, href: '/messages' },
+  { name: 'Users', icon: FiUsers, href: '/users' },
+  { name: 'Explore', icon: FiCompass },
+  { name: 'Articles', icon: MdOutlineArticle, href: '/articles' },
+  { name: 'Settings', icon: FiSettings },
 ];
 
 export default function SidebarWithHeader({ children }) {
@@ -78,7 +81,7 @@ export default function SidebarWithHeader({ children }) {
 }
 
 const SidebarContent = ({ onClose, ...rest }) => {
-  const user = useSelector((state) => state.users);
+  const user = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -100,6 +103,8 @@ const SidebarContent = ({ onClose, ...rest }) => {
   const onCreatePost = () => {
     return;
   };
+
+  const navigateLink = (link) => () => link && navigate(link);
 
   return (
     <Box
@@ -130,13 +135,21 @@ const SidebarContent = ({ onClose, ...rest }) => {
                 user={user}
                 bgColor={link.bgColor}
                 color={link.color}
-                _hover={link.hover}
+                _hover={link?.hover ?? { bg: 'RGBA(0, 0, 0, 0.5)' }}
+                onClick={navigateLink(link?.href)}
               >
                 {link.name}
               </NavItem>
             ))}
           </Box>
-          <Button w={210} ml={3} py={7} rounded='3xl' justifyContent={'flex-start'} onClick={onCreatePost}>
+          <Button
+            w={210}
+            ml={3}
+            py={7}
+            rounded='3xl'
+            justifyContent={'flex-start'}
+            onClick={navigateLink('article/create')}
+          >
             {IoMdCreate && <Icon mr='4' fontSize='20' as={IoMdCreate} />}
             Create post
           </Button>
@@ -147,7 +160,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
         <Menu>
           <MenuButton px={0} py={2} transition='all 0.3s' _focus={{ boxShadow: 'none' }}>
             <HStack>
-              <Avatar size='sm' src={user?.id ? 'http://localhost:5000/media/image/' + user?.id : ''} />
+              <Avatar size='sm' src={user?.id ? `${config.API}/media/image/` + user?.id : ''} />
               <VStack display={{ base: 'none', md: 'flex' }} alignItems='flex-start' spacing='1px' ml='2'>
                 <Text fontSize='sm'>{`${user?.firstName} ${user?.lastName}`}</Text>
                 <Text fontSize='xs' color='gray.600'>

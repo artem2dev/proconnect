@@ -84,9 +84,12 @@ export const theme = extendTheme({
     Text: {
       variants: {
         default: {
-          whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
+          textAlign: 'left',
+        },
+        title: {
+          fontSize: '24px !important',
         },
       },
       defaultProps: {
@@ -100,6 +103,16 @@ export const theme = extendTheme({
             boxShadow: 'none',
           },
         },
+      },
+    },
+    Card: {
+      variants: {
+        default: {
+          bgColor: 'RGBA(65, 100, 227, 0.9)',
+        },
+      },
+      defaultProps: {
+        variant: 'default',
       },
     },
   },

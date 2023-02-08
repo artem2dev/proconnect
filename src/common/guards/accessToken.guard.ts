@@ -1,6 +1,7 @@
 import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { config } from 'src/config/app.config';
 
@@ -30,6 +31,8 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
 
       return true;
     } catch (err) {
+      console.log(err);
+
       throw new UnauthorizedException();
     }
   }

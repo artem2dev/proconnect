@@ -1,4 +1,16 @@
-import { BaseEntity, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
+import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type';
+import { Exclude } from 'class-transformer';
+import { isArray } from 'class-validator';
+import {
+  BaseEntity,
+  CreateDateColumn,
+  Entity,
+  EntityManager,
+  EntityMetadata,
+  EntitySchema,
+  getConnection,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class ExtendedBaseEntity extends BaseEntity {

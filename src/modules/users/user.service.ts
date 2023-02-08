@@ -19,7 +19,12 @@ export class UserService {
   }
 
   async getUserByEmail(email: string) {
-    return await this.userRepository.findOneBy({ email });
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .select()
+      .addSelect('user.password')
+      .where('user.email = :email', { email })
+      .getOne();
   }
 
   async getUserByUserName(userName: string) {

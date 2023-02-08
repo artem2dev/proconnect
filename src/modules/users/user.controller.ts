@@ -1,17 +1,21 @@
 import { Body, Controller, Delete, Get, Param, Put, Request, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { UserBody } from 'src/common/decorators/user.decorator';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { IExtendedRequestWithUser } from 'src/common/types/interfaces';
+import { User } from 'src/entities/user.entity';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { UserService } from './user.service';
 
-@UseGuards(AccessTokenGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
   @Get('profile')
-  async getUserProfile(@Request() req: IExtendedRequestWithUser) {
-    return await this.userService.getUserProfileInfo(req.user?.id);
+  async getUserProfile(@UserBody() user: User) {
+    return await this.userService.getUserProfileInfo(user?.id);
   }
 
   @Get('profile/:userName')
@@ -19,6 +23,8 @@ export class UserController {
     return await this.userService.getUserProfileInfoByUserName(userName);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
   @Put('profile')
   async updateUser(@Body() body: UpdateUserDto) {
     return this.userService.updateUser(body);
@@ -29,6 +35,8 @@ export class UserController {
     return await this.userService.findAll();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
   @Delete(':id')
   async deleteUser(@Param('id') id: string) {
     return await this.userService.deleteUser(id);
