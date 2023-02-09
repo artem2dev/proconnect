@@ -51,7 +51,7 @@ export const Article = ({ article }) => {
   const [commentText, setCommentText] = useState('');
 
   const currentUser = useSelector((state) => state.user);
-  console.log(currentUser);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -198,7 +198,7 @@ export const Article = ({ article }) => {
       {articleData?.media && (
         <Image
           objectFit='cover'
-          src={`${config.API}/media/static/image/${articleData?.media.bucketName}`}
+          src={`${config.API}/media/static/image/${articleData?.media.id}`}
           alt='Chakra UI'
           height='300px'
           style={{ objectFit: 'scale-down' }}
