@@ -30,7 +30,7 @@ export class MediaService {
     }
 
     const media = await this.saveStaticImage(file, user);
-    console.log(media);
+
     await this.userRepository.update({ id: Equal(user.id) }, { avatar: media });
 
     return media;

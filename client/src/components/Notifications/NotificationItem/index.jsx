@@ -15,11 +15,11 @@ const NotificationItem = ({ request }) => {
 
   const onAcceptRequest = () => {
     const onSuccess = () => {
-      console.log('success');
+
     };
 
     const onError = () => {
-      console.log('error');
+
     };
 
     acceptFriendRequest(request?.id).then(onSuccess).catch(onError);
@@ -27,11 +27,11 @@ const NotificationItem = ({ request }) => {
 
   const onDeclineRequest = () => {
     const onSuccess = () => {
-      console.log('success');
+
     };
 
     const onError = () => {
-      console.log('error');
+
     };
 
     declineFriendRequest(request?.id).then(onSuccess).catch(onError);

@@ -138,7 +138,7 @@ const Chat = () => {
 
   return (
     <Flex direction={'column'} justifyContent={'space-between'}>
-      <ConversationHeader style={{ width: '100%', backgroundColor: '#222535', borderWidth: 0, borderRadius: 8 }}>
+      <ConversationHeader style={{ width: '100%', backgroundColor: '#202231', borderWidth: 0, borderRadius: 8, boxShadow: 0 }}>
         <ConversationHeader.Back onClick={onBack} />
         <ConversationHeader.Content onClick={handleRedirectToProfile}>
           {user?.id && (
@@ -166,7 +166,7 @@ const Chat = () => {
                 <Message.Footer
                   sender={countDateAgo(message)}
                   sentTime={message?.userId === userInfo?.id ? countDateAgo(message) : ''}
-                  style={{ textAlign: 'center', fontSize: 11, letterSpacing: -0.4, marginTop: -1 }}
+                  style={{ textAlign: 'center', fontSize: 11, letterSpacing: -0.4 }}
                 />
               </Message>
             );

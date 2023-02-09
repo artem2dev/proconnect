@@ -160,7 +160,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
               <VStack display={{ base: 'none', md: 'flex' }} alignItems='flex-start' spacing='1px' ml='2'>
                 <Text fontSize='sm'>{`${user?.firstName} ${user?.lastName}`}</Text>
                 <Text fontSize='xs' color='gray.600'>
-                  {user?.userName}
+                  @{user?.userName}
                 </Text>
               </VStack>
               <Box display={{ base: 'none', md: 'flex' }}>
