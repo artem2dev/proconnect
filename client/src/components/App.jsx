@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import { getUser } from '../api/user';
-import { theme } from '../helpers/chakraTheme';
+import { theme } from '../themes/chakraTheme';
 import { getItem } from '../helpers/localStorage';
 import { setGlobalState } from '../redux/globalStateSlice';
 import { setUser } from '../redux/usersSlice';

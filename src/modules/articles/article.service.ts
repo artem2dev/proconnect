@@ -127,7 +127,6 @@ export class ArticleService {
       .getOne();
 
     foundArticle.likes = foundArticle.likes.filter((u) => {
-      console.log(u, u.id !== user.id);
       return u.id !== user.id;
     });
 

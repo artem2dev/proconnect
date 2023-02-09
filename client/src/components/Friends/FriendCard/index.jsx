@@ -17,11 +17,11 @@ const FriendCard = ({ friend, userName }) => {
 
   const onDeleteFromFriends = () => {
     const onSuccess = () => {
-      console.log('success');
+
     };
 
     const onError = () => {
-      console.log('error');
+
     };
 
     deleteFromFriends(friend?.id).then(onSuccess).catch(onError);
