@@ -74,7 +74,7 @@ export class ArticleService {
       .addOrderBy('comment.createdAt')
       .getOne();
 
-    foundArticle.omit(['author.email', 'author.description']);
+    // foundArticle.omit(['author.email', 'author.description']);
 
     if (!foundArticle) {
       throw new NotFoundException(ExceptionDictionary.articles.notFound);
