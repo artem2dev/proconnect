@@ -9,3 +9,4 @@ export const likeArticle = async (id) => useAxios.post(`articles/like/${id}`, {}
 export const dislikeArticle = async (id) => useAxios.post(`articles/dislike/${id}`, {});
 
 export const commentArticle = async (comment, id) => useAxios.post(`articles/comment/${id}`, { comment });
+export const deleteCommentArticle = async (commentId) => useAxios.delete(`articles/comment/${commentId}`);
