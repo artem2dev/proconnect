@@ -103,7 +103,7 @@ export const Article = ({ article }) => {
         <Flex flex='1' gap='4' alignItems='center' flexWrap='nowrap' mt={5} key={comment.id} dir='row'>
           <Avatar
             name={comment?.author?.firstName + ' ' + comment?.author?.lastName}
-            src={''}
+            src={`${config.API}/media/image/` + comment?.author?.id}
             _hover={{ cursor: 'pointer' }}
           />
           <Flex justify='space-between' w='100%'>
@@ -150,7 +150,7 @@ export const Article = ({ article }) => {
           <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
             <Avatar
               name={articleData?.author?.firstName + ' ' + articleData?.author?.lastName}
-              src={''}
+              src={`${config.API}/media/image/` + articleData?.author?.id}
               _hover={{ cursor: 'pointer' }}
             />
 
