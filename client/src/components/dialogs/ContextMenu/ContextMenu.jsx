@@ -58,12 +58,11 @@ export default function ContextMenu({
             transform='translate(-30%, 0px)'
             borderRadius={'10px'}
             maxW={300}
+            zIndex='4'
+            ref={contextRef}
             onClick={(e) => {
               e.stopPropagation();
             }}
-            zIndex='4'
-            ref={contextRef}
-            // onClickCapture={handleContextClose}
           >
             {options.map((option) => {
               return (

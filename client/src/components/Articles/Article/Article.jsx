@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Avatar,
   Box,
@@ -17,8 +18,10 @@ import {
 import React, { useEffect, useMemo, useState } from 'react';
 import { BiChat, BiLike, BiSend, BiShare } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { commentArticle, dislikeArticle, getArticle, likeArticle } from '../../../api/articles';
+import { commentArticle, deleteCommentArticle, dislikeArticle, getArticle, likeArticle } from '../../../api/articles';
+import ContextMenu from '../../dialogs/ContextMenu/ContextMenu';
 
 const styles = {
   btnHover: { color: 'lime' },
@@ -37,13 +40,15 @@ const styles = {
     backgroundColor: '#9d9d9d',
   },
 };
+
 export const Article = ({ article }) => {
   const { id } = useParams();
   const [articleData, setArticleData] = useState(article ?? null);
   const [imageToggle, setImageToggle] = useState(false);
-  const [contextVisible, setContextVisible] = useState(false);
   const [isCommenting, setIsCommenting] = useState(false);
   const [commentText, setCommentText] = useState('');
+
+  const currentUser = useSelector((state) => state.users);
 
   const navigate = useNavigate();
 
@@ -51,7 +56,7 @@ export const Article = ({ article }) => {
     if (id && !articleData) {
       handleGetArticle(id);
     }
-  });
+  }, [articleData]);
 
   const handleLike = () => {
     if (articleData.likedByUser) {
@@ -65,7 +70,18 @@ export const Article = ({ article }) => {
       .then(({ data }) => {
         setArticleData({ ...articleData, ...data });
       })
-      .catch(console.log);
+      .catch(console.error);
+  };
+
+  const handleDeleteComment = (commentId) => () => {
+    deleteCommentArticle(commentId)
+      .then(() => {
+        setArticleData({
+          ...articleData,
+          comments: articleData?.comments.filter((comment) => comment.id !== commentId),
+        });
+      })
+      .catch(console.error);
   };
 
   const comments = useMemo(() => {
@@ -73,27 +89,51 @@ export const Article = ({ article }) => {
       return null;
     }
 
-    return articleData.comments.map((comment) => (
-      <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap' mt={5}>
-        <Avatar
-          name={articleData?.author?.firstName + ' ' + articleData?.author?.lastName}
-          src={''}
-          _hover={{ cursor: 'pointer' }}
-        />
-
-        <Box
-          display={'flex'}
-          alignItems={'flex-start'}
-          flexDirection={'column'}
-          onClick={id ? null : () => navigate(`/article/${articleData.id}`)}
-          _hover={{ cursor: 'pointer' }}
-        >
-          <Heading size='sm'>{articleData?.author?.firstName + ' ' + articleData?.author?.lastName}</Heading>
-          <Text>{comment.comment}</Text>
-        </Box>
-      </Flex>
-    ));
-  }, [articleData?.comments]);
+    return articleData.comments.map((comment) => {
+      return (
+        <Flex flex='1' gap='4' alignItems='center' flexWrap='nowrap' mt={5} key={comment.id} dir='row'>
+          <Avatar
+            name={comment?.author?.firstName + ' ' + comment?.author?.lastName}
+            src={''}
+            _hover={{ cursor: 'pointer' }}
+          />
+          <Flex justify='space-between' w='100%'>
+            <Box
+              display={'flex'}
+              alignItems={'flex-start'}
+              flexDirection={'column'}
+              onClick={() => navigate(`/profile/${comment.author.userName}`)}
+              _hover={{ cursor: 'pointer' }}
+            >
+              <Heading size='sm'>{comment?.author?.firstName + ' ' + comment?.author?.lastName}</Heading>
+              <Text>{comment.comment}</Text>
+            </Box>
+            <ContextMenu
+              options={
+                currentUser.id === comment.author.id
+                  ? [
+                      { label: 'Remove', cb: handleDeleteComment(comment.id) },
+                      { label: 'Report', cb: () => alert('Словил кринж!') },
+                    ]
+                  : [{ label: 'Report', cb: () => alert('Словил кринж!') }]
+              }
+            >
+              <Box>
+                <IconButton
+                  variant='ghost'
+                  colorScheme='gray'
+                  aria-label='See menu'
+                  icon={<BsThreeDotsVertical />}
+                  backgroundColor='#131821'
+                  zIndex='2'
+                />
+              </Box>
+            </ContextMenu>
+          </Flex>
+        </Flex>
+      );
+    });
+  }, [articleData]);
 
   return (
     <Card width={id ? '100%' : '760px'} maxH={'100%'} mt={'5'}>
@@ -113,38 +153,33 @@ export const Article = ({ article }) => {
               onClick={id ? null : () => navigate(`/article/${articleData.id}`)}
               _hover={{ cursor: 'pointer' }}
             >
-              <Heading size='sm'>{articleData?.author?.firstName + ' ' + articleData?.author?.lastName}</Heading>
-              <Text>{articleData?.title}</Text>
+              <Text fontSize={'2xl'}>{articleData?.title}</Text>
+              <Heading size='md' fontSize={'sm'}>
+                {articleData?.author?.firstName + ' ' + articleData?.author?.lastName}
+              </Heading>
             </Box>
           </Flex>
-          <IconButton
-            variant='ghost'
-            colorScheme='gray'
-            aria-label='See menu'
-            icon={<BsThreeDotsVertical />}
-            backgroundColor='#131821'
-            zIndex='2'
-            onClick={() => setContextVisible(!contextVisible)}
-          />
-          {contextVisible && (
-            <Flex sx={styles.contextMenu} onMouseLeave={() => setContextVisible(false)}>
-              <Box cursor='pointer' _hover={styles.btnHover}>
-                Save
-              </Box>
-              <Box cursor='pointer' _hover={styles.btnHover}>
-                Remove
-              </Box>
-              <Box cursor='pointer' _hover={styles.btnHover}>
-                Report
-              </Box>
-              <Box cursor='pointer' _hover={styles.btnHover}>
-                Box 3
-              </Box>
-              <Box cursor='pointer' _hover={styles.btnHover}>
-                Box 4
-              </Box>
-            </Flex>
-          )}
+          <ContextMenu
+            options={[
+              { label: 'Save', cb: () => alert('Save!') },
+              { label: 'Remove', cb: () => alert('Remove!') },
+              { label: 'Report', cb: () => alert('Report!') },
+              { label: 'Box 3', cb: () => alert('Box 3!') },
+              { label: 'Box ', cb: () => alert('Box 4!') },
+            ]}
+            withHeightOffset
+          >
+            <Box>
+              <IconButton
+                variant='ghost'
+                colorScheme='gray'
+                aria-label='See menu'
+                icon={<BsThreeDotsVertical />}
+                backgroundColor='#131821'
+                zIndex='2'
+              />
+            </Box>
+          </ContextMenu>
         </Flex>
       </CardHeader>
       <CardBody maxH={'300px'} padding='0px 20px 10px 20px'>
@@ -221,6 +256,7 @@ export const Article = ({ article }) => {
             <Text>{`Likes: ${articleData?.likes}`}</Text>
           </Flex>
         </Flex>
+        {comments}
         {isCommenting && (
           <Flex flexDir='column' mt='15px'>
             <FormLabel> Comment something about this:</FormLabel>
@@ -231,12 +267,15 @@ export const Article = ({ article }) => {
                 rightIcon={<BiSend />}
                 ml='5px'
                 pl='12px'
-                onClick={() => commentArticle(commentText, articleData.id)}
+                onClick={() => {
+                  commentArticle(commentText, articleData.id).then(({ data: savedComment }) => {
+                    setArticleData({ ...articleData, comments: [...articleData?.comments, savedComment] });
+                  });
+                }}
               />
             </Flex>
           </Flex>
         )}
-        {comments}
       </CardFooter>
     </Card>
   );

@@ -76,4 +76,10 @@ export class ArticleController {
   async commentArticle(@Param('id') articleId: string, @UserBody() user: User, @Body() dto: ArticleCommentDto) {
     return await this.articleService.commentArticle(user, articleId, dto);
   }
+
+  @ApiBearerAuth()
+  @Delete('comment/:id')
+  async deleteCommentArticle(@Param('id') commentId: string, @UserBody() user: User) {
+    return await this.articleService.deleteCommentArticle(user, commentId);
+  }
 }

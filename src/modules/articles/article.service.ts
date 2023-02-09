@@ -18,6 +18,8 @@ export class ArticleService {
     private articleRepository: Repository<Article>,
     @InjectRepository(ArticleComment)
     private articleCommentRepository: Repository<ArticleComment>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
     private mediaService: MediaService,
   ) {}
 
@@ -42,9 +44,10 @@ export class ArticleService {
       .leftJoinAndSelect('a.media', 'media')
       .leftJoinAndSelect('a.author', 'author')
       .leftJoinAndSelect('a.likes', 'likes')
-      .leftJoinAndSelect('a.comments', 'comments')
+      .leftJoinAndSelect('a.comments', 'comment')
+      .leftJoinAndSelect('comment.author', 'commentAuthor')
       .orderBy('a.createdAt')
-      .addOrderBy('comments.createdAt')
+      .addOrderBy('comment.createdAt')
       .getMany();
 
     const processedArticle = foundArticles.map((article: any) => {
@@ -138,10 +141,22 @@ export class ArticleService {
       throw new NotFoundException();
     }
 
+    const foundUser = await this.userRepository.findOneBy({ id: user.id });
+
     const savedComment = await this.articleCommentRepository
       .create({ author: user, comment: dto.comment, articleId })
       .save();
 
-    return savedComment;
+    return { ...savedComment, author: foundUser };
+  }
+
+  async deleteCommentArticle(user: User, commentId: string) {
+    const foundComment = await this.articleCommentRepository.findOneBy({ id: commentId, authorId: user.id });
+
+    if (!foundComment) {
+      throw new NotFoundException();
+    }
+
+    await foundComment.remove();
   }
 }
