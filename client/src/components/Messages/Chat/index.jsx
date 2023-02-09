@@ -1,17 +1,19 @@
-import { Box, Flex } from '@chakra-ui/react';
-import { Message, MessageInput } from '@chatscope/chat-ui-kit-react';
+import { Avatar, Box, Flex, Text } from '@chakra-ui/react';
+import { ConversationHeader, Message, MessageInput } from '@chatscope/chat-ui-kit-react';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ScrollableFeed from 'react-scrollable-feed';
 import { getMessages } from '../../../api/chat';
 import { getUser } from '../../../api/user';
+import { config } from '../../../config/app.config';
 import socket from '../../../socket';
 import './style.css';
 
 const Chat = () => {
   const userInfo = useSelector((state) => state.user);
+  const navigate = useNavigate();
   const { userName } = useParams();
   const [messages, setMessages] = useState([]);
   const [user, setUser] = useState({});
@@ -104,18 +106,26 @@ const Chat = () => {
     }
   };
 
+  const onBack = () => {
+    navigate('/messages');
+  };
+
+  const handleRedirectToProfile = () => {
+    navigate(`/profile/${user?.userName}`);
+  };
+
   const countDateAgo = (message) => {
     const minutesAgo = Math.round((Date.now() - new Date(message?.createdAt)) / 1000 / 60);
-    const hoursAgo = Math.round(minutesAgo / 60);
-    const daysAgo = Math.round(hoursAgo / 24);
-    const monthsAgo = Math.round(daysAgo / 30);
-    const yearsAgo = Math.round(monthsAgo / 12);
+    const hoursAgo = Math.floor(minutesAgo / 60);
+    const daysAgo = Math.floor(hoursAgo / 24);
+    const monthsAgo = Math.floor(daysAgo / 30);
+    const yearsAgo = Math.floor(monthsAgo / 12);
 
     if (minutesAgo <= 1) {
       return 'just now';
     } else if (minutesAgo <= 55) {
       return `${minutesAgo} minutes`;
-    } else if (minutesAgo > 115 && minutesAgo <= 1380) {
+    } else if (minutesAgo > 55 && minutesAgo <= 1380) {
       return hoursAgo + (hoursAgo <= 1 ? ' hour' : ' hours');
     } else if (hoursAgo >= 23 && hoursAgo <= 720) {
       return daysAgo + (daysAgo <= 1 ? ' day' : ' days');
@@ -128,7 +138,18 @@ const Chat = () => {
 
   return (
     <Flex direction={'column'} justifyContent={'space-between'}>
-      <Box height={window.innerHeight - 115} style={{ backgroundColor: '#171923' }}>
+      <ConversationHeader style={{ width: '100%', backgroundColor: '#222535', borderWidth: 0, borderRadius: 8 }}>
+        <ConversationHeader.Back onClick={onBack} />
+        <ConversationHeader.Content onClick={handleRedirectToProfile}>
+          {user?.id && (
+            <Flex alignItems={'center'} cursor={'pointer'}>
+              <Avatar src={`${config.API}/media/image/` + user.id} marginX={4} />
+              <Text color={'white'}>{`${user?.firstName} ${user?.lastName}`}</Text>
+            </Flex>
+          )}
+        </ConversationHeader.Content>
+      </ConversationHeader>
+      <Box height={window.innerHeight - 160} style={{ backgroundColor: '#171923' }}>
         <ScrollableFeed className='chat-scrollbar'>
           {messages.map((message, index) => {
             return (
@@ -143,13 +164,9 @@ const Chat = () => {
                 }}
               >
                 <Message.Footer
-                  // sender={
-                  //   message?.userId === user?.id
-                  //     ? `${userInfo?.firstName} ${userInfo?.lastName}`
-                  //     : `${user?.firstName} ${user?.lastName}`
-                  // }
-                  style={{ textAlign: 'center' }}
-                  sentTime={countDateAgo(message)}
+                  sender={countDateAgo(message)}
+                  sentTime={message?.userId === userInfo?.id ? countDateAgo(message) : ''}
+                  style={{ textAlign: 'center', fontSize: 11, letterSpacing: -0.4, marginTop: -1 }}
                 />
               </Message>
             );
@@ -174,7 +191,7 @@ const Chat = () => {
         onSend={sendMessage}
         value={currentMessage}
         onChange={setCurrentMessage}
-        style={{ textAlign: 'left', backgroundColor: '#171923', marginTop: '40px' }}
+        style={{ textAlign: 'left', backgroundColor: '#171923', marginTop: '20px' }}
         onKeyDown={onKeyDown}
         placeholder='Type message here...'
         autoFocus

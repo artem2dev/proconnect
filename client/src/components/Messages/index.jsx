@@ -8,7 +8,7 @@ import socket from '../../socket';
 
 const activeColor = 'green.500';
 const ringScaleMin = 0.33;
-const ringScaleMax = 0.66;
+const ringScaleMax = 0.5;
 
 const pulseRing = keyframes`
 0% {
@@ -103,18 +103,18 @@ const Messages = () => {
                 <Avatar h={'40px'} w={'40px'} marginRight={5} src={config.API + '/media/image/' + recipient?.id} />
                 <Flex w={'full'} direction={'column'}>
                   <Text>{`${recipient?.firstName} ${recipient?.lastName}`}</Text>
-                  <Flex alignItems={'center'}>
+                  <Flex alignItems={'center'} justifyContent={'space-between'}>
                     <Box
                       textAlign={'left'}
                       h={'fit-content'}
-                      w={'full'}
+                      w={'95%'}
                       borderRadius={10}
                       paddingX={2}
                       paddingY={0.5}
                       bgColor='#4b4f5099'
                       marginTop={1}
                     >
-                      <Text w={700} whiteSpace={'nowrap'}>
+                      <Text w={650} whiteSpace={'nowrap'}>
                         {chat?.message?.text}
                       </Text>
                     </Box>
@@ -122,8 +122,8 @@ const Messages = () => {
                     {!chat?.message?.wasRead && chat?.message?.userId !== userInfo?.id && (
                       <Box
                         as='div'
-                        h='20px'
-                        w='20px'
+                        h='16px'
+                        w='16px'
                         ml={5}
                         position='relative'
                         bgColor={activeColor}
