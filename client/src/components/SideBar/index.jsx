@@ -34,6 +34,7 @@ import { config } from '../../config/app.config';
 import { removeItem } from '../../helpers/localStorage';
 import { setGlobalState } from '../../redux/globalStateSlice';
 import { setUser } from '../../redux/usersSlice';
+import CreateArticle from '../Articles/Create/CreateArticle';
 
 const LinkItems = [
   { name: 'Home', icon: AiOutlineHome, href: '/' },
@@ -48,15 +49,17 @@ const LinkItems = [
 
 export default function SidebarWithHeader({ children }) {
   const { isOpen, onClose } = useDisclosure();
+  const { isOpen: isModalOpen, onOpen: onModalOpen, onClose: onModalClose } = useDisclosure();
   const globalState = useSelector((state) => state.globalState);
   const bg = useColorModeValue('gray.100', 'gray.900');
 
   return (
     <>
+      <CreateArticle isOpen={isModalOpen} onClose={onModalClose} />
       <Box minH='100vh' bg={bg}>
         {globalState?.sidebarVisible && (
           <>
-            <SidebarContent onClose={() => onClose} display={{ base: 'none', md: 'flex' }} />
+            <SidebarContent onModalOpen={onModalOpen} onClose={() => onClose} display={{ base: 'none', md: 'flex' }} />
             <Drawer
               autoFocus={false}
               isOpen={isOpen}
@@ -67,7 +70,7 @@ export default function SidebarWithHeader({ children }) {
               size='full'
             >
               <DrawerContent>
-                <SidebarContent onClose={onClose} />
+                <SidebarContent onModalOpen={onModalOpen} onClose={onClose} />
               </DrawerContent>
             </Drawer>
           </>
@@ -80,7 +83,7 @@ export default function SidebarWithHeader({ children }) {
   );
 }
 
-const SidebarContent = ({ onClose, ...rest }) => {
+const SidebarContent = ({ onClose, onModalOpen, ...rest }) => {
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -138,14 +141,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
               </NavItem>
             ))}
           </Box>
-          <Button
-            w={210}
-            ml={3}
-            py={7}
-            rounded='3xl'
-            justifyContent={'flex-start'}
-            onClick={navigateLink('article/create')}
-          >
+          <Button w={210} ml={3} py={7} rounded='3xl' justifyContent={'flex-start'} onClick={onModalOpen}>
             {IoMdCreate && <Icon mr='4' fontSize='20' as={IoMdCreate} />}
             Create post
           </Button>
