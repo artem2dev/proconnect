@@ -4,11 +4,11 @@ import { useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import { getUser } from '../api/user';
-import { theme } from '../themes/chakraTheme';
 import { getItem } from '../helpers/localStorage';
 import { setGlobalState } from '../redux/globalStateSlice';
 import { setUser } from '../redux/usersSlice';
 import socket from '../socket';
+import { theme } from '../themes/chakraTheme';
 import './App.css';
 import ArticlesScroll from './Articles';
 import Article from './Articles/Article/Article';
@@ -22,7 +22,6 @@ import Profile from './Profile';
 import ProfileSettings from './ProfileSettings';
 import SignUp from './SignUp';
 import UserList from './UsersList';
-import CreateArticle from './Articles/Create/CreateArticle';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -37,8 +36,6 @@ const App = () => {
             ...data,
           }),
         );
-
-        
 
         socket.auth = { userId: data.id };
         socket.connect();
@@ -73,7 +70,6 @@ const App = () => {
                 <Route path='profile/:userName/friends' element={<Friends />} />
                 <Route path='profile/:userName' element={<Profile />} />
                 <Route path='articles' element={<ArticlesScroll />} />
-                <Route path='article/create' element={<CreateArticle />} />
                 <Route path='article/:id' element={<Article />} />
               </Route>
               <Route path='register' element={<SignUp />} />

@@ -34,12 +34,12 @@ export default function ContextMenu({
   }, []);
 
   function handleViewPortChange() {
-    const { top, left, height } = childRef.current.getBoundingClientRect();
+    const { top, left, height } = childRef.current?.getBoundingClientRect();
     setContextOffset({ top, left, height });
   }
 
   function handleChildClick() {
-    const { top, left, height } = childRef.current.getBoundingClientRect();
+    const { top, left, height } = childRef.current?.getBoundingClientRect();
 
     setContextOffset({ top, left, height });
     setContextVisible(true);

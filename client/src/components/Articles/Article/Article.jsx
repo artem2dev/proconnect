@@ -161,7 +161,7 @@ export const Article = ({ article }) => {
               onClick={id ? null : () => navigate(`/article/${articleData.id}`)}
               _hover={{ cursor: 'pointer' }}
             >
-              <Text fontSize={'2xl'}>{articleData?.title}</Text>
+              <Text fontSize={'2xl'} whiteSpace={'nowrap'} maxW={'600px'}>{articleData?.title}</Text>
               <Heading size='md' fontSize={'sm'}>
                 {articleData?.author?.firstName + ' ' + articleData?.author?.lastName}
               </Heading>
