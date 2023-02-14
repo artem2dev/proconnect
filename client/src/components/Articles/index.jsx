@@ -20,7 +20,7 @@ export default function ArticlesScroll() {
   );
 
   return (
-    <Flex maxH={'100%'} maxWidth={'100%'} justifyContent={'center'}>
+    <Flex maxH={'100%'} justifyContent={'center'}>
       <Flex justifyContent={'center'} flexDirection={'column'}>
         {!!articles.length && articleItems()}
       </Flex>

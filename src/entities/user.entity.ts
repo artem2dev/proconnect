@@ -30,6 +30,12 @@ export class User {
   @Column({ select: false })
   password: string;
 
+  @Column({ default: false })
+  isOnline: boolean;
+
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP', nullable: false })
+  wasOnline: Date;
+
   @ManyToOne(() => Media, (media) => media.id, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn()
   avatar: Media;

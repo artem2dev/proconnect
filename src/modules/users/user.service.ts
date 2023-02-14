@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { User } from '../../entities/user.entity';
 import { FriendsService } from '../friends/friends.service';
 import { CreateUserDto } from './dto/create.user.dto';
 import { UpdateUserDto } from './dto/update.user.dto';
-import { User } from '../../entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -37,6 +37,16 @@ export class UserService {
     if (!user) throw new HttpException('No such user', HttpStatus.BAD_REQUEST);
 
     return user;
+  }
+
+  async toggleUserOnline(userId: string) {
+    const user = await this.userRepository.findOneBy({ id: userId });
+
+    if (user.isOnline) {
+      return await this.userRepository.save({ id: userId, isOnline: false, wasOnline: new Date() });
+    }
+
+    return await this.userRepository.save({ id: userId, isOnline: true });
   }
 
   async getUserProfileInfoByUserName(userName: string) {

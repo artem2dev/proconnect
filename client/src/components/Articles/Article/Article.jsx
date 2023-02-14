@@ -143,8 +143,9 @@ export const Article = ({ article }) => {
       );
     });
   }, [articleData]);
+
   return (
-    <Card width={id ? '100%' : '760px'} maxH={'100%'} mt={'5'}>
+    <Card width={'100%'} maxH={'100%'} mt={'5'}>
       <CardHeader>
         <Flex spacing='4'>
           <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
@@ -161,7 +162,9 @@ export const Article = ({ article }) => {
               onClick={id ? null : () => navigate(`/article/${articleData.id}`)}
               _hover={{ cursor: 'pointer' }}
             >
-              <Text fontSize={'2xl'} whiteSpace={'nowrap'} maxW={'600px'}>{articleData?.title}</Text>
+              <Text fontSize={'2xl'} whiteSpace={'nowrap'} maxW={'600px'}>
+                {articleData?.title}
+              </Text>
               <Heading size='md' fontSize={'sm'}>
                 {articleData?.author?.firstName + ' ' + articleData?.author?.lastName}
               </Heading>
