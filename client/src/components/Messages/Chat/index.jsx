@@ -1,7 +1,9 @@
-import { Avatar, Box, Flex, Text } from '@chakra-ui/react';
-import { ConversationHeader, Message, MessageInput } from '@chatscope/chat-ui-kit-react';
+import { Avatar, Box, Flex, Input, Text } from '@chakra-ui/react';
+import { ConversationHeader, Message } from '@chatscope/chat-ui-kit-react';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import React, { useCallback, useEffect, useState } from 'react';
+import { ImAttachment } from 'react-icons/im';
+import { RiSendPlaneFill } from 'react-icons/ri';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import ScrollableFeed from 'react-scrollable-feed';
@@ -138,7 +140,16 @@ const Chat = () => {
 
   return (
     <Flex direction={'column'} justifyContent={'space-between'}>
-      <ConversationHeader style={{ width: '100%', backgroundColor: '#202231', borderWidth: 0, borderRadius: 8, boxShadow: 0 }}>
+      <ConversationHeader
+        style={{
+          width: '100%',
+          backgroundColor: '#202231',
+          borderWidth: 0,
+          borderRadius: 8,
+          boxShadow: 0,
+          marginBottom: '5px',
+        }}
+      >
         <ConversationHeader.Back onClick={onBack} />
         <ConversationHeader.Content onClick={handleRedirectToProfile}>
           {user?.id && (
@@ -149,13 +160,17 @@ const Chat = () => {
           )}
         </ConversationHeader.Content>
       </ConversationHeader>
-      <Box height={window.innerHeight - 160} style={{ backgroundColor: '#171923' }}>
+      <Box height={window.innerHeight - 165} style={{ backgroundColor: '#171923' }}>
         <ScrollableFeed className='chat-scrollbar'>
           {messages.map((message, index) => {
             return (
               <Message
                 key={index}
-                style={{ marginLeft: '10px', marginRight: '10px' }}
+                style={{
+                  marginLeft: message?.userId === userInfo?.id ? '160px' : '10px',
+                  textAlign: 'left',
+                  maxWidth: '80%',
+                }}
                 model={{
                   position: 'single',
                   message: `${message?.text}`,
@@ -174,28 +189,32 @@ const Chat = () => {
         </ScrollableFeed>
       </Box>
 
-      {/* <Flex w={'full'} marginTop={10}>
+      <Flex w={'full'} alignItems={'center'} marginTop={5}>
+        <ImAttachment
+          fill={'#6ea9d7'}
+          style={{ width: '25px', height: '25px', marginLeft: '10px', marginRight: '10px', cursor: 'pointer' }}
+        />
         <Input
           type='text'
+          variant='filled'
+          bgColor={'#6ea9d7'}
+          _hover={''}
+          style={{ color: 'black', borderRadius: '10px', fontSize: '15px' }}
+          _placeholder={{ opacity: 1, color: 'gray.600' }}
+          _focus={{ border: null, bgColor: '#6ea9d7', caretColor: 'black', color: 'black' }}
           value={currentMessage}
+          placeholder='Type message here...'
           onChange={(e) => {
             setCurrentMessage(e.target.value);
           }}
           onKeyDown={onKeyDown}
         />
-        <Button w={200} marginLeft={10} onClick={sendMessage}>
-          Send message
-        </Button>
-      </Flex> */}
-      <MessageInput
-        onSend={sendMessage}
-        value={currentMessage}
-        onChange={setCurrentMessage}
-        style={{ textAlign: 'left', backgroundColor: '#171923', marginTop: '20px' }}
-        onKeyDown={onKeyDown}
-        placeholder='Type message here...'
-        autoFocus
-      />
+        <RiSendPlaneFill
+          fill={'#375067'}
+          style={{ width: '30px', height: '30px', marginLeft: '10px', marginRight: '10px', cursor: 'pointer' }}
+          onClick={sendMessage}
+        />
+      </Flex>
     </Flex>
   );
 };

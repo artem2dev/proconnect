@@ -29,21 +29,21 @@ import { config } from '../../config/app.config';
 const list = [
   {
     id: 1,
-    name: 'Opportunities applied',
+    name: 'Articles written',
     value: 32,
     color: 'yellow',
   },
   {
     id: 2,
-    name: 'Opportunities won',
+    name: 'Friends',
     value: 26,
     color: 'green',
   },
   {
     id: 3,
-    name: 'Current opportunities',
+    name: 'Total number of likes',
     value: 6,
-    color: 'cadet',
+    color: 'red',
   },
 ];
 

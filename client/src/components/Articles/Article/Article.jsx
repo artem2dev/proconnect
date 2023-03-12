@@ -12,10 +12,11 @@ import {
   Heading,
   IconButton,
   Image,
+  Input,
   Text,
-  Textarea,
 } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
+import { AiFillEye } from 'react-icons/ai';
 import { BiChat, BiLike, BiSend, BiShare } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
@@ -193,8 +194,8 @@ export const Article = ({ article }) => {
           </ContextMenu>
         </Flex>
       </CardHeader>
-      <CardBody maxH={'300px'} padding='0px 20px 10px 20px'>
-        <Text maxH={'100%'} textOverflow={'initial'}>
+      <CardBody maxH={'2000px'} padding='0px 20px 10px 20px'>
+        <Text maxH={'100%'} style={{ whiteSpace: 'pre-line' }} textOverflow={'initial'}>
           {articleData?.content}
         </Text>
       </CardBody>
@@ -263,8 +264,16 @@ export const Article = ({ article }) => {
               },
             }}
           >
-            <Text>{`Views: ${articleData?.views ?? 99}`}</Text>
-            <Text>{`Likes: ${articleData?.likes}`}</Text>
+            <Box
+              width={'50px'}
+              display={'flex'}
+              alignItems={'center'}
+              justifyContent={'space-around'}
+              flexDirection={'row'}
+            >
+              <AiFillEye />
+              <Text>{articleData?.views ?? 99}</Text>
+            </Box>
           </Flex>
         </Flex>
         {comments}
@@ -272,12 +281,19 @@ export const Article = ({ article }) => {
           <Flex flexDir='column' mt='15px'>
             <FormLabel> Comment something about this:</FormLabel>
             <Flex>
-              <Textarea flex='1' resize='none' onChange={(e) => setCommentText(e.target.value)} />
+              <Input
+                variant='filled'
+                placeholder='Type here...'
+                flex='1'
+                resize='none'
+                onChange={(e) => setCommentText(e.target.value)}
+              />
               <Button
                 flex='0.05'
-                rightIcon={<BiSend />}
+                rightIcon={<BiSend style={{ width: '20px', height: '20px' }} />}
                 ml='5px'
                 pl='12px'
+                height={'40px'}
                 onClick={() => {
                   commentArticle(commentText, articleData.id).then(({ data: savedComment }) => {
                     setArticleData({ ...articleData, comments: [...articleData?.comments, savedComment] });
