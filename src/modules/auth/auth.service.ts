@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ApiTags } from '@nestjs/swagger';
 import * as bcrypt from 'bcrypt';
 import { IUserIdAndEmail } from 'src/common/types/interfaces';
 import { config } from 'src/config/app.config';

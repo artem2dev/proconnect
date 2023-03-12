@@ -66,7 +66,7 @@ const Content = () => {
   const [labels, setLabels] = useState(defaultLabels);
   const [isLoading, setIsLoading] = useState(false);
   const [isFieldError, setIsFieldError] = useState(initialIsFieldError);
-  const tabs = ['Account Settings', 'Company Settings', 'Notifications'];
+  const tabs = ['Account Settings', 'Privacy settings', 'Notifications'];
 
   useEffect(() => {
     user?.id &&

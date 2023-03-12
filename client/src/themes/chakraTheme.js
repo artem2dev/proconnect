@@ -17,6 +17,7 @@ export const theme = extendTheme({
       slate: '#77889a',
       white: '#e3e4e7',
       yellow: '#ed9b13',
+      red: '#ff0000',
     },
   },
   components: {
