@@ -1,15 +1,14 @@
-import { forwardRef, Module } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from '../users/user.module';
+import { Media } from '../../entities/media.entity';
+import { User } from '../../entities/user.entity';
 import { MediaController } from './media.controller';
-import { Media } from './media.entity';
 import { MediaService } from './media.service';
 
 @Module({
-  imports: [forwardRef(() => UserModule), TypeOrmModule.forFeature([Media])],
+  imports: [TypeOrmModule.forFeature([Media, User])],
   controllers: [MediaController],
-  providers: [MediaService, JwtService],
+  providers: [MediaService],
   exports: [MediaService],
 })
 export class MediaModule {}

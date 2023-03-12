@@ -1,31 +1,62 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IUpdateUserInfo } from 'src/common/types/user';
 import { Repository } from 'typeorm';
+import { User } from '../../entities/user.entity';
+import { FriendsService } from '../friends/friends.service';
 import { CreateUserDto } from './dto/create.user.dto';
-import { User } from './user.entity';
+import { UpdateUserDto } from './dto/update.user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private friendsService: FriendsService,
   ) {}
 
-  getUserByEmail(email: string) {
-    return this.userRepository.findOneBy({ email });
+  async getUserById(id: string) {
+    return await this.userRepository.findOneBy({ id });
   }
 
-  getUserById(id: string) {
-    return this.userRepository.findOneBy({ id });
+  async getUserByEmail(email: string) {
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .select()
+      .addSelect('user.password')
+      .where('user.email = :email', { email })
+      .getOne();
   }
 
-  async getUserInfo(userId: string) {
+  async getUserByUserName(userName: string) {
+    return await this.userRepository.findOneBy({ userName });
+  }
+
+  async getUserProfileInfo(userId: string) {
     const user = await this.userRepository.findOneBy({ id: userId });
 
     if (!user) throw new HttpException('No such user', HttpStatus.BAD_REQUEST);
 
     return user;
+  }
+
+  async toggleUserOnline(userId: string) {
+    const user = await this.userRepository.findOneBy({ id: userId });
+
+    if (user.isOnline) {
+      return await this.userRepository.save({ id: userId, isOnline: false, wasOnline: new Date() });
+    }
+
+    return await this.userRepository.save({ id: userId, isOnline: true });
+  }
+
+  async getUserProfileInfoByUserName(userName: string) {
+    const user = await this.userRepository.findOneBy({ userName });
+
+    const userFriendsCount = await this.friendsService.getUserFriendsCount(user);
+
+    if (!user) throw new HttpException('No such user', HttpStatus.BAD_REQUEST);
+
+    return { ...user, userFriendsCount };
   }
 
   async createUser(dto: CreateUserDto) {
@@ -38,7 +69,7 @@ export class UserService {
     return this.userRepository.find();
   }
 
-  async updateUser(userInfo: IUpdateUserInfo) {
+  async updateUser(userInfo: UpdateUserDto) {
     const { id } = userInfo;
     const user = await this.userRepository.findOneBy({ id });
 
@@ -48,7 +79,7 @@ export class UserService {
 
     if (userName !== userInfo.userName) {
       const isUserNameExists = await this.userRepository.findOneBy({
-        userName,
+        userName: userInfo.userName,
       });
 
       if (isUserNameExists) {
@@ -58,7 +89,7 @@ export class UserService {
 
     if (email !== userInfo.email) {
       const isEmailExists = await this.userRepository.findOneBy({
-        email,
+        email: userInfo.email,
       });
 
       if (isEmailExists) {

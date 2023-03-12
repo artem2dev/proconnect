@@ -1,0 +1,20 @@
+.chat-scrollbar::-webkit-scrollbar {
+  opacity: 0;
+  width: 6px;
+  transition: margin-right 4s;
+}
+
+.chat-scrollbar::-webkit-scrollbar-track {
+  border-radius: 9em;
+  background-color: #202231;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 9em;
+  background-color: #687275;
+}
+
+/* .chat-scrollbar::-webkit-scrollbar-thumb:hover {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+} */

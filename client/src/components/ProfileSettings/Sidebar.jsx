@@ -24,31 +24,32 @@ import {
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { uploadImage } from '../../api/media';
+import { config } from '../../config/app.config';
 
 const list = [
   {
     id: 1,
-    name: 'Opportunities applied',
+    name: 'Articles written',
     value: 32,
     color: 'yellow',
   },
   {
     id: 2,
-    name: 'Opportunities won',
+    name: 'Friends',
     value: 26,
     color: 'green',
   },
   {
     id: 3,
-    name: 'Current opportunities',
+    name: 'Total number of likes',
     value: 6,
-    color: 'cadet',
+    color: 'red',
   },
 ];
 
 const Sidebar = () => {
-  const user = useSelector((state) => state.users);
-  const value = 'https://apple.com/cook';
+  const user = useSelector((state) => state.user);
+  const value = `https://domain.com/${user?.userName}`;
   const { hasCopied, onCopy } = useClipboard(value);
 
   const profileUrl = useRef(null);
@@ -99,24 +100,18 @@ const Sidebar = () => {
       flex={1}
       mr={{ base: 0, md: 5 }}
       mb={{ base: 5, md: 0 }}
-      bg='white'
       rounded='md'
       borderWidth={1}
-      borderColor='brand.light'
       style={{ transform: 'translateY(-100px)' }}
+      bgColor='RGBA(0, 0, 0, 0.2)'
+      borderColor={'brand.gray'}
     >
-      <VStack
-        spacing={3}
-        py={5}
-        borderBottomWidth={1}
-        borderColor='brand.light'
-      >
+      <VStack spacing={3} py={5} borderBottomWidth={1} borderColor='brand.gray'>
         <Avatar
           size='2xl'
-          name={`${user?.firstName} ${user?.lastName}`}
           cursor='pointer'
           onClick={openChooseImage}
-          src={user?.id ? 'http://localhost:5000/media/image/' + user?.id : ''}
+          src={user?.id ? `${config.API}/media/image/` + user?.id : ''}
         >
           <AvatarBadge bg='brand.blue' boxSize='1em'>
             <svg width='0.4em' fill='currentColor' viewBox='0 0 20 20'>
@@ -128,12 +123,7 @@ const Sidebar = () => {
             </svg>
           </AvatarBadge>
         </Avatar>
-        <input
-          hidden
-          type='file'
-          ref={profileImage}
-          onChange={changeProfileImage}
-        />
+        <input hidden type='file' ref={profileImage} onChange={changeProfileImage} />
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
@@ -142,7 +132,7 @@ const Sidebar = () => {
             <ModalBody>
               <Text>File not supported!</Text>
               <HStack mt={1}>
-                <Text color='brand.cadet' fontSize='sm'>
+                <Text color='white' fontSize='sm'>
                   Supported types:
                 </Text>
                 <Badge colorScheme='green'>PNG</Badge>
@@ -157,10 +147,10 @@ const Sidebar = () => {
           </ModalContent>
         </Modal>
         <VStack spacing={1}>
-          <Heading as='h3' fontSize='xl' color='brand.dark'>
+          <Heading as='h3' fontSize='xl' color='white'>
             {`${user?.firstName} ${user?.lastName}`}
           </Heading>
-          <Text color='brand.gray' fontSize='sm'>
+          <Text color='white' fontSize='sm'>
             {user?.userName}
           </Text>
         </VStack>
@@ -177,9 +167,9 @@ const Sidebar = () => {
             alignItems='center'
             justifyContent='space-between'
             borderBottomWidth={1}
-            borderColor='brand.light'
+            borderColor={'brand.gray'}
           >
-            <Text color='brand.dark'>{item.name}</Text>
+            <Text color='white'>{item.name}</Text>
             <Text color={`brand.${item.color}`} fontWeight='bold'>
               {item.value}
             </Text>
@@ -187,9 +177,7 @@ const Sidebar = () => {
         ))}
       </VStack>
       <VStack py={8} px={5} spacing={3}>
-        <Button w='full' variant='outline'>
-          View Public Profile
-        </Button>
+        <Button>View Public Profile</Button>
         <InputGroup>
           <Input
             ref={profileUrl}
