@@ -17,7 +17,6 @@ async function start() {
     origin: true,
     credentials: true,
   });
-
   app.use(cookieParser());
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
@@ -25,7 +24,7 @@ async function start() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
 
   SwaggerModule.setup('docs', app, document);
-
+  // test3
   await app.listen(PORT, () => logger.log(`Blog app successfully started on port ${PORT}`));
 }
 start();

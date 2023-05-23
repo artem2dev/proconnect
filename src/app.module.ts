@@ -13,6 +13,7 @@ import { FriendsModule } from './modules/friends/friends.module';
 import { MediaModule } from './modules/media/media.module';
 import { UserModule } from './modules/users/user.module';
 
+// test 2
 @Module({
   imports: [
     CoreModule,

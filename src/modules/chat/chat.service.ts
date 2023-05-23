@@ -88,11 +88,7 @@ export class ChatService {
       Object.keys(chat).forEach((key) => {
         const [entity, entityKey] = key.split('_');
 
-        if (entityKey) {
-          obj[entity] = { ...obj?.[entity], [entityKey]: chat[key] };
-        } else {
-          obj['message'] = { ...obj?.['message'], [key]: chat[key] };
-        }
+        obj[entity] = { ...obj?.[entity], [entityKey]: chat[key] };
       });
 
       return obj;
