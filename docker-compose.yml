@@ -1,8 +1,39 @@
 version: '3.3'
 services:
+  backend:
+    container_name: backend
+    build: ./backend
+    env_file: ./backend/.env
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - minio-service
+    volumes:
+      - ./backend:/app
+    command: yarn start:dev
+    networks:
+      - bridge
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  client:
+    container_name: client
+    build: ./client
+    env_file: ./client/.env
+    working_dir: /app
+    ports:
+      - "4000:4000"
+    networks:
+      - bridge
+    depends_on:
+      - backend
+    command: yarn start
+
   postgres:
     image: postgres
-    env_file: ./.env
+    env_file: ./backend/.env
     environment:
       POSTGRES_DB: 'blog-db'
       POSTGRES_USER: 'postgres'
@@ -11,10 +42,13 @@ services:
       - .:/docker-entrypoint-initdb.d
     ports:
       - '5432:5432'
+    networks:
+      - bridge
+
   minio-service:
     image: minio/minio
     container_name: minio-service
-    env_file: ./.env
+    env_file: ./backend/.env
     ports:
       - 9000:9000
       - 9099:9099
@@ -24,6 +58,9 @@ services:
       MINIO_ACCESS_KEY: ${MINIO_SERVER_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SERVER_SECRET_KEY}
     command: server --address ":9099" --console-address ":9000" /data
+    networks:
+      - bridge
+
   createbuckets:
     image: minio/mc
     depends_on:
@@ -37,3 +74,9 @@ services:
       /usr/bin/mc policy set download minio/static;
       exit 0;
       "
+    networks:
+      - bridge
+
+networks:
+  bridge:
+    driver: bridge
