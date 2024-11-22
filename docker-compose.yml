@@ -1,39 +1,39 @@
 version: '3.3'
 services:
-  backend1:
-    container_name: backend1
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    env_file: ./backend/.env
-    working_dir: /app
-    ports:
-      - "3001:3001"
-    depends_on:
-      - postgres1
-      - minio-service1
-    volumes:
-      - ./backend:/app
-    command: yarn start:dev
-    networks:
-      - bridge
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+  # backend1:
+  #   container_name: backend1
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   env_file: ./backend/.env
+  #   working_dir: /app
+  #   ports:
+  #     - "3001:3001"
+  #   depends_on:
+  #     - postgres1
+  #     - minio-service1
+  #   volumes:
+  #     - ./backend:/app
+  #   command: yarn start:dev
+  #   networks:
+  #     - bridge
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
 
-  client1:
-    container_name: client1
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    env_file: ./client/.env
-    working_dir: /app
-    ports:
-      - "3000:3000"
-    networks:
-      - bridge
-    depends_on:
-      - backend1
-    command: yarn start
+  # client1:
+  #   container_name: client1
+  #   build:
+  #     context: ./client
+  #     dockerfile: Dockerfile
+  #   env_file: ./client/.env
+  #   working_dir: /app
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - bridge
+    # depends_on:
+    #   - backend1
+    # command: yarn start
 
   postgres1:
     container_name: postgres1
