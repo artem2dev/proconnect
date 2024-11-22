@@ -8,6 +8,7 @@ import {
   Flex,
   HStack,
   Icon,
+  Image,
   Link,
   Menu,
   MenuButton,
@@ -29,7 +30,7 @@ import { RxEnvelopeClosed } from 'react-icons/rx';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from '../../api/auth';
-import { ReactComponent as Logo } from '../../assets/logo.svg';
+import logo from '../../assets/logo.png';
 import { config } from '../../config/app.config';
 import { removeItem } from '../../helpers/localStorage';
 import { setGlobalState } from '../../redux/globalStateSlice';
@@ -110,7 +111,6 @@ const SidebarContent = ({ onClose, onModalOpen, ...rest }) => {
       transition='3s ease'
       bg={useColorModeValue('white', 'gray.900')}
       borderRight='1px'
-      borderLeft='1px'
       borderColor={useColorModeValue('gray.200', 'gray.700')}
       w={{ base: 'full', md: 60 }}
       pos='fixed'
@@ -121,7 +121,7 @@ const SidebarContent = ({ onClose, onModalOpen, ...rest }) => {
     >
       <Box h={'82%'}>
         <Flex h='20' alignItems='center' mx='8' justifyContent='space-between'>
-          <Logo width='60px' height='60px' />
+          <Image src={logo} onClick={navigateLink('/')} cursor='pointer' />
           <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
         </Flex>
         <Flex h={'100%'} flexDirection={'column'} justifyContent={'space-between'} alignItems={''}>
