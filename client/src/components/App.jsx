@@ -1,7 +1,7 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import { getUser } from '../api/user';
 import { getItem } from '../helpers/localStorage';

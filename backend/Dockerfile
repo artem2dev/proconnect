@@ -2,10 +2,17 @@ FROM node:18
 
 WORKDIR /app
 
-COPY package*.json /app/
+# Копируем только package.json и yarn.lock из папки client
+COPY ./package*.json ./
 
-RUN yarn
+# Устанавливаем зависимости
+RUN yarn install
 
-COPY . .
+# Копируем все остальные файлы из папки client
+COPY . . 
 
+# Создаем сборку
 RUN yarn build
+
+# Указываем команду по умолчанию для запуска
+CMD ["yarn", "start"]
