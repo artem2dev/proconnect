@@ -111,7 +111,7 @@ const SidebarContent = ({ onClose, onModalOpen, ...rest }) => {
       transition='3s ease'
       bg={useColorModeValue('white', 'gray.900')}
       borderRight='1px'
-      borderColor={useColorModeValue('gray.200', 'gray.700')}
+      borderColor={useColorModeValue('gray.200', 'gray.800')}
       w={{ base: 'full', md: 60 }}
       pos='fixed'
       h='full'

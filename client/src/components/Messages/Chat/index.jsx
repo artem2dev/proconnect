@@ -82,22 +82,24 @@ const Chat = () => {
   }, [messageListener]);
 
   const sendMessage = () => {
-    socket.emit('message', {
-      message: { roomId: room, userId: userInfo?.id, text: currentMessage },
-      user1: {
-        id: userInfo?.id,
-        firstName: userInfo?.firstName,
-        lastName: userInfo?.lastName,
-        avatarId: userInfo?.avatarId,
-      },
-      user2: {
-        id: user?.id,
-        firstName: user?.firstName,
-        lastName: user?.lastName,
-        avatarId: user?.avatarId,
-      },
-      roomId: room,
-    });
+    if (currentMessage) {
+      socket.emit('message', {
+        message: { roomId: room, userId: userInfo?.id, text: currentMessage },
+        user1: {
+          id: userInfo?.id,
+          firstName: userInfo?.firstName,
+          lastName: userInfo?.lastName,
+          avatarId: userInfo?.avatarId,
+        },
+        user2: {
+          id: user?.id,
+          firstName: user?.firstName,
+          lastName: user?.lastName,
+          avatarId: user?.avatarId,
+        },
+        roomId: room,
+      });
+    }
 
     setCurrentMessage('');
   };
@@ -197,11 +199,12 @@ const Chat = () => {
         <Input
           type='text'
           variant='filled'
-          bgColor={'#6ea9d7'}
+          bgColor={'white'}
           _hover={''}
+          border='none'
           style={{ color: 'black', borderRadius: '10px', fontSize: '15px' }}
           _placeholder={{ opacity: 1, color: 'gray.600' }}
-          _focus={{ border: null, bgColor: '#6ea9d7', caretColor: 'black', color: 'black' }}
+          _focus={{ border: null, bgColor: 'white', caretColor: 'black', color: 'black' }}
           value={currentMessage}
           placeholder='Type message here...'
           onChange={(e) => {
@@ -210,8 +213,16 @@ const Chat = () => {
           onKeyDown={onKeyDown}
         />
         <RiSendPlaneFill
-          fill={'#375067'}
-          style={{ width: '30px', height: '30px', marginLeft: '10px', marginRight: '10px', cursor: 'pointer' }}
+          fill={'#6ea9d7'}
+          style={{
+            width: '30px',
+            height: '30px',
+            marginLeft: '10px',
+            marginRight: '10px',
+            cursor: 'pointer',
+            rotate: 20,
+          }}
+          rotate={'rotate(90deg)'}
           onClick={sendMessage}
         />
       </Flex>
