@@ -1,43 +1,45 @@
 version: '3.3'
 services:
-  backend:
-    container_name: backend
-    build: ./backend
-    env_file: ./backend/.env
-    working_dir: /app
-    ports:
-      - "3000:3000"
-    depends_on:
-      - postgres
-      - minio-service
-    volumes:
-      - ./backend:/app
-    command: yarn start:dev
-    networks:
-      - bridge
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+  # backend:
+  #   container_name: backend
+  #   build: ./backend
+  #   env_file: ./backend/.env
+  #   working_dir: /app
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - postgres
+  #     - minio-service
+  #   volumes:
+  #     - ./backend:/app
+  #   command: yarn start:dev
+  #   networks:
+  #     - bridge
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
 
-  client:
-    container_name: client
-    build: ./client
-    env_file: ./client/.env
-    working_dir: /app
-    ports:
-      - "4000:4000"
-    networks:
-      - bridge
-    depends_on:
-      - backend
-    command: yarn start
+  # client:
+  #   container_name: client
+  #   build:
+  #     context: .
+  #     dockerfile: ./client/Dockerfile
+  #   env_file: ./client/.env
+  #   working_dir: /app
+  #   ports:
+  #     - "4000:4000"
+  #   networks:
+  #     - bridge
+  #   depends_on:
+  #     - backend
+  #   command: yarn start
 
   postgres:
     image: postgres
     env_file: ./backend/.env
     environment:
-      POSTGRES_DB: 'blog-db'
-      POSTGRES_USER: 'postgres'
-      POSTGRES_PASSWORD: 'root'
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
     volumes:
       - .:/docker-entrypoint-initdb.d
     ports:
@@ -53,10 +55,10 @@ services:
       - 9000:9000
       - 9099:9099
     environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-      MINIO_ACCESS_KEY: ${MINIO_SERVER_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MINIO_SERVER_SECRET_KEY}
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_ACCESS_KEY: lskdfhghn8975
+      MINIO_SECRET_KEY: jkshdgo76
     command: server --address ":9099" --console-address ":9000" /data
     networks:
       - bridge
@@ -67,7 +69,7 @@ services:
       - minio-service
     entrypoint: >
       /bin/sh -c "
-      until (/usr/bin/mc config host add minio http://minio-service:9099 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}) do echo '...waiting...' && sleep 1; done;
+      until (/usr/bin/mc config host add minio http://minio-service:9099 minioadmin minioadmin) do echo '...waiting...' && sleep 1; done;
       /usr/bin/mc mb minio/media;
       /usr/bin/mc policy set download minio/media;
       /usr/bin/mc mb minio/static;

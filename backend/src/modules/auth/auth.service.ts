@@ -1,6 +1,6 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import bcrypt from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 import { IUserIdAndEmail } from '../../common/types/interfaces';
 import { config } from '../../config/app.config';
 import { User } from '../../entities/user.entity';
@@ -26,7 +26,7 @@ export class AuthService {
       throw new HttpException('User with this email already exists', HttpStatus.BAD_REQUEST);
     }
 
-    const hashPassword = await bcrypt.hash(userDto.password, 5);
+    const hashPassword = await hash(userDto.password, 5);
     const user = await this.userService.createUser({
       ...userDto,
       password: hashPassword,
@@ -64,13 +64,13 @@ export class AuthService {
       throw new HttpException('No such user', HttpStatus.BAD_REQUEST);
     }
 
-    const passwordEquals = await bcrypt.compare(userDto.password, user.password);
+    const passwordEquals = await compare(userDto.password, user.password);
 
     if (passwordEquals) {
       return user;
     }
 
-    throw new UnauthorizedException({
+    throw new NotFoundException({
       message: 'Wrong email or password',
     });
   }
