@@ -146,7 +146,7 @@ export const Article = ({ article }) => {
   }, [articleData]);
 
   return (
-    <Card width={'100%'} maxH={'100%'} mt={'5'}>
+    <Card maxWidth={'768px'} maxH={'100%'} mt={'5'}>
       <CardHeader>
         <Flex spacing='4'>
           <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
@@ -239,7 +239,10 @@ export const Article = ({ article }) => {
               justify='center'
               variant='ghost'
               leftIcon={<BiChat />}
-              onClick={() => setIsCommenting(!isCommenting)}
+              onClick={() => {
+                setIsCommenting(!isCommenting);
+                setCommentText('');
+              }}
               _hover={styles.actionHover}
             ></Button>
             <Button
@@ -286,6 +289,7 @@ export const Article = ({ article }) => {
                 placeholder='Type here...'
                 flex='1'
                 resize='none'
+                value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
               />
               <Button
@@ -294,10 +298,12 @@ export const Article = ({ article }) => {
                 ml='5px'
                 pl='12px'
                 height={'40px'}
-                onClick={() => {
-                  commentArticle(commentText, articleData.id).then(({ data: savedComment }) => {
+                onClick={async() => {
+                  await commentArticle(commentText, articleData.id).then(({ data: savedComment }) => {
                     setArticleData({ ...articleData, comments: [...articleData?.comments, savedComment] });
                   });
+                  setIsCommenting(!isCommenting);
+                  setCommentText('');
                 }}
               />
             </Flex>

@@ -165,9 +165,9 @@ const SidebarContent = ({ onClose, onModalOpen, ...rest }) => {
             </HStack>
           </MenuButton>
           <MenuList bg={useColorModeValue('white', 'gray.900')} borderColor={useColorModeValue('gray.200', 'gray.700')}>
-            <MenuItem onClick={onShowProfileSettings}>Profile settings</MenuItem>
+            <MenuItem bg={useColorModeValue('white', 'gray.900')} _hover={{ bg: 'RGBA(0, 0, 0, 0.5)' }} onClick={onShowProfileSettings}>Profile settings</MenuItem>
             <MenuDivider />
-            <MenuItem onClick={onSignOut}>Sign out</MenuItem>
+            <MenuItem bg={useColorModeValue('white', 'gray.900')} _hover={{ bg: 'RGBA(0, 0, 0, 0.5)' }} onClick={onSignOut}>Sign out</MenuItem>
           </MenuList>
         </Menu>
       </Box>
