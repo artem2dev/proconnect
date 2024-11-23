@@ -145,6 +145,16 @@ export const Article = ({ article }) => {
     });
   }, [articleData]);
 
+  const onSendComment = () => {
+    commentArticle(commentText, articleData.id).then(({ data: savedComment }) => {
+      setArticleData({ ...articleData, comments: [...articleData?.comments, savedComment] });
+    });
+
+    setIsCommenting(!isCommenting);
+
+    setCommentText('');
+  };
+
   return (
     <Card maxWidth={'768px'} maxH={'100%'} mt={'5'}>
       <CardHeader>
@@ -298,13 +308,7 @@ export const Article = ({ article }) => {
                 ml='5px'
                 pl='12px'
                 height={'40px'}
-                onClick={async() => {
-                  await commentArticle(commentText, articleData.id).then(({ data: savedComment }) => {
-                    setArticleData({ ...articleData, comments: [...articleData?.comments, savedComment] });
-                  });
-                  setIsCommenting(!isCommenting);
-                  setCommentText('');
-                }}
+                onClick={onSendComment}
               />
             </Flex>
           </Flex>
