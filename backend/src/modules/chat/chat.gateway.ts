@@ -17,13 +17,14 @@ import { ReadChatDto } from './dto/read.chat.dto';
   cors: {
     origin: '*',
   },
+  transports: ['websocket'],
 })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   constructor(private chatService: ChatService, private userService: UserService) {}
 
   @WebSocketServer() server: Server;
 
-  @SubscribeMessage('api/message')
+  @SubscribeMessage('message')
   async handleSendMessage(socket: IExtendedSocket, data: CreateMessageDto): Promise<void> {
     console.info('Send message in chat:', data);
 
@@ -32,7 +33,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.server.to(data.roomId).emit('message', { ...data, message });
   }
 
-  @SubscribeMessage('api/chatRead')
+  @SubscribeMessage('chatRead')
   async handleChatRead(socket: IExtendedSocket, data: ReadChatDto): Promise<void> {
     await this.chatService.handleReadChat(data);
 

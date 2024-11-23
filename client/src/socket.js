@@ -3,6 +3,6 @@ import { config } from './config/app.config';
 
 const URL = config.API;
 
-const socket = io(URL, { autoConnect: false });
+const socket = io(URL, { autoConnect: false, transports: ['websocket'] });
 
 export default socket;
