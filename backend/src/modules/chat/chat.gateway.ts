@@ -23,7 +23,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @WebSocketServer() server: Server;
 
-  @SubscribeMessage('message')
+  @SubscribeMessage('api/message')
   async handleSendMessage(socket: IExtendedSocket, data: CreateMessageDto): Promise<void> {
     console.info('Send message in chat:', data);
 
@@ -32,7 +32,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.server.to(data.roomId).emit('message', { ...data, message });
   }
 
-  @SubscribeMessage('chatRead')
+  @SubscribeMessage('api/chatRead')
   async handleChatRead(socket: IExtendedSocket, data: ReadChatDto): Promise<void> {
     await this.chatService.handleReadChat(data);
 
