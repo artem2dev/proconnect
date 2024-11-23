@@ -28,6 +28,6 @@ async function start() {
 
   SwaggerModule.setup('docs', app, document);
 
-  await app.listen(PORT, () => logger.log(`Blog app successfully started on port ${PORT}`));
+  await app.listen(PORT, () => logger.log(`ProConnect app successfully started on port ${PORT}`));
 }
 start();
