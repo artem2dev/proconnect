@@ -15,9 +15,8 @@ import { ReadChatDto } from './dto/read.chat.dto';
 
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:3000', 'https://pro2connect.ru'],
+    origin: '*',
   },
-  transports: ['websocket'],
 })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   constructor(private chatService: ChatService, private userService: UserService) {}
@@ -26,7 +25,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('message')
   async handleSendMessage(socket: IExtendedSocket, data: CreateMessageDto): Promise<void> {
-    console.info('Send message in chat:', data);
+    console.log('Send message in chat:', data);
 
     const message = await this.chatService.createMessage(data);
 
