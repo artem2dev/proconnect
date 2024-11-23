@@ -15,7 +15,7 @@ import { ReadChatDto } from './dto/read.chat.dto';
 
 @WebSocketGateway({
   cors: {
-    origin: '*',
+    origin: ['http://localhost:3000', 'https://pro2connect.ru'],
   },
   transports: ['websocket'],
 })
