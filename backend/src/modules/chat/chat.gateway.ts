@@ -25,6 +25,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('message')
   async handleSendMessage(socket: IExtendedSocket, data: CreateMessageDto): Promise<void> {
+    console.info('Send message in chat:', data);
+
     const message = await this.chatService.createMessage(data);
 
     this.server.to(data.roomId).emit('message', { ...data, message });
@@ -32,13 +34,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('chatRead')
   async handleChatRead(socket: IExtendedSocket, data: ReadChatDto): Promise<void> {
-    await this.chatService.handleReadChat(data);
-
-    this.server.to(data.roomId).emit('chatRead', data);
-  }
-
-  @SubscribeMessage('chatRead')
-  async handle(socket: IExtendedSocket, data: ReadChatDto): Promise<void> {
     await this.chatService.handleReadChat(data);
 
     this.server.to(data.roomId).emit('chatRead', data);
