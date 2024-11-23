@@ -1,11 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { of } from 'rxjs';
+import { Repository } from 'typeorm';
 import { ExceptionDictionary } from '../../common/dictionary/ExceptionDictionary';
 import { ArticleComment } from '../../entities/article-comment.entity';
-import { User } from '../../entities/user.entity';
-import { Repository } from 'typeorm';
 import { Article } from '../../entities/article.entity';
+import { User } from '../../entities/user.entity';
 import { MediaService } from '../media/media.service';
 import { ArticleCommentDto } from './dto/article.comment.dto';
 import { ArticleDto } from './dto/article.dto';
@@ -24,6 +23,7 @@ export class ArticleService {
   ) {}
 
   async createArticle(user: User, dto: ArticleDto, image: Express.Multer.File) {
+    console.info('Add article by user : ', user.id, dto);
     const article = this.articleRepository.create({ ...dto, author: user });
 
     if (image) {
