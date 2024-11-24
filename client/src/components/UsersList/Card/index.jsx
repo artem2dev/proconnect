@@ -49,7 +49,14 @@ export default function UserCard({ user }) {
 
         <Box p={6}>
           <Stack spacing={0} align={'center'} mb={5}>
-            <Text maxW={235} textAlign={'center'} whiteSpace={'nowrap'} fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
+            <Text
+              maxW={235}
+              textAlign={'center'}
+              whiteSpace={'nowrap'}
+              fontSize={'2xl'}
+              fontWeight={500}
+              fontFamily={'body'}
+            >
               {`${user?.firstName} ${user?.lastName}`}
             </Text>
             <Text

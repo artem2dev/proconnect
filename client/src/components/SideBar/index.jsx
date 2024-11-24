@@ -20,7 +20,7 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AiOutlineHome } from 'react-icons/ai';
 import { FaRegUserCircle } from 'react-icons/fa';
 import { FiChevronDown, FiCompass, FiSettings, FiUsers } from 'react-icons/fi';
@@ -106,6 +106,19 @@ const SidebarContent = ({ onClose, onModalOpen, ...rest }) => {
 
   const navigateLink = (link) => () => link && navigate(link);
 
+  const [currentTitle, setCurrentTitle] = useState(() => {
+    return localStorage.getItem('pageTitle') || 'Articles';
+  });
+
+  const handleTitleUpdate = (link) => {
+    setCurrentTitle(link.name);
+    localStorage.setItem('pageTitle', link.name);
+  };
+
+  useEffect(() => {
+      document.title = currentTitle;
+  }, [currentTitle]);
+
   return (
     <Box
       transition='3s ease'
@@ -135,7 +148,10 @@ const SidebarContent = ({ onClose, onModalOpen, ...rest }) => {
                 bgColor={link.bgColor}
                 color={link.color}
                 _hover={link?.hover ?? { bg: 'RGBA(0, 0, 0, 0.5)' }}
-                onClick={navigateLink(link?.href)}
+                onClick={() => {
+                  handleTitleUpdate(link);
+                  navigateLink(link?.href)();
+                }}
               >
                 {link.name}
               </NavItem>
@@ -165,9 +181,29 @@ const SidebarContent = ({ onClose, onModalOpen, ...rest }) => {
             </HStack>
           </MenuButton>
           <MenuList bg={useColorModeValue('white', 'gray.900')} borderColor={useColorModeValue('gray.200', 'gray.700')}>
-            <MenuItem bg={useColorModeValue('white', 'gray.900')} _hover={{ bg: 'RGBA(0, 0, 0, 0.5)' }} onClick={onShowProfileSettings}>Profile settings</MenuItem>
+            <MenuItem
+              bg={useColorModeValue('white', 'gray.900')}
+              _hover={{ bg: 'RGBA(0, 0, 0, 0.5)' }}
+              onClick={(event) => {
+                onShowProfileSettings();
+                const title = event.target.textContent;
+                setCurrentTitle(title);
+              }}
+            >
+              Profile settings
+            </MenuItem>
             <MenuDivider />
-            <MenuItem bg={useColorModeValue('white', 'gray.900')} _hover={{ bg: 'RGBA(0, 0, 0, 0.5)' }} onClick={onSignOut}>Sign out</MenuItem>
+            <MenuItem
+              bg={useColorModeValue('white', 'gray.900')}
+              _hover={{ bg: 'RGBA(0, 0, 0, 0.5)' }}
+              onClick={() => {
+                onSignOut();
+                setCurrentTitle('ProConnect');
+                localStorage.removeItem("pageTitle");
+              }}
+            >
+              Sign out
+            </MenuItem>
           </MenuList>
         </Menu>
       </Box>
