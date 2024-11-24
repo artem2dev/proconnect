@@ -1,11 +1,11 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { ExceptionDictionary } from '../../common/dictionary/ExceptionDictionary';
 import { I_Id } from '../../common/types/interfaces';
-import { Repository } from 'typeorm';
-import { User } from '../../entities/user.entity';
 import { FriendRequest } from '../../entities/friend-requests.entity';
 import { UserFriends } from '../../entities/user-friends.entity';
+import { User } from '../../entities/user.entity';
 
 @Injectable()
 export class FriendsService {
@@ -26,26 +26,32 @@ export class FriendsService {
       .getMany();
   }
 
-  async getAllFriends(userName: string) {
+  async getAllFriends(userId: string) {
+    const friends = await this.userFriendsRepository
+      .createQueryBuilder('uf')
+      .select()
+      .leftJoinAndSelect('uf.user1', 'user1')
+      .leftJoinAndSelect('uf.user2', 'user2')
+      .where('uf.user1 = :userId OR uf.user2 = :userId', { userId })
+      .getMany();
+
+    const filteredFriends = friends.map((friend) =>
+      friend.user1.id === userId ? { ...friend.user2 } : { ...friend.user1 },
+    );
+
+    return filteredFriends;
+  }
+
+  async getAllFriendsByUserName(userName: string) {
     const user = await this.userRepository.findOneBy({ userName });
 
     if (!user) {
       throw new ConflictException(ExceptionDictionary.user.noSuchUser);
     }
 
-    const friends = await this.userFriendsRepository
-      .createQueryBuilder('uf')
-      .select()
-      .leftJoinAndSelect('uf.user1', 'user1')
-      .leftJoinAndSelect('uf.user2', 'user2')
-      .where('uf.user1 = :userId OR uf.user2 = :userId', { userId: user.id })
-      .getMany();
+    const userFriends = await this.getAllFriends(user.id);
 
-    const filteredFriends = friends.map((friend) =>
-      friend.user1.userName === userName ? { ...friend.user2 } : { ...friend.user1 },
-    );
-
-    return filteredFriends;
+    return userFriends;
   }
 
   async getUserFriendsCount(user: I_Id) {

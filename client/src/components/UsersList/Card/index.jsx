@@ -27,14 +27,6 @@ export default function UserCard({ user }) {
   return (
     <Center w={276} px={3} py={6} onClick={onClick} cursor='pointer'>
       <Box w={'full'} bg={useColorModeValue('white', 'gray.800')} boxShadow={'2xl'} rounded={'md'} overflow={'hidden'}>
-        {/* <Image
-          h={'120px'}
-          w={'full'}
-          src={
-            'https://images.unsplash.com/photo-1612865547334-09cb8cb455da?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'
-          }
-          objectFit={'cover'}
-        /> */}
         <Flex justify={'center'} mt={10}>
           <Avatar
             size={'xl'}
@@ -84,9 +76,15 @@ export default function UserCard({ user }) {
             </Stack>
           </Stack>
 
-          <Button w={'full'} mt={8} onClick={addToFriends}>
-            Add to friends
-          </Button>
+          {user.isFriend ? (
+            <Button w={'full'} mt={8} bgColor={'green.500'} _hover='none' _active='none'>
+              Already friends
+            </Button>
+          ) : (
+            <Button w={'full'} mt={8} onClick={addToFriends}>
+              Add to friends
+            </Button>
+          )}
         </Box>
       </Box>
     </Center>

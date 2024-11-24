@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/user.entity';
+import { ArticleService } from '../articles/article.service';
 import { FriendsService } from '../friends/friends.service';
 import { CreateUserDto } from './dto/create.user.dto';
 import { UpdateUserDto } from './dto/update.user.dto';
@@ -12,6 +13,7 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private friendsService: FriendsService,
+    private articleService: ArticleService,
   ) {}
 
   async getUserById(id: string) {
@@ -52,11 +54,11 @@ export class UserService {
   async getUserProfileInfoByUserName(userName: string) {
     const user = await this.userRepository.findOneBy({ userName });
 
-    const userFriendsCount = await this.friendsService.getUserFriendsCount(user);
+    const friendsCount = await this.friendsService.getUserFriendsCount(user);
 
     if (!user) throw new HttpException('No such user', HttpStatus.BAD_REQUEST);
 
-    return { ...user, userFriendsCount };
+    return { ...user, friendsCount };
   }
 
   async createUser(dto: CreateUserDto) {
@@ -65,8 +67,25 @@ export class UserService {
     return user;
   }
 
-  findAll() {
-    return this.userRepository.find();
+  async findAll(userId: string) {
+    return await this.usersExtended(userId);
+  }
+
+  async usersExtended(userId: string) {
+    const users = await this.userRepository.find();
+    const userFriends = await this.friendsService.getAllFriends(userId);
+    const userFriendIds = userFriends.map((uf) => uf.id);
+
+    const usersExtended = await Promise.all(
+      users.map(async (user) => {
+        const friendsCount = await this.friendsService.getUserFriendsCount({ id: user.id });
+        const articlesCount = await this.articleService.getUserArticlesCount(user.id);
+
+        return { ...user, friendsCount, articlesCount, isFriend: userFriendIds.includes(user.id) };
+      }),
+    );
+
+    return usersExtended;
   }
 
   async updateUser(userInfo: UpdateUserDto) {

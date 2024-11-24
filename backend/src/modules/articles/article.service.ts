@@ -89,6 +89,14 @@ export class ArticleService {
     return processedArticle;
   }
 
+  async getUserArticlesCount(userId: string) {
+    return await this.articleRepository
+      .createQueryBuilder('a')
+      .select()
+      .where('a.authorId = :userId', { userId })
+      .getCount();
+  }
+
   async deleteArticle(user: User, id: string) {
     const foundArticle = await this.articleRepository.findOneBy({ id, authorId: user.id });
 

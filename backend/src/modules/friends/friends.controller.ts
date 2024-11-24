@@ -19,7 +19,7 @@ export class FriendsController {
 
   @Get(':userName')
   getAllFriends(@Param('userName') userName: string) {
-    return this.friendsService.getAllFriends(userName);
+    return this.friendsService.getAllFriendsByUserName(userName);
   }
 
   @Post('add/:userId')
