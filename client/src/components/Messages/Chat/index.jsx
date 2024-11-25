@@ -12,6 +12,7 @@ import { getUser } from '../../../api/user';
 import { config } from '../../../config/app.config';
 import socket from '../../../socket';
 import './style.css';
+import { timeSinceLastOnline } from '../../../helpers/timeSinceLastOnline'
 
 const Chat = () => {
   const userInfo = useSelector((state) => state.user);
@@ -159,7 +160,10 @@ const Chat = () => {
               <Avatar src={`${config.API}/media/image/` + user.id} marginX={4}>
                 {user?.isOnline && <AvatarBadge boxSize='0.8em' bg='green.500'/>}   
               </Avatar>
-              <Text color={'white'}>{`${user?.firstName} ${user?.lastName}`}</Text>
+                <Flex direction={'column'} justifyContent={'flex-start'}>
+                  <Text color={'white'}>{`${user?.firstName} ${user?.lastName}`}</Text>
+                  <Text fontWeight={400} color={'gray.300'}>{!user?.isOnline && timeSinceLastOnline(user?.wasOnline)}</Text>
+                </Flex>
             </Flex>
           )}
         </ConversationHeader.Content>
