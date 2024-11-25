@@ -8,6 +8,7 @@ import { addToFriends as addToFriendsRequest, getFriends } from '../../api/frien
 import { getUser } from '../../api/user';
 import { config } from '../../config/app.config';
 import { timeSinceLastOnline } from '../../helpers/timeSinceLastOnline';
+// import { getArticles } from '../../api/articles';
 
 const Profile = () => {
   const userInfo = useSelector((state) => state.user);
@@ -15,6 +16,19 @@ const Profile = () => {
   const { userName } = useParams();
   const [user, setUser] = useState({});
   const [friends, setFriends] = useState([]);
+  // const [articles, setArticles] = useState([]);
+
+  // const getArticleInfo = (userNameInfo) => {
+  //   const onSuccess = ({ data }) => {
+  //     setArticles(data);
+  //   };
+
+  //   const onError = () => {
+  //     setArticles({});
+  //   };
+
+  //   getArticles(userNameInfo).then(onSuccess).catch(onError);
+  // };
 
   const getFriendsInfo = (userNameInfo) => {
     const onSuccess = ({ data }) => {
@@ -44,6 +58,8 @@ const Profile = () => {
     getFriendsInfo(userName);
 
     getUserInfo(userName);
+
+    // getArticleInfo(userName);
   }, [userName]);
 
   const addToFriends = () => {
@@ -68,10 +84,6 @@ const Profile = () => {
     navigate(`/messages/${userName}`);
   };
 
-  // const navigateToProfile = () => {
-  //   navigate(`/profile/${friend.userName}`);
-  // };
-
   return (
     <Flex flexDir='column'>
       <Flex
@@ -86,9 +98,9 @@ const Profile = () => {
         borderColor={'gray.800'}
       >
         <Avatar height={140} width={140} marginRight={5} src={user?.id ? config.API + '/media/image/' + user?.id : ''}>
-          {user?.isOnline && <AvatarBadge boxSize='1.25em' bg='green.500' margin='3.5' />}
+          {user?.isOnline && <AvatarBadge boxSize={'1.25em'} bg={'green.500'} margin={'3.5'} />}
         </Avatar>
-        <Flex grow={1} alignItems='center' justifyContent={'space-between'}>
+        <Flex grow={1} alignItems={'center'} justifyContent={'space-between'}>
           <VStack spacing={1} display={'flex'} alignItems={'flex-start'} w='180px'>
             <Heading as='h3' fontSize='xl' maxW={'220px'} textAlign={'start'}>
               {`${user?.firstName} ${user?.lastName}`}
@@ -114,20 +126,20 @@ const Profile = () => {
                 <Icon fontSize='22' as={FiMoreHorizontal} />
               </Button>
             </Flex>
-            <Text align-self='flex-end' fontWeight={600}>
+            <Text alignSelf={'flex-end'} fontWeight={600}>
               {!user?.isOnline && timeSinceLastOnline(user?.wasOnline)}
             </Text>
           </VStack>
         ) : (
           <VStack spacing={1} display={'flex'} alignItems={'center'} gap={2}>
             <Button w={'130px'}>Profile settings</Button>
-            <Text alignSelf='flex-end' fontWeight={600}>
+            <Text alignSelf={'flex-end'} fontWeight={600}>
               {!user?.isOnline && timeSinceLastOnline(user?.wasOnline)}
             </Text>
           </VStack>
         )}
       </Flex>
-      <Flex justify='end' mt={'10px'}>
+      <Flex justify={'end'} mt={'10px'}>
         <Flex
           alignItems={'center'}
           justifyContent={'space-between'}
@@ -140,14 +152,8 @@ const Profile = () => {
           borderColor={'gray.800'}
         >
           <Flex grow={1} justifyContent={'center'} alignItems={'flex-start'} flexDirection={'column'}>
-            {/* <Button bgColor={'#e3e4e7'} onClick={onFriendsCounter} maxW={'200px'}>
-              <Text fontWeight={600}>{user?.friendsCount}</Text>
-              <Text fontWeight={600} ml={1.5}>
-                {user?.friendsCount === 1 ? 'Friend' : 'Friends'}
-              </Text>
-            </Button> */}
             <Text fontWeight={600} ml={2} mb={2.5} onClick={onFriendsCounter} cursor={'pointer'}>
-              Friends online {' '}
+              Friends online{' '}
               <span style={{ color: 'lightgrey' }}>{friends.filter((friend) => friend.isOnline).length}</span>
             </Text>
             <Flex flex={'1'} gap={'12px'}>
@@ -163,13 +169,13 @@ const Profile = () => {
                       justifyContent={'center'}
                       alignItems={'center'}
                       cursor={'pointer'}
-                      width='70px'
+                      width={'70px'}
                     >
                       <Avatar
                         src={config.API + '/media/image/' + friend?.id}
                         onClick={() => navigate(`/profile/${friend.userName}`)}
                       >
-                        <AvatarBadge boxSize='0.8em' bg='green.500' />
+                        <AvatarBadge boxSize={'0.8em'} bg={'green.500'} />
                       </Avatar>
                       <Text onClick={() => navigate(`/profile/${friend.userName}`)}>{friend?.firstName}</Text>
                     </Flex>
@@ -192,15 +198,15 @@ const Profile = () => {
                       justifyContent={'center'}
                       alignItems={'center'}
                       cursor={'pointer'}
-                      width='70px'
+                      width={'70px'}
                     >
                       <Avatar
                         src={config.API + '/media/image/' + friend?.id}
                         onClick={() => navigate(`/profile/${friend.userName}`)}
                       >
-                        {friend?.isOnline && <AvatarBadge boxSize='0.8em' bg='green.500' />}
+                        {friend?.isOnline && <AvatarBadge boxSize={'0.8em'} bg={'green.500'} />}
                       </Avatar>
-                      <Text isTruncated maxWidth='100%' onClick={() => navigate(`/profile/${friend.userName}`)}>
+                      <Text isTruncated maxWidth={'100%'} onClick={() => navigate(`/profile/${friend.userName}`)}>
                         {friend?.firstName}
                       </Text>
                     </Flex>
