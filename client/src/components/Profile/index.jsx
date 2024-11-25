@@ -8,7 +8,8 @@ import { addToFriends as addToFriendsRequest, getFriends } from '../../api/frien
 import { getUser } from '../../api/user';
 import { config } from '../../config/app.config';
 import { timeSinceLastOnline } from '../../helpers/timeSinceLastOnline';
-// import { getArticles } from '../../api/articles';
+import { getArticles } from '../../api/articles';
+import ContextMenu from '../dialogs/ContextMenu/ContextMenu';
 
 const Profile = () => {
   const userInfo = useSelector((state) => state.user);
@@ -16,19 +17,20 @@ const Profile = () => {
   const { userName } = useParams();
   const [user, setUser] = useState({});
   const [friends, setFriends] = useState([]);
-  // const [articles, setArticles] = useState([]);
+  const [articles, setArticles] = useState([]);
 
-  // const getArticleInfo = (userNameInfo) => {
-  //   const onSuccess = ({ data }) => {
-  //     setArticles(data);
-  //   };
+  const getArticleInfo = (userNameInfo) => {
+    const onSuccess = ({ data }) => {
+      const userPosts = data.filter((articleInfo) => articleInfo.author.userName === userName);
+      setArticles(userPosts);
+    };
 
-  //   const onError = () => {
-  //     setArticles({});
-  //   };
+    const onError = () => {
+      setArticles({});
+    };
 
-  //   getArticles(userNameInfo).then(onSuccess).catch(onError);
-  // };
+    getArticles(userNameInfo).then(onSuccess).catch(onError);
+  };
 
   const getFriendsInfo = (userNameInfo) => {
     const onSuccess = ({ data }) => {
@@ -59,7 +61,7 @@ const Profile = () => {
 
     getUserInfo(userName);
 
-    // getArticleInfo(userName);
+    getArticleInfo(userName);
   }, [userName]);
 
   const addToFriends = () => {
@@ -83,6 +85,8 @@ const Profile = () => {
   const navigateToMessages = () => {
     navigate(`/messages/${userName}`);
   };
+
+  console.log(articles);
 
   return (
     <Flex flexDir='column'>
@@ -108,7 +112,7 @@ const Profile = () => {
             <Text color={'#6e788a'} fontSize='sm' maxW={'220px'}>
               @{user?.userName}
             </Text>
-            <Text textAlign={'start'} w={'330px'}>
+            <Text textAlign={'start'} color={'gray.200'} w={'330px'}>
               {user?.description}
             </Text>
           </VStack>
@@ -126,30 +130,81 @@ const Profile = () => {
                 <Icon fontSize='22' as={FiMoreHorizontal} />
               </Button>
             </Flex>
-            <Text alignSelf={'flex-end'} fontWeight={600}>
+            <Text alignSelf={'flex-end'} color={'gray.300'} fontWeight={600}>
               {!user?.isOnline && timeSinceLastOnline(user?.wasOnline)}
             </Text>
           </VStack>
         ) : (
           <VStack spacing={1} display={'flex'} alignItems={'center'} gap={2}>
             <Button w={'130px'}>Profile settings</Button>
-            <Text alignSelf={'flex-end'} fontWeight={600}>
+            <Text alignSelf={'flex-end'} color={'gray.300'} fontWeight={600}>
               {!user?.isOnline && timeSinceLastOnline(user?.wasOnline)}
             </Text>
           </VStack>
         )}
       </Flex>
-      <Flex justify={'end'} mt={'10px'}>
+      <Flex justify={'space-between'} mt={'10px'} gap={'10px'}>
         <Flex
           alignItems={'center'}
           justifyContent={'space-between'}
           bgColor='RGBA(0, 0, 0, 0.2)'
           rounded={8}
           padding={3}
-          w={'340px'}
+          w={'100%'}
           border={'1px'}
           color={'white'}
           borderColor={'gray.800'}
+          flexDirection={'column'}
+          h={'100%'}
+        >
+          {articles.map((article) => {
+            return (
+              <Flex flexDirection={'column'} key={article.id}>
+                <Flex>
+                  <Flex flexDirection={'row'}>
+                    <Avatar
+                      src={config.API + '/media/image/' + article?.author?.id}
+                      onClick={() => navigate(`/profile/${article.author.userName}`)}
+                    >
+                      <AvatarBadge boxSize={'0.8em'} bg={'green.500'} />
+                    </Avatar>
+                  </Flex>
+                  <Flex flexDirection={'column'}>
+                    <Text>
+                      {article.author.firstName} {article.author.lastName}
+                    </Text>
+                    <Text color={'gray.500'}>
+                      {new Date(article.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </Text>
+                  </Flex>
+                </Flex>
+                <Flex>
+                  <Text>sdgldgmdslgldsgdt</Text>
+                </Flex>
+                <Flex>
+                  <Text>fsjfsdgsdgdgtm</Text>
+                </Flex>
+              </Flex>
+            );
+          })}
+        </Flex>
+        <Flex
+          alignItems={'center'}
+          justifyContent={'space-between'}
+          bgColor='RGBA(0, 0, 0, 0.2)'
+          rounded={8}
+          padding={3}
+          minWidth={'340px'}
+          border={'1px'}
+          color={'white'}
+          borderColor={'gray.800'}
+          maxH={'268px'}
         >
           <Flex grow={1} justifyContent={'center'} alignItems={'flex-start'} flexDirection={'column'}>
             <Text fontWeight={600} ml={2} mb={2.5} onClick={onFriendsCounter} cursor={'pointer'}>
