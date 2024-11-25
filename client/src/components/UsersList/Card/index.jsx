@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Center, Flex, Stack, Text, useColorModeValue } from '@chakra-ui/react';
+import { Avatar, AvatarBadge, Box, Button, Center, Flex, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { addToFriends as addToFriendsRequest } from '../../../api/friend';
 import { config } from '../../../config/app.config';
@@ -32,11 +32,9 @@ export default function UserCard({ user }) {
             size={'xl'}
             src={user?.id ? `${config.API}/media/image/` + user?.id : ''}
             alt={'Author'}
-            css={{
-              border: '2px solid white',
-              backgroundColor: 'white',
-            }}
-          />
+          >
+            {user?.isOnline && <AvatarBadge boxSize='0.7em' margin={1} bg='green.500'/>}
+          </Avatar>
         </Flex>
 
         <Box p={6}>

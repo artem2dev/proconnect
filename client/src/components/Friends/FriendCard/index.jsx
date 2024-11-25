@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Flex, Stack, Text, useBreakpointValue } from '@chakra-ui/react';
+import { Avatar, AvatarBadge, Box, Button, Flex, Stack, Text, useBreakpointValue } from '@chakra-ui/react';
 import React from 'react';
 import { ImCross } from 'react-icons/im';
 import { useSelector } from 'react-redux';
@@ -41,9 +41,10 @@ const FriendCard = ({ friend, userName }) => {
             <Avatar
               onClick={redirectToProfile}
               cursor={'pointer'}
-              size='sm'
+              size='md'
               src={user?.id ? config.API + '/media/image/' + friend?.id : ''}
-            />
+            > {friend?.isOnline && <AvatarBadge boxSize='0.8em' bg='green.500'/>}
+            </Avatar>
           )}
           <Flex flexDirection={'column'} alignItems={'flex-start'}>
             <Button onClick={redirectToProfile} variant={'link'} fontWeight='medium'>

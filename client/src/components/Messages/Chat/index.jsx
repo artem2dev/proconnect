@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, Input, Text } from '@chakra-ui/react';
+import { Avatar, AvatarBadge, Box, Flex, Input, Text } from '@chakra-ui/react';
 import { ConversationHeader, Message } from '@chatscope/chat-ui-kit-react';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -156,7 +156,9 @@ const Chat = () => {
         <ConversationHeader.Content onClick={handleRedirectToProfile}>
           {user?.id && (
             <Flex alignItems={'center'} cursor={'pointer'}>
-              <Avatar src={`${config.API}/media/image/` + user.id} marginX={4} />
+              <Avatar src={`${config.API}/media/image/` + user.id} marginX={4}>
+                {user?.isOnline && <AvatarBadge boxSize='0.8em' bg='green.500'/>}   
+              </Avatar>
               <Text color={'white'}>{`${user?.firstName} ${user?.lastName}`}</Text>
             </Flex>
           )}

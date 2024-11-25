@@ -1,4 +1,4 @@
-import { Avatar, Button, Flex, Heading, Icon, Text, VStack } from '@chakra-ui/react';
+import { Avatar,  AvatarBadge, Button, Flex, Heading, Icon, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { BiMessageRoundedEdit, BiPlusCircle } from 'react-icons/bi';
 import { FiMoreHorizontal } from 'react-icons/fi';
@@ -90,7 +90,9 @@ const Profile = () => {
           width={140}
           marginRight={5}
           src={user?.id ? config.API + '/media/image/' + user?.id : ''}
-        />
+        >
+          {user?.isOnline && <AvatarBadge boxSize='1.25em' bg='green.500' margin='3.5'/>}
+        </Avatar>
         <Flex grow={1} alignItems='center' justifyContent={'space-between'}>
           <VStack spacing={1} display={'flex'} alignItems={'flex-start'} w='180px'>
             <Heading as='h3' fontSize='xl' maxW={'220px'}>
@@ -117,12 +119,12 @@ const Profile = () => {
                 <Icon fontSize='22' as={FiMoreHorizontal} />
               </Button>
             </Flex>
-            <Text fontWeight={600}>{user?.isOnline ? 'Online' : timeSinceLastOnline(user?.wasOnline)}</Text>
+            <Text fontWeight={600}>{!user?.isOnline && timeSinceLastOnline(user?.wasOnline)}</Text>
           </VStack>
         ) : (
           <VStack spacing={1} display={'flex'} alignItems={'center'} gap={2}>
             <Button w={'130px'}>Profile settings</Button>
-            <Text fontWeight={600}>{'Online'}</Text>
+            <Text fontWeight={600}>{!user?.isOnline && timeSinceLastOnline(user?.wasOnline)}</Text>
           </VStack>
         )}
       </Flex>
