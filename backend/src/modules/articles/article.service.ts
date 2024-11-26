@@ -46,7 +46,7 @@ export class ArticleService {
       .leftJoinAndSelect('a.likes', 'likes')
       .leftJoinAndSelect('a.comments', 'comment')
       .leftJoinAndSelect('comment.author', 'commentAuthor')
-      .orderBy('a.createdAt')
+      .orderBy('a.createdAt', 'DESC')
       .addOrderBy('comment.createdAt')
       .getMany();
 
