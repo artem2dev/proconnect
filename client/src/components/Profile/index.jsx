@@ -9,6 +9,7 @@ import { getUser } from '../../api/user';
 import { config } from '../../config/app.config';
 import { timeSinceLastOnline } from '../../helpers/timeSinceLastOnline';
 import { getArticles } from '../../api/articles';
+import { useLocation } from 'react-router-dom';
 
 const Profile = () => {
   const userInfo = useSelector((state) => state.user);
@@ -17,6 +18,20 @@ const Profile = () => {
   const [user, setUser] = useState({});
   const [friends, setFriends] = useState([]);
   const [articles, setArticles] = useState([]);
+  const [expandedPosts, setExpandedPosts] = useState({});
+
+  const location = useLocation();
+
+  useEffect(() => {
+    setExpandedPosts({});
+  }, [location]);
+
+  const toggleExpand = (id) => {
+    setExpandedPosts((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
   const getArticleInfo = useCallback(
     (userNameInfo) => {
@@ -208,7 +223,26 @@ const Profile = () => {
                   <Text fontSize={'2xl'} fontWeight={'bold'} overflowWrap={'anywhere'}>
                     {article?.title}
                   </Text>
-                  <Text overflowWrap={'anywhere'}>{article?.content}</Text>
+                  <Flex textAlign={'start'} flexDirection={'column'} display={'inline'} overflowWrap={'anywhere'}>
+                    {article?.content.length > 350 && !expandedPosts[article.id] ? (
+                      <>
+                        {article?.content.slice(0, 250).trim()}...{' '}
+                        <Text
+                          onClick={() => toggleExpand(article.id)}
+                          color={'gray.500'}
+                          cursor={'pointer'}
+                          fontWeight={'bold'}
+                          _hover={{ color: 'gray.600' }}
+                          display={'inline'}
+                          whiteSpace={'nowrap'}
+                        >
+                          Show more
+                        </Text>
+                      </>
+                    ) : (
+                      article?.content
+                    )}
+                  </Flex>
                   {article?.media && (
                     <Image
                       objectFit='cover'
@@ -217,6 +251,7 @@ const Profile = () => {
                       height='300px'
                       style={{ objectFit: 'scale-down' }}
                       transition='all 0.2s'
+                      m={2}
                     />
                   )}
                 </Flex>
