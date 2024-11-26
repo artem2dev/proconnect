@@ -28,12 +28,8 @@ export default function UserCard({ user }) {
     <Center w={276} px={3} py={6} onClick={onClick} cursor='pointer'>
       <Box w={'full'} bg={useColorModeValue('white', 'gray.800')} boxShadow={'2xl'} rounded={'md'} overflow={'hidden'}>
         <Flex justify={'center'} mt={10}>
-          <Avatar
-            size={'xl'}
-            src={user?.id ? `${config.API}/media/image/` + user?.id : ''}
-            alt={'Author'}
-          >
-            {user?.isOnline && <AvatarBadge boxSize='0.7em' margin={1} bg='green.500'/>}
+          <Avatar size={'xl'} src={user?.id ? `${config.API}/media/image/` + user?.id : ''} alt={'Author'}>
+            {user?.isOnline && <AvatarBadge boxSize='0.7em' margin={1} bg='green.500' />}
           </Avatar>
         </Flex>
 
@@ -75,7 +71,14 @@ export default function UserCard({ user }) {
           </Stack>
 
           {user.isFriend ? (
-            <Button w={'full'} mt={8} bgColor={'green.500'} _hover='none' _active='none'>
+            <Button
+              w={'full'}
+              mt={8}
+              bgColor={'green.500'}
+              _hover={{
+                background: 'green.500',
+              }}
+            >
               Already friends
             </Button>
           ) : (

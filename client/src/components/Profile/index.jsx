@@ -1,5 +1,5 @@
-import { Avatar, AvatarBadge, Button, Flex, Heading, Icon, Text, VStack } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import { Avatar, AvatarBadge, Button, Flex, Heading, Icon, Image, Text, VStack } from '@chakra-ui/react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { BiMessageRoundedEdit, BiPlusCircle } from 'react-icons/bi';
 import { FiMoreHorizontal } from 'react-icons/fi';
 import { useSelector } from 'react-redux';
@@ -9,7 +9,6 @@ import { getUser } from '../../api/user';
 import { config } from '../../config/app.config';
 import { timeSinceLastOnline } from '../../helpers/timeSinceLastOnline';
 import { getArticles } from '../../api/articles';
-import ContextMenu from '../dialogs/ContextMenu/ContextMenu';
 
 const Profile = () => {
   const userInfo = useSelector((state) => state.user);
@@ -19,18 +18,21 @@ const Profile = () => {
   const [friends, setFriends] = useState([]);
   const [articles, setArticles] = useState([]);
 
-  const getArticleInfo = (userNameInfo) => {
-    const onSuccess = ({ data }) => {
-      const userPosts = data.filter((articleInfo) => articleInfo.author.userName === userName);
-      setArticles(userPosts);
-    };
+  const getArticleInfo = useCallback(
+    (userNameInfo) => {
+      const onSuccess = ({ data }) => {
+        const userPosts = data.filter((articleInfo) => articleInfo.author.userName === userName).reverse();
+        setArticles(userPosts);
+      };
 
-    const onError = () => {
-      setArticles({});
-    };
+      const onError = () => {
+        setArticles({});
+      };
 
-    getArticles(userNameInfo).then(onSuccess).catch(onError);
-  };
+      getArticles(userNameInfo).then(onSuccess).catch(onError);
+    },
+    [userName],
+  );
 
   const getFriendsInfo = (userNameInfo) => {
     const onSuccess = ({ data }) => {
@@ -62,7 +64,7 @@ const Profile = () => {
     getUserInfo(userName);
 
     getArticleInfo(userName);
-  }, [userName]);
+  }, [userName, getArticleInfo]);
 
   const addToFriends = () => {
     const onSuccess = () => {
@@ -86,7 +88,16 @@ const Profile = () => {
     navigate(`/messages/${userName}`);
   };
 
-  console.log(articles);
+  const friendsOnline = friends
+    .filter((friend) => friend.isOnline)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 4);
+
+  const friendsAll = friends.sort(() => Math.random() - 0.5).slice(0, 4);
+
+  const toFriendProfile = (friendUserName) => {
+    navigate(`/profile/${friendUserName}`);
+  };
 
   return (
     <Flex flexDir='column'>
@@ -150,23 +161,32 @@ const Profile = () => {
           bgColor='RGBA(0, 0, 0, 0.2)'
           rounded={8}
           padding={3}
-          w={'100%'}
+          maxW={'62%'}
           border={'1px'}
           color={'white'}
           borderColor={'gray.800'}
           flexDirection={'column'}
           h={'100%'}
+          gap={'30px'}
+          minH={'76px'}
+          w={'100%'}
         >
+          {!articles.length && (
+            <Text fontSize={'28px'} color={'gray.600'}>
+              The user has no posts
+            </Text>
+          )}
+
           {articles.map((article) => {
             return (
-              <Flex flexDirection={'column'} key={article.id}>
-                <Flex>
+              <Flex flexDirection={'column'} key={article.id} w={'100%'} gap={'6px'}>
+                <Flex justifyContent={'flex-start'} gap={'10px'}>
                   <Flex flexDirection={'row'}>
                     <Avatar
                       src={config.API + '/media/image/' + article?.author?.id}
                       onClick={() => navigate(`/profile/${article.author.userName}`)}
                     >
-                      <AvatarBadge boxSize={'0.8em'} bg={'green.500'} />
+                      {article.author.isOnline && <AvatarBadge boxSize={'0.8em'} bg={'green.500'} />}
                     </Avatar>
                   </Flex>
                   <Flex flexDirection={'column'}>
@@ -184,12 +204,23 @@ const Profile = () => {
                     </Text>
                   </Flex>
                 </Flex>
-                <Flex>
-                  <Text>sdgldgmdslgldsgdt</Text>
+                <Flex flexDirection={'column'} gap={'6px'}>
+                  <Text fontSize={'2xl'} fontWeight={'bold'} overflowWrap={'anywhere'}>
+                    {article?.title}
+                  </Text>
+                  <Text overflowWrap={'anywhere'}>{article?.content}</Text>
+                  {article?.media && (
+                    <Image
+                      objectFit='cover'
+                      src={`${config.API}/media/static/image/${article?.media.id}`}
+                      alt='Chakra UI'
+                      height='300px'
+                      style={{ objectFit: 'scale-down' }}
+                      transition='all 0.2s'
+                    />
+                  )}
                 </Flex>
-                <Flex>
-                  <Text>fsjfsdgsdgdgtm</Text>
-                </Flex>
+                <Flex></Flex>
               </Flex>
             );
           })}
@@ -204,19 +235,23 @@ const Profile = () => {
           border={'1px'}
           color={'white'}
           borderColor={'gray.800'}
-          maxH={'268px'}
+          alignSelf={'flex-start'}
         >
-          <Flex grow={1} justifyContent={'center'} alignItems={'flex-start'} flexDirection={'column'}>
-            <Text fontWeight={600} ml={2} mb={2.5} onClick={onFriendsCounter} cursor={'pointer'}>
+          <Flex
+            justifyContent={'center'}
+            alignItems={'flex-start'}
+            alignSelf={'flex-start'}
+            flexDirection={'column'}
+            w={'100%'}
+            gap={'10px'}
+          >
+            <Text fontWeight={600} ml={2} onClick={onFriendsCounter} cursor={'pointer'}>
               Friends online{' '}
               <span style={{ color: 'lightgrey' }}>{friends.filter((friend) => friend.isOnline).length}</span>
             </Text>
-            <Flex flex={'1'} gap={'12px'}>
-              {friends
-                .filter((friend) => friend.isOnline)
-                .sort(() => Math.random() - 0.5)
-                .slice(0, 4)
-                .map((friend) => {
+            {friendsOnline.length > 0 && (
+              <Flex flex={'1'} gap={'12px'}>
+                {friendsOnline.map((friend) => {
                   return (
                     <Flex
                       key={friend?.id}
@@ -228,24 +263,23 @@ const Profile = () => {
                     >
                       <Avatar
                         src={config.API + '/media/image/' + friend?.id}
-                        onClick={() => navigate(`/profile/${friend.userName}`)}
+                        onClick={() => toFriendProfile(friend.userName)}
                       >
                         <AvatarBadge boxSize={'0.8em'} bg={'green.500'} />
                       </Avatar>
-                      <Text onClick={() => navigate(`/profile/${friend.userName}`)}>{friend?.firstName}</Text>
+                      <Text onClick={() => toFriendProfile(friend.userName)}>{friend?.firstName}</Text>
                     </Flex>
                   );
                 })}
-            </Flex>
-            <hr style={{ border: '1px solid var(--chakra-colors-gray-800)', width: '90%', margin: '10px auto' }} />
-            <Text fontWeight={600} ml={2} mb={2.5} onClick={onFriendsCounter} cursor={'pointer'}>
+              </Flex>
+            )}
+            <hr style={{ border: '1px solid var(--chakra-colors-gray-800)', width: '90%', margin: 'auto' }} />
+            <Text fontWeight={600} ml={2} onClick={onFriendsCounter} cursor={'pointer'}>
               Friends <span style={{ color: 'lightgrey' }}>{user?.friendsCount}</span>
             </Text>
-            <Flex gap={'12px'} flex={'1'}>
-              {friends
-                .sort(() => Math.random() - 0.5)
-                .slice(0, 4)
-                .map((friend) => {
+            {friendsAll.length > 0 && (
+              <Flex gap={'12px'} flex={'1'}>
+                {friendsAll.map((friend) => {
                   return (
                     <Flex
                       key={friend?.id}
@@ -257,17 +291,18 @@ const Profile = () => {
                     >
                       <Avatar
                         src={config.API + '/media/image/' + friend?.id}
-                        onClick={() => navigate(`/profile/${friend.userName}`)}
+                        onClick={() => toFriendProfile(friend.userName)}
                       >
                         {friend?.isOnline && <AvatarBadge boxSize={'0.8em'} bg={'green.500'} />}
                       </Avatar>
-                      <Text isTruncated maxWidth={'100%'} onClick={() => navigate(`/profile/${friend.userName}`)}>
+                      <Text isTruncated mb={2} maxWidth={'100%'} onClick={() => toFriendProfile(friend.userName)}>
                         {friend?.firstName}
                       </Text>
                     </Flex>
                   );
                 })}
-            </Flex>
+              </Flex>
+            )}
           </Flex>
         </Flex>
       </Flex>
