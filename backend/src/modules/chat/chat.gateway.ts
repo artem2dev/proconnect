@@ -39,6 +39,13 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.server.to(data.roomId).emit('chatRead', data);
   }
 
+  @SubscribeMessage('joinRoom')
+  async handleJoinRoom(socket: IExtendedSocket, roomId: string): Promise<void> {
+    socket.join(roomId);
+
+    console.info('\x1b[32m', `Connected to room: ${roomId}`);
+  }
+
   afterInit() {
     this.server.use(async (socket: IExtendedSocket, next) => {
       const userId = socket.handshake.auth.userId;
@@ -51,15 +58,15 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   async handleConnection(socket: IExtendedSocket) {
     const rooms = await this.chatService.getSingleChats(socket.userId);
-    await this.userService.toggleUserOnline(socket.userId);
+    await this.userService.toggleUserOnline(socket.userId, true);
 
     socket.join(rooms);
 
-    console.info('\x1b[32m', `Connected to room(s): ${rooms}`);
+    console.info('\x1b[32m', `User ${socket.userId} connected to room(s): ${rooms}`);
   }
 
   async handleDisconnect(socket: IExtendedSocket) {
-    await this.userService.toggleUserOnline(socket.userId);
+    await this.userService.toggleUserOnline(socket.userId, false);
 
     console.info('\x1b[31m', `Disconnected user: ${socket.userId}`);
   }

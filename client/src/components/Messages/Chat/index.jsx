@@ -10,9 +10,9 @@ import ScrollableFeed from 'react-scrollable-feed';
 import { getMessages } from '../../../api/chat';
 import { getUser } from '../../../api/user';
 import { config } from '../../../config/app.config';
+import { timeSinceLastOnline } from '../../../helpers/timeSinceLastOnline';
 import socket from '../../../socket';
 import './style.css';
-import { timeSinceLastOnline } from '../../../helpers/timeSinceLastOnline'
 
 const Chat = () => {
   const userInfo = useSelector((state) => state.user);
@@ -42,7 +42,9 @@ const Chat = () => {
 
   const messageListener = useCallback(
     ({ message }) => {
-      room === message.roomId && setMessages((prev) => [...prev, message]);
+      if (room === message.roomId) {
+        setMessages((prev) => [...prev, message]);
+      }
     },
     [room],
   );
@@ -79,8 +81,22 @@ const Chat = () => {
   }, [user]);
 
   useEffect(() => {
-    socket.on('message', messageListener);
-  }, [messageListener]);
+    if (room) {
+      socket.emit('joinRoom', room);
+    }
+  }, [room]);
+
+  useEffect(() => {
+    if (room) {
+      socket.on('message', messageListener);
+    }
+
+    return () => {
+      if (room) {
+        socket.off('message', messageListener);
+      }
+    };
+  }, [messageListener, room]);
 
   const sendMessage = () => {
     if (currentMessage) {
@@ -158,12 +174,14 @@ const Chat = () => {
           {user?.id && (
             <Flex alignItems={'center'} cursor={'pointer'}>
               <Avatar src={`${config.API}/media/image/` + user.id} marginX={4}>
-                {user?.isOnline && <AvatarBadge boxSize='0.8em' bg='green.500'/>}   
+                {user?.isOnline && <AvatarBadge boxSize='0.8em' bg='green.500' />}
               </Avatar>
-                <Flex direction={'column'} justifyContent={'flex-start'}>
-                  <Text color={'white'}>{`${user?.firstName} ${user?.lastName}`}</Text>
-                  <Text fontWeight={400} color={'gray.300'}>{!user?.isOnline && timeSinceLastOnline(user?.wasOnline)}</Text>
-                </Flex>
+              <Flex direction={'column'} justifyContent={'flex-start'}>
+                <Text color={'white'}>{`${user?.firstName} ${user?.lastName}`}</Text>
+                <Text fontWeight={400} color={'gray.300'}>
+                  {!user?.isOnline && timeSinceLastOnline(user?.wasOnline)}
+                </Text>
+              </Flex>
             </Flex>
           )}
         </ConversationHeader.Content>
@@ -217,6 +235,7 @@ const Chat = () => {
             setCurrentMessage(e.target.value);
           }}
           onKeyDown={onKeyDown}
+          autoFocus
         />
         <RiSendPlaneFill
           fill={'#6ea9d7'}

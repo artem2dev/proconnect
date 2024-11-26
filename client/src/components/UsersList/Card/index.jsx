@@ -57,15 +57,15 @@ export default function UserCard({ user }) {
 
           <Stack direction={'row'} justify={'center'} spacing={6}>
             <Stack spacing={0} align={'center'}>
-              <Text fontWeight={600}>23k</Text>
+              <Text fontWeight={600}>{user?.friendsCount}</Text>
               <Text fontSize={'sm'} color={'gray.500'}>
                 Friends
               </Text>
             </Stack>
             <Stack spacing={0} align={'center'}>
-              <Text fontWeight={600}>23k</Text>
+              <Text fontWeight={600}>{user?.articlesCount}</Text>
               <Text fontSize={'sm'} color={'gray.500'}>
-                Followers
+                Posts
               </Text>
             </Stack>
           </Stack>

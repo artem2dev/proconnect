@@ -41,22 +41,24 @@ export class UserService {
     return user;
   }
 
-  async toggleUserOnline(userId: string) {
-    const user = await this.userRepository.findOneBy({ id: userId });
-
-    if (user.isOnline) {
-      return await this.userRepository.save({ id: userId, isOnline: false, wasOnline: new Date() });
+  async toggleUserOnline(userId: string, isOnline: boolean) {
+    if (isOnline) {
+      return await this.userRepository.save({ id: userId, isOnline, wasOnline: new Date() });
     }
 
-    return await this.userRepository.save({ id: userId, isOnline: true });
+    return await this.userRepository.save({ id: userId, isOnline });
   }
 
-  async getUserProfileInfoByUserName(userName: string) {
+  async getUserProfileInfoByUserName(userName: string, userId: string) {
     const user = await this.userRepository.findOneBy({ userName });
+
+    if (!user) throw new HttpException('No such user', HttpStatus.BAD_REQUEST);
 
     const friendsCount = await this.friendsService.getUserFriendsCount(user);
 
-    if (!user) throw new HttpException('No such user', HttpStatus.BAD_REQUEST);
+    if (user.id === userId) {
+      return { ...user, friendsCount, isOnline: true };
+    }
 
     return { ...user, friendsCount };
   }

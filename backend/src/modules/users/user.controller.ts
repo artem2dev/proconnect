@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put, Req, Request, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { IExtendedRequestWithUser } from 'src/common/types/interfaces';
 import { UserBody } from '../../common/decorators/user.decorator';
@@ -19,8 +19,8 @@ export class UserController {
   }
 
   @Get('profile/:userName')
-  async getUserInfo(@Param('userName') userName: string) {
-    return await this.userService.getUserProfileInfoByUserName(userName);
+  async getUserInfo(@Request() req: IExtendedRequestWithUser, @Param('userName') userName: string) {
+    return await this.userService.getUserProfileInfoByUserName(userName, req.user.id);
   }
 
   @ApiBearerAuth()
