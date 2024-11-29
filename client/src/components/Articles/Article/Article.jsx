@@ -116,7 +116,7 @@ export const Article = ({ article }) => {
               _hover={{ cursor: 'pointer' }}
             >
               <Heading size='sm'>{comment?.author?.firstName + ' ' + comment?.author?.lastName}</Heading>
-              <Text>{comment.comment}</Text>
+              <Text overflowWrap={'anywhere'}>{comment.comment}</Text>
             </Box>
             <ContextMenu
               options={
