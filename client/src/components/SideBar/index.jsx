@@ -21,9 +21,8 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { AiOutlineHome } from 'react-icons/ai';
 import { FaRegUserCircle } from 'react-icons/fa';
-import { FiChevronDown, FiCompass, FiSettings, FiUsers } from 'react-icons/fi';
+import { FiChevronDown, FiUsers } from 'react-icons/fi';
 import { IoMdCreate, IoMdNotificationsOutline } from 'react-icons/io';
 import { MdOutlineArticle } from 'react-icons/md';
 import { RxEnvelopeClosed } from 'react-icons/rx';
@@ -38,14 +37,14 @@ import { setUser } from '../../redux/usersSlice';
 import CreateArticle from '../Articles/Create/CreateArticle';
 
 const LinkItems = [
-  { name: 'Home', icon: AiOutlineHome, href: '/' },
+  // { name: 'Home', icon: AiOutlineHome, href: '/' },
   { name: 'Profile', icon: FaRegUserCircle, href: '' },
   { name: 'Notifications', icon: IoMdNotificationsOutline },
   { name: 'Messages', icon: RxEnvelopeClosed, href: '/messages' },
   { name: 'Users', icon: FiUsers, href: '/users' },
-  { name: 'Explore', icon: FiCompass },
+  // { name: 'Explore', icon: FiCompass },
   { name: 'Articles', icon: MdOutlineArticle, href: '/articles' },
-  { name: 'Settings', icon: FiSettings },
+  // { name: 'Settings', icon: FiSettings },
 ];
 
 export default function SidebarWithHeader({ children }) {
@@ -116,8 +115,15 @@ const SidebarContent = ({ onClose, onModalOpen, ...rest }) => {
   };
 
   useEffect(() => {
-      document.title = currentTitle;
+    document.title = currentTitle;
   }, [currentTitle]);
+
+  useEffect(() => {
+    const storedTitle = localStorage.getItem('pageTitle');
+    if (storedTitle) {
+      setCurrentTitle(storedTitle);
+    }
+  }, []);
 
   return (
     <Box
@@ -134,28 +140,42 @@ const SidebarContent = ({ onClose, onModalOpen, ...rest }) => {
     >
       <Box h={'82%'}>
         <Flex h='20' alignItems='center' mx='8' justifyContent='space-between'>
-          <Image src={logo} onClick={navigateLink('/')} cursor='pointer' />
+          <Image
+            src={logo}
+            onClick={() => {
+              setCurrentTitle('Articles');
+              localStorage.setItem('pageTitle', 'Articles');
+              navigate('/articles');
+            }}
+            cursor='pointer'
+          />
           <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
         </Flex>
         <Flex h={'100%'} flexDirection={'column'} justifyContent={'space-between'} alignItems={''}>
           <Box>
-            {LinkItems.map((link) => (
-              <NavItem
-                key={link.name}
-                icon={link.icon}
-                href={link.name === 'Profile' ? user?.userName : link?.href}
-                user={user}
-                bgColor={link.bgColor}
-                color={link.color}
-                _hover={link?.hover ?? { bg: 'RGBA(0, 0, 0, 0.5)' }}
-                onClick={() => {
-                  handleTitleUpdate(link);
-                  navigateLink(link?.href)();
-                }}
-              >
-                {link.name}
-              </NavItem>
-            ))}
+            {LinkItems.map((link) => {
+              const isActive =
+                currentTitle === link.name || (link.name === 'Profile' && currentTitle.includes('Profile'));
+              return (
+                <NavItem
+                  key={link.name}
+                  icon={link.icon}
+                  href={link.name === 'Profile' ? user?.userName : link?.href}
+                  user={user}
+                  bgColor={isActive ? 'RGBA(0, 0, 0, 0.2)' : 'transparent'}
+                  border={'1px'}
+                  borderColor={isActive ? 'gray.800' : 'transparent'}
+                  color={link.color}
+                  _hover={!isActive && (link?.hover ?? { bg: 'RGBA(0, 0, 0, 0.125)' })}
+                  onClick={() => {
+                    handleTitleUpdate(link);
+                    navigateLink(link?.href)();
+                  }}
+                >
+                  {link.name}
+                </NavItem>
+              );
+            })}
           </Box>
           <Button w={210} ml={3} py={7} rounded='3xl' justifyContent={'flex-start'} onClick={onModalOpen}>
             {IoMdCreate && <Icon mr='4' fontSize='20' as={IoMdCreate} />}
@@ -199,7 +219,7 @@ const SidebarContent = ({ onClose, onModalOpen, ...rest }) => {
               onClick={() => {
                 onSignOut();
                 setCurrentTitle('ProConnect');
-                localStorage.removeItem("pageTitle");
+                localStorage.removeItem('pageTitle');
               }}
             >
               Sign out
@@ -217,13 +237,11 @@ const NavItem = ({ icon, href, user, children, ...rest }) => {
   const onClick = () => {
     if (children === 'Profile') {
       navigate(`/profile/${user?.userName}`);
-
       return;
     }
 
     if (children === 'Notifications') {
       navigate(`/notifications`);
-
       return;
     }
 
@@ -232,19 +250,7 @@ const NavItem = ({ icon, href, user, children, ...rest }) => {
 
   return (
     <Link style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }} onClick={onClick}>
-      <Flex
-        align='center'
-        p='4'
-        mx='4'
-        borderRadius='3xl'
-        role='group'
-        cursor='pointer'
-        _hover={{
-          bg: 'gray.100',
-          color: 'black',
-        }}
-        {...rest}
-      >
+      <Flex align='center' p='4' mx='4' borderRadius='3xl' role='group' cursor='pointer' {...rest}>
         {icon && <Icon mr='4' fontSize='20' as={icon} />}
         {children}
       </Flex>
