@@ -18,6 +18,6 @@ export function timeSinceLastOnline(isoDate) {
     const day = String(lastOnline.getDate()).padStart(2, '0');
     const month = String(lastOnline.getMonth() + 1).padStart(2, '0');
     const year = lastOnline.getFullYear();
-    return `was online ${month}.${day}.${year}`;
+    return `was online ${day}.${month}.${year}`;
   }
 }

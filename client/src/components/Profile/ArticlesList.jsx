@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { getArticles } from '../../api/articles';
 import { Flex, Text } from '@chakra-ui/react';
-import Article from './Article';
 import { useParams } from 'react-router-dom';
+import React from 'react';
+import Article from '../Articles/Article';
 
-const ArticlesList = ({ article }) => {
+const ArticlesList = () => {
   const [articles, setArticles] = useState([]);
   const { userName } = useParams();
 

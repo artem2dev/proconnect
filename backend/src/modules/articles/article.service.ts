@@ -34,7 +34,14 @@ export class ArticleService {
 
     savedArticle.omit('author');
 
-    return savedArticle;
+    const processedArticle = {
+      ...savedArticle,
+      likedByUser: false,
+      likesCount: 0,
+      commentsCount: 0,
+    };
+
+    return processedArticle;
   }
 
   async findAll(user: User) {
@@ -52,7 +59,8 @@ export class ArticleService {
 
     const processedArticle = foundArticles.map((article: any) => {
       article.likedByUser = Boolean(article?.likes?.find((u) => u.id === user.id));
-      article.likes = article.likes.length;
+      article.likesCount = article.likes?.length;
+      article.commentsCount = article.comments?.length;
 
       return article;
     });
@@ -74,8 +82,6 @@ export class ArticleService {
       .addOrderBy('comment.createdAt')
       .getOne();
 
-    // foundArticle.omit(['author.email', 'author.description']);
-
     if (!foundArticle) {
       throw new NotFoundException(ExceptionDictionary.articles.notFound);
     }
@@ -83,7 +89,8 @@ export class ArticleService {
     const processedArticle = {
       ...foundArticle,
       likedByUser: Boolean(foundArticle?.likes?.find((u) => u.id === user.id)),
-      likes: foundArticle.likes.length,
+      likesCount: foundArticle.likes.length,
+      commentsCount: foundArticle.comments.length,
     };
 
     return processedArticle;
@@ -110,7 +117,9 @@ export class ArticleService {
       throw new NotFoundException(ExceptionDictionary.articles.notFound);
     }
 
-    return await foundArticle.update({ ...dto });
+    await foundArticle.update({ ...dto });
+
+    return await this.findOne(user, id);
   }
 
   async likeArticle(user: User, id: string) {
@@ -119,11 +128,21 @@ export class ArticleService {
       .select()
       .where('a.id = :id', { id })
       .leftJoinAndSelect('a.likes', 'likes')
+      .leftJoinAndSelect('a.comments', 'comment')
       .getOne();
 
     foundArticle.likes = [...foundArticle.likes, user];
 
-    foundArticle.save();
+    await foundArticle.save();
+
+    const processedArticle = {
+      ...foundArticle,
+      likedByUser: Boolean(foundArticle?.likes?.find((u) => u.id === user.id)),
+      likesCount: foundArticle.likes.length,
+      commentsCount: foundArticle.comments.length,
+    };
+
+    return processedArticle;
   }
 
   async dislikeArticle(user: User, id: string) {
@@ -132,13 +151,23 @@ export class ArticleService {
       .select()
       .where('a.id = :id', { id })
       .leftJoinAndSelect('a.likes', 'likes')
+      .leftJoinAndSelect('a.comments', 'comment')
       .getOne();
 
     foundArticle.likes = foundArticle.likes.filter((u) => {
       return u.id !== user.id;
     });
 
-    foundArticle.save();
+    await foundArticle.save();
+
+    const processedArticle = {
+      ...foundArticle,
+      likedByUser: Boolean(foundArticle?.likes?.find((u) => u.id === user.id)),
+      likesCount: foundArticle.likes.length,
+      commentsCount: foundArticle.comments.length,
+    };
+
+    return processedArticle;
   }
 
   async commentArticle(user: User, articleId: string, dto: ArticleCommentDto) {

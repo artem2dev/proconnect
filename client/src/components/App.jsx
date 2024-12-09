@@ -11,7 +11,6 @@ import socket from '../socket';
 import { theme } from '../themes/chakraTheme';
 import './App.css';
 import ArticlesScroll from './Articles';
-import Article from './Articles/Article/Article';
 import Friends from './Friends';
 import Login from './Login';
 import Messages from './Messages';
@@ -22,6 +21,7 @@ import Profile from './Profile';
 import ProfileSettings from './ProfileSettings';
 import SignUp from './SignUp';
 import UserList from './UsersList';
+import Article from './Articles/Article';
 
 const App = () => {
   const dispatch = useDispatch();
