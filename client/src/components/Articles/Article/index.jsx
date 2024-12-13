@@ -37,24 +37,22 @@ const Article = ({ article }) => {
   };
 
   const handleInputView = () => {
-    if (!isCommenting) {
-      setTimeout(() => {
-        if (commentInputRef.current) {
-          const rect = commentInputRef.current.getBoundingClientRect();
-          const isInViewport = rect.top >= 0 && rect.bottom <= window.innerHeight;
+    setTimeout(() => {
+      if (commentInputRef.current) {
+        const rect = commentInputRef.current.getBoundingClientRect();
+        const isInViewport = rect.top >= 0 && rect.bottom <= window.innerHeight;
 
-          if (!isInViewport) {
-            commentInputRef.current.scrollIntoView({
-              behavior: 'smooth',
-              block: 'end',
-            });
-            window.scrollBy(0, 50);
-          }
-
-          commentInputRef.current.focus();
+        if (!isInViewport) {
+          commentInputRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'end',
+          });
+          window.scrollBy(0, 50);
         }
-      }, 50);
-    }
+
+        commentInputRef.current.focus();
+      }
+    }, 50);
   };
 
   const handleDeleteComment = (commentId) => () => {
@@ -178,21 +176,35 @@ const Article = ({ article }) => {
           ></Avatar>
         </Flex>
         <Flex flexDirection={'column'}>
-          <Text
-            fontWeight={'medium'}
-            onClick={() => {
-              window.scrollTo(0, 0);
-              navigate(`/profile/${article.author.userName}`);
-            }}
-            cursor={'pointer'}
-            alignSelf={'start'}
-          >
-            {article.author.firstName} {article.author.lastName}
-          </Text>
-          <Text color={'gray.500'}>
+          <Flex gap={2}>
+            <Text
+              fontWeight={'medium'}
+              onClick={() => {
+                window.scrollTo(0, 0);
+                navigate(`/profile/${article.author.userName}`);
+              }}
+              cursor={'pointer'}
+              alignSelf={'start'}
+            >
+              {article.author.firstName} {article.author.lastName}
+            </Text>
+            <Text
+              color={'gray.500'}
+              cursor={'pointer'}
+              _hover={{ color: 'gray.400' }}
+              onClick={() => {
+                setIsCommenting(true);
+                setCommentText(`${article.author.firstName}, `);
+                handleInputView();
+              }}
+            >
+              reply
+            </Text>
+          </Flex>
+          <Text color={'gray.500'} fontSize={'15'}>
             {new Date(article.createdAt).toLocaleDateString('en-US', {
               year: 'numeric',
-              month: 'long',
+              month: 'short',
               day: 'numeric',
               hour: '2-digit',
               minute: '2-digit',
@@ -297,19 +309,42 @@ const Article = ({ article }) => {
                       ></Avatar>
                     </Flex>
                     <Flex flexDirection={'column'} flex={'1'}>
-                      <Text
-                        fontWeight={'medium'}
-                        onClick={() => {
-                          window.scrollTo(0, 0);
-                          navigate(`/profile/${comment.author.userName}`);
-                        }}
-                        cursor={'pointer'}
-                        alignSelf={'start'}
-                      >
-                        {comment.author.firstName} {comment.author.lastName}
-                      </Text>
+                      <Flex gap={2}>
+                        <Text
+                          fontWeight={'medium'}
+                          onClick={() => {
+                            window.scrollTo(0, 0);
+                            navigate(`/profile/${comment.author.userName}`);
+                          }}
+                          cursor={'pointer'}
+                          alignSelf={'start'}
+                        >
+                          {comment.author.firstName} {comment.author.lastName}
+                        </Text>
+                        <Text
+                          color={'gray.500'}
+                          cursor={'pointer'}
+                          _hover={{ color: 'gray.400' }}
+                          onClick={() => {
+                            setIsCommenting(true);
+                            setCommentText(`${comment.author.firstName}, `);
+                            handleInputView();
+                          }}
+                        >
+                          reply
+                        </Text>
+                      </Flex>
                       <Text overflowWrap={'anywhere'} whiteSpace={'pre-wrap'}>
                         {comment.comment}
+                      </Text>
+                      <Text color={'gray.500'} fontSize={'15'}>
+                        {new Date(comment.createdAt).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
                       </Text>
                     </Flex>
                     <Flex position='absolute' right='-1' top='-2'>
