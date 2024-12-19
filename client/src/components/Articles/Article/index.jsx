@@ -2,13 +2,16 @@ import { Avatar, Box, Button, Flex, IconButton, Image, Input, Text } from '@chak
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BiChat, BiSend, BiShare } from 'react-icons/bi';
+import { RxCross2 } from 'react-icons/rx';
+import { FaPencilAlt } from 'react-icons/fa';
 import { FaHeart } from 'react-icons/fa';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { commentArticle, deleteCommentArticle, dislikeArticle, likeArticle } from '../../../api/articles';
 import { useSelector } from 'react-redux';
 import { config } from '../../../config/app.config';
+import './style.css';
 
-const Article = ({ article }) => {
+const Article = ({ article, deleteArticle }) => {
   const [comments, setComments] = useState(article.comments);
   const navigate = useNavigate();
   const [likedByUser, setLikedByUser] = useState(article?.likedByUser);
@@ -19,6 +22,15 @@ const Article = ({ article }) => {
   const [articleLikesCount, setArticleLikesCount] = useState(article?.likesCount || 0);
   const [articleCommentsCount, setArticleCommentsCount] = useState(article?.commentsCount || 0);
   const commentInputRef = useRef(null);
+  const [detailedComment, setDetailedComment] = useState(null);
+
+  const mouseEnterDetailedComment = (commentId) => {
+    setDetailedComment(commentId);
+  };
+
+  const mouseLeaveDetailedComment = () => {
+    setDetailedComment(null);
+  };
 
   const onSendComment = () => {
     if (commentText.trim()) {
@@ -185,20 +197,9 @@ const Article = ({ article }) => {
               }}
               cursor={'pointer'}
               alignSelf={'start'}
+              _hover={{ color: 'gray.400' }}
             >
               {article.author.firstName} {article.author.lastName}
-            </Text>
-            <Text
-              color={'gray.500'}
-              cursor={'pointer'}
-              _hover={{ color: 'gray.400' }}
-              onClick={() => {
-                setIsCommenting(true);
-                setCommentText(`${article.author.firstName}, `);
-                handleInputView();
-              }}
-            >
-              reply
             </Text>
           </Flex>
           <Text color={'gray.500'} fontSize={'15'}>
@@ -213,11 +214,9 @@ const Article = ({ article }) => {
         </Flex>
         <HoverContextMenu
           options={[
-            { label: 'Save', cb: () => alert('Save!') },
-            { label: 'Remove', cb: () => alert('Remove!') },
-            { label: 'Report', cb: () => alert('Report!') },
-            { label: 'Box 3', cb: () => alert('Box 3!') },
-            { label: 'Box 4', cb: () => alert('Box 4!') },
+            { label: 'Save', cb: () => alert('Save') },
+            { label: 'Remove', cb: () => deleteArticle(article.id) },
+            { label: 'Report', cb: () => alert('Report') },
           ]}
         />
       </Flex>
@@ -246,15 +245,16 @@ const Article = ({ article }) => {
           justify='center'
           variant='ghost'
           iconSpacing={0}
-          leftIcon={<FaHeart size={'18px'} color={likedByUser ? likedStyle.color : unlikedStyle.color} />}
-          backgroundColor={'gray.800'}
+          leftIcon={<FaHeart size={'18px'} />}
+          backgroundColor={likedByUser ? '#274b9f' : 'gray.800'}
           _hover={{ backgroundColor: likedByUser ? likedStyle.hoverColor : unlikedStyle.hoverColor }}
           onClick={handleLike}
-          color={'gray.500'}
         >
-          <Text marginLeft={'5px'} fontSize={'14px'}>
-            {articleLikesCount}
-          </Text>
+          {articleLikesCount > 0 ? (
+            <Text marginLeft={'5px'} fontSize={'14px'}>
+              {articleLikesCount}
+            </Text>
+          ) : null}
         </Button>
         <Button
           display='flex'
@@ -270,9 +270,11 @@ const Article = ({ article }) => {
             handleInputView();
           }}
         >
-          <Text marginLeft={'5px'} fontSize={'14px'}>
-            {articleCommentsCount}
-          </Text>
+          {articleCommentsCount > 0 ? (
+            <Text marginLeft={'5px'} fontSize={'14px'}>
+              {articleCommentsCount}
+            </Text>
+          ) : null}
         </Button>
         <Button
           display='flex'
@@ -285,19 +287,24 @@ const Article = ({ article }) => {
         ></Button>
       </Flex>
       <Flex flexDirection={'column'}>
-        {comments.length > 0 && (
+        {comments?.length > 0 && (
           <Flex flexDirection={'column'} gap={'16px'}>
             <hr
               style={{
                 border: '0.5px solid var(--chakra-colors-gray-800)',
                 width: '100%',
-                margin: '15px auto auto auto',
+                marginTop: '10px',
               }}
             />
-            {comments?.map((comment) => {
+            {comments?.map((comment, index) => {
               return (
-                <Flex flexDirection={'column'} gap={'6px'} key={comment.id}>
-                  <Flex gap={'10px'} position='relative'>
+                <Flex flexDirection={'column'} key={comment.id}>
+                  <Flex
+                    gap={'10px'}
+                    position='relative'
+                    onMouseEnter={() => mouseEnterDetailedComment(comment.id)}
+                    onMouseLeave={mouseLeaveDetailedComment}
+                  >
                     <Flex flexDirection={'row'}>
                       <Avatar
                         src={config.API + '/media/image/' + comment.author?.id}
@@ -309,20 +316,35 @@ const Article = ({ article }) => {
                       ></Avatar>
                     </Flex>
                     <Flex flexDirection={'column'} flex={'1'}>
+                      <Text
+                        fontWeight={'medium'}
+                        onClick={() => {
+                          window.scrollTo(0, 0);
+                          navigate(`/profile/${comment.author.userName}`);
+                        }}
+                        cursor={'pointer'}
+                        alignSelf={'start'}
+                        _hover={{ color: 'gray.400' }}
+                      >
+                        {comment.author.firstName} {comment.author.lastName}
+                      </Text>
+
+                      <Text overflowWrap={'anywhere'} whiteSpace={'pre-wrap'}>
+                        {comment.comment}
+                      </Text>
+
                       <Flex gap={2}>
-                        <Text
-                          fontWeight={'medium'}
-                          onClick={() => {
-                            window.scrollTo(0, 0);
-                            navigate(`/profile/${comment.author.userName}`);
-                          }}
-                          cursor={'pointer'}
-                          alignSelf={'start'}
-                        >
-                          {comment.author.firstName} {comment.author.lastName}
+                        <Text color={'gray.500'} fontSize={'15'}>
+                          {new Date(comment.createdAt).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
                         </Text>
                         <Text
-                          color={'gray.500'}
+                          fontSize={'15'}
                           cursor={'pointer'}
                           _hover={{ color: 'gray.400' }}
                           onClick={() => {
@@ -331,51 +353,33 @@ const Article = ({ article }) => {
                             handleInputView();
                           }}
                         >
-                          reply
+                          Reply
                         </Text>
                       </Flex>
-                      <Text overflowWrap={'anywhere'} whiteSpace={'pre-wrap'}>
-                        {comment.comment}
-                      </Text>
-                      <Text color={'gray.500'} fontSize={'15'}>
-                        {new Date(comment.createdAt).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </Text>
-                    </Flex>
-                    <Flex position='absolute' right='-1' top='-2'>
-                      <HoverContextMenu
-                        options={
-                          currentUser?.id === comment.author?.id
-                            ? [
-                                { label: 'Remove', cb: handleDeleteComment(comment.id) },
-                                { label: 'Report', cb: () => alert('Словил кринж!') },
-                              ]
-                            : [{ label: 'Report', cb: () => alert('Словил кринж!') }]
-                        }
-                      >
-                        <Box
+
+                      {index !== comments?.length - 1 ? (
+                        <hr
                           style={{
-                            transform: 'rotate(90deg)',
-                            transformOrigin: 'center',
+                            border: '1px solid var(--chakra-colors-gray-800)',
+                            margin: '10px 0px -5px 0px',
                           }}
-                        >
-                          <IconButton
-                            variant='ghost'
-                            colorScheme='gray'
-                            aria-label='See menu'
-                            icon={<BsThreeDotsVertical />}
-                            backgroundColor='gray.800'
-                            _hover={{ backgroundColor: 'gray.600' }}
-                            zIndex='2'
-                          />
-                        </Box>
-                      </HoverContextMenu>
+                        />
+                      ) : null}
                     </Flex>
+                    {comment.id === detailedComment &&
+                      (article?.authorId === currentUser?.id ? (
+                        <Flex position='absolute' right='1' top='1' gap={1}>
+                          {currentUser?.id === comment.author?.id ? (
+                            <FaPencilAlt className='edit-comment' onClick={() => alert('Изменил, проверяй')} />
+                          ) : null}
+                          <RxCross2 className='delete-comment' onClick={handleDeleteComment(comment.id)} />
+                        </Flex>
+                      ) : currentUser?.id === comment.author?.id ? (
+                        <Flex position='absolute' right='1' top='1' gap={1}>
+                          <FaPencilAlt className='edit-comment' onClick={() => alert('Изменил, проверяй')} />
+                          <RxCross2 className='delete-comment' onClick={handleDeleteComment(comment.id)} />
+                        </Flex>
+                      ) : null)}
                   </Flex>
                 </Flex>
               );

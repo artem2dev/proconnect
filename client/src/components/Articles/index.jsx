@@ -1,6 +1,6 @@
 import { Flex } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
-import { getArticles } from '../../api/articles';
+import { deleteArticle, getArticles } from '../../api/articles';
 import React from 'react';
 import Article from './Article';
 
@@ -16,9 +16,17 @@ export default function ArticlesScroll() {
   }, [articles?.length]);
 
   const articleItems = useCallback(
-    () => articles?.map((article, index) => <Article {...{ article }} key={index} />),
+    () => articles?.map((article) => <Article {...{ article }} key={article.id} deleteArticle={handleDeleteArticle} />),
     [articles],
   );
+
+  const handleDeleteArticle = (articleId) => {
+    deleteArticle(articleId)
+      .then(() => {
+        setArticles((prev) => prev.filter((article) => article.id !== articleId));
+      })
+      .catch(console.error);
+  };
 
   return (
     <Flex maxH={'100%'} flexDirection={'column'} gap={'10px'} w={'100%'}>

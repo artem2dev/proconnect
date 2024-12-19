@@ -15,13 +15,11 @@ import {
 } from '@chakra-ui/react';
 import React, { useRef, useState } from 'react';
 import { MdDeleteForever } from 'react-icons/md';
-import { useNavigate } from 'react-router-dom';
 import { createArticle } from '../../../api/articles';
 import './style.css';
 
 export const CreateArticle = ({ isOpen, onClose }) => {
   const [currentFile, setCurrentFile] = useState(null);
-  const navigate = useNavigate();
 
   const onModalClose = () => {
     onClose();
@@ -37,14 +35,12 @@ export const CreateArticle = ({ isOpen, onClose }) => {
   const fileRef = useRef(null);
   const formRef = useRef(null);
 
-  const onSubmit = async (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
 
     try {
-      const { data: savedArticle } = await createArticle(fd);
-
-      navigate(`/article/${savedArticle.id}`);
+      createArticle(fd);
     } catch (err) {
       console.log(err);
     }
