@@ -4,6 +4,7 @@ import { Flex, Text } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import React from 'react';
 import Article from '../Articles/Article';
+import { deleteArticle } from '../../api/articles';
 
 const ArticlesList = () => {
   const [articles, setArticles] = useState([]);
@@ -21,6 +22,14 @@ const ArticlesList = () => {
 
     getArticles(userName).then(onSuccess).catch(onError);
   }, [userName]);
+
+  const handleDeleteArticle = (articleId) => {
+    deleteArticle(articleId)
+      .then(() => {
+        setArticles((prev) => prev.filter((article) => article.id !== articleId));
+      })
+      .catch(console.error);
+  };
 
   return (
     <Flex flexDirection={'column'} gap={'10px'} w={'100%'}>
@@ -40,7 +49,7 @@ const ArticlesList = () => {
         </Flex>
       )}
       {articles.map((article) => (
-        <Article key={article.id} article={article}></Article>
+        <Article key={article.id} article={article} deleteArticle={handleDeleteArticle}></Article>
       ))}
     </Flex>
   );
