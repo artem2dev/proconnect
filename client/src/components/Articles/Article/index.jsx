@@ -214,11 +214,9 @@ const Article = ({ article, deleteArticle }) => {
         </Flex>
         <HoverContextMenu
           options={[
-            { label: 'Save', cb: () => alert('Save!') },
+            { label: 'Save', cb: () => alert('Save') },
             { label: 'Remove', cb: () => deleteArticle(article.id) },
-            { label: 'Report', cb: () => alert('Report!') },
-            { label: 'Box 3', cb: () => alert('Box 3!') },
-            { label: 'Box 4', cb: () => alert('Box 4!') },
+            { label: 'Report', cb: () => alert('Report') },
           ]}
         />
       </Flex>
