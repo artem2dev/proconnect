@@ -152,7 +152,7 @@ const SidebarContent = ({ onClose, onModalOpen, ...rest }) => {
           <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
         </Flex>
         <Flex h={'100%'} flexDirection={'column'} justifyContent={'space-between'} alignItems={''}>
-          <Box>
+          <Flex display={'flex'} flexDirection={'column'} gap={2} mt={5}>
             {LinkItems.map((link) => {
               const isActive =
                 currentTitle === link.name || (link.name === 'Profile' && currentTitle.includes('Profile'));
@@ -176,7 +176,7 @@ const SidebarContent = ({ onClose, onModalOpen, ...rest }) => {
                 </NavItem>
               );
             })}
-          </Box>
+          </Flex>
           <Button w={210} ml={3} py={7} rounded='3xl' justifyContent={'flex-start'} onClick={onModalOpen}>
             {IoMdCreate && <Icon mr='4' fontSize='20' as={IoMdCreate} />}
             Create post
