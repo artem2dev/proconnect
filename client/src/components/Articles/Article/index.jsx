@@ -212,13 +212,22 @@ const Article = ({ article, deleteArticle }) => {
             })}
           </Text>
         </Flex>
-        <HoverContextMenu
-          options={[
-            { label: 'Save', cb: () => alert('Save') },
-            { label: 'Remove', cb: () => deleteArticle(article.id) },
-            { label: 'Report', cb: () => alert('Report') },
-          ]}
-        />
+        {article.authorId === currentUser.id ? (
+          <HoverContextMenu
+            options={[
+              { label: 'Save', cb: () => alert('Save') },
+              { label: 'Remove', cb: () => deleteArticle(article.id) },
+              { label: 'Report', cb: () => alert('Report') },
+            ]}
+          />
+        ) : (
+          <HoverContextMenu
+            options={[
+              { label: 'Save', cb: () => alert('Save') },
+              { label: 'Report', cb: () => alert('Report') },
+            ]}
+          />
+        )}
       </Flex>
       <Flex flexDirection={'column'} gap={'6px'}>
         {article?.title && (
