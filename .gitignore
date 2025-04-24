@@ -1,4 +1,6 @@
 .DS_Store
 .vscode
+/backend/.env
+/client/.env
 pro2connect.crt
 pro2connect.key
