@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, Input, Text } from '@chakra-ui/react';
+import { Avatar, AvatarBadge, Box, Flex, Input, Text } from '@chakra-ui/react';
 import { ConversationHeader, Message } from '@chatscope/chat-ui-kit-react';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -10,6 +10,7 @@ import ScrollableFeed from 'react-scrollable-feed';
 import { getMessages } from '../../../api/chat';
 import { getUser } from '../../../api/user';
 import { config } from '../../../config/app.config';
+import { timeSinceLastOnline } from '../../../helpers/timeSinceLastOnline';
 import socket from '../../../socket';
 import './style.css';
 
@@ -41,7 +42,9 @@ const Chat = () => {
 
   const messageListener = useCallback(
     ({ message }) => {
-      room === message.roomId && setMessages((prev) => [...prev, message]);
+      if (room === message.roomId) {
+        setMessages((prev) => [...prev, message]);
+      }
     },
     [room],
   );
@@ -78,26 +81,42 @@ const Chat = () => {
   }, [user]);
 
   useEffect(() => {
-    socket.on('message', messageListener);
-  }, [messageListener]);
+    if (room) {
+      socket.emit('joinRoom', room);
+    }
+  }, [room]);
+
+  useEffect(() => {
+    if (room) {
+      socket.on('message', messageListener);
+    }
+
+    return () => {
+      if (room) {
+        socket.off('message', messageListener);
+      }
+    };
+  }, [messageListener, room]);
 
   const sendMessage = () => {
-    socket.emit('message', {
-      message: { roomId: room, userId: userInfo?.id, text: currentMessage },
-      user1: {
-        id: userInfo?.id,
-        firstName: userInfo?.firstName,
-        lastName: userInfo?.lastName,
-        avatarId: userInfo?.avatarId,
-      },
-      user2: {
-        id: user?.id,
-        firstName: user?.firstName,
-        lastName: user?.lastName,
-        avatarId: user?.avatarId,
-      },
-      roomId: room,
-    });
+    if (currentMessage) {
+      socket.emit('message', {
+        message: { roomId: room, userId: userInfo?.id, text: currentMessage },
+        user1: {
+          id: userInfo?.id,
+          firstName: userInfo?.firstName,
+          lastName: userInfo?.lastName,
+          avatarId: userInfo?.avatarId,
+        },
+        user2: {
+          id: user?.id,
+          firstName: user?.firstName,
+          lastName: user?.lastName,
+          avatarId: user?.avatarId,
+        },
+        roomId: room,
+      });
+    }
 
     setCurrentMessage('');
   };
@@ -154,8 +173,15 @@ const Chat = () => {
         <ConversationHeader.Content onClick={handleRedirectToProfile}>
           {user?.id && (
             <Flex alignItems={'center'} cursor={'pointer'}>
-              <Avatar src={`${config.API}/media/image/` + user.id} marginX={4} />
-              <Text color={'white'}>{`${user?.firstName} ${user?.lastName}`}</Text>
+              <Avatar src={`${config.API}/media/image/` + user.id} marginX={4}>
+                {user?.isOnline && <AvatarBadge boxSize='0.8em' bg='green.500' />}
+              </Avatar>
+              <Flex direction={'column'} justifyContent={'flex-start'}>
+                <Text color={'white'}>{`${user?.firstName} ${user?.lastName}`}</Text>
+                <Text fontWeight={400} color={'gray.300'}>
+                  {!user?.isOnline && timeSinceLastOnline(user?.wasOnline)}
+                </Text>
+              </Flex>
             </Flex>
           )}
         </ConversationHeader.Content>
@@ -197,21 +223,31 @@ const Chat = () => {
         <Input
           type='text'
           variant='filled'
-          bgColor={'#6ea9d7'}
+          bgColor={'white'}
           _hover={''}
+          border='none'
           style={{ color: 'black', borderRadius: '10px', fontSize: '15px' }}
           _placeholder={{ opacity: 1, color: 'gray.600' }}
-          _focus={{ border: null, bgColor: '#6ea9d7', caretColor: 'black', color: 'black' }}
+          _focus={{ border: null, bgColor: 'white', caretColor: 'black', color: 'black' }}
           value={currentMessage}
           placeholder='Type message here...'
           onChange={(e) => {
             setCurrentMessage(e.target.value);
           }}
           onKeyDown={onKeyDown}
+          autoFocus
         />
         <RiSendPlaneFill
-          fill={'#375067'}
-          style={{ width: '30px', height: '30px', marginLeft: '10px', marginRight: '10px', cursor: 'pointer' }}
+          fill={'#6ea9d7'}
+          style={{
+            width: '30px',
+            height: '30px',
+            marginLeft: '10px',
+            marginRight: '10px',
+            cursor: 'pointer',
+            rotate: 20,
+          }}
+          rotate={'rotate(90deg)'}
           onClick={sendMessage}
         />
       </Flex>

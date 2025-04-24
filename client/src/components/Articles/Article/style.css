@@ -1,0 +1,22 @@
+.edit-comment {
+  height: 14px;
+  width: 14px;
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+.delete-comment {
+  height: 23px;
+  width: 23px;
+  cursor: pointer;
+}
+
+.edit-comment:hover {
+  fill: rgb(163, 177, 162);
+}
+
+.delete-comment:hover {
+  path {
+    fill: rgb(163, 177, 162);
+  }
+}

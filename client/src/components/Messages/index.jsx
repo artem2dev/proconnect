@@ -1,4 +1,5 @@
-import { Avatar, Box, Card, CardBody, Flex, keyframes, Text } from '@chakra-ui/react';
+import { Avatar, AvatarBadge, Box, Card, CardBody, Flex, Text } from '@chakra-ui/react';
+import { keyframes } from '@emotion/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -100,7 +101,9 @@ const Messages = () => {
           <Box key={index} w={'full'} cursor={'pointer'} marginBottom={2}>
             <Card onClick={() => onChatClick(recipient?.userName)}>
               <CardBody display={'flex'} flexDirection={'row'}>
-                <Avatar h={'40px'} w={'40px'} marginRight={5} src={config.API + '/media/image/' + recipient?.id} />
+                <Avatar h={'50px'} w={'50px'} marginRight={5} src={config.API + '/media/image/' + recipient?.id}>
+                  {recipient?.isOnline && <AvatarBadge boxSize='0.8em' bg='green.500'/>}
+                </Avatar>
                 <Flex w={'full'} direction={'column'}>
                   <Text>{`${recipient?.firstName} ${recipient?.lastName}`}</Text>
                   <Flex alignItems={'center'} justifyContent={'space-between'}>

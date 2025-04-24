@@ -12,6 +12,7 @@ import {
   FormLabel,
   Heading,
   HStack,
+  Image,
   Input,
   InputGroup,
   InputRightElement,
@@ -24,7 +25,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../../api/auth';
 import { getUser } from '../../api/user';
-import { ReactComponent as Logo } from '../../assets/logo.svg';
+import logo from '../../assets/logo.png';
 import { setItem } from '../../helpers/localStorage';
 import { setGlobalState } from '../../redux/globalStateSlice';
 import { setUser } from '../../redux/usersSlice';
@@ -232,11 +233,12 @@ const SignUp = () => {
       align={'center'}
       justifyContent={'center'}
       bgColor='RGBA(0, 0, 0, 0.2)'
+      py='20px'
     >
       <Stack spacing={8} maxW={'lg'} justify='center' minW={'520px'}>
         <Stack spacing='6'>
           <Center>
-            <Logo width='100' height='100' />
+            <Image src={logo} h='100' />
           </Center>
 
           <Stack
