@@ -3,16 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@chakra-ui/icons": "^2.0.14",
     "@chakra-ui/react": "^2.8.2",
     "@chatscope/chat-ui-kit-react": "^1.9.9",
     "@chatscope/chat-ui-kit-styles": "^1.4.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@reduxjs/toolkit": "^1.9.1",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
     "axios": "^1.2.1",
     "framer-motion": "^7.10.1",
     "react": "^18.2.0",
@@ -22,8 +18,7 @@
     "react-router-dom": "^6.4.5",
     "react-scripts": "^5.0.1",
     "react-scrollable-feed": "^1.3.1",
-    "socket.io-client": "^4.5.4",
-    "web-vitals": "^2.1.4"
+    "socket.io-client": "^4.5.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -50,9 +45,8 @@
   "devDependencies": {
     "@eslint/js": "^9.16.0",
     "eslint": "^9.16.0",
-    "globals": "^15.13.0",
     "eslint-config-react-app": "^7.0.1",
-    "eslint-import-resolver-node": "^0.3.9",
-    "eslint-plugin-import": "^2.31.0"
+    "eslint-plugin-import": "^2.31.0",
+    "globals": "^15.13.0"
   }
 }
