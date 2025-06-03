@@ -51,7 +51,7 @@ services:
       - bridge
 
   minio-service1:
-    image: minio/minio
+    image: minio/minio:RELEASE.2024-11-07T00-52-20Z
     container_name: minio-service1
     env_file: ./backend/.env
     ports:
@@ -68,7 +68,7 @@ services:
 
   createbuckets1:
     container_name: createbuckets1
-    image: minio/mc
+    image: minio/mc:RELEASE.2024-11-17T19-35-25Z
     depends_on:
       - minio-service1
     entrypoint: >
