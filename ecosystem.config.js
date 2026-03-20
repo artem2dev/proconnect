@@ -49,7 +49,7 @@ module.exports = [
       MINIO_SERVER_ACCESS_KEY: 'lskdfhghn8975',
       MINIO_SERVER_SECRET_KEY: 'jkshdgo76',
       GOOGLE_CLIENT_ID: '840394119490-nr8sg0l7qgq2dk2jm463bd88hvjln7vm.apps.googleusercontent.com',
-      GOOGLE_SECRET: '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',
+      GOOGLE_SECRET: 'GOCSPX-3kBtbbUVaEKyrvhQEgUA9P-og5M',
       GOOGLE_CALLBACK_URL: 'http://localhost:3001/auth/google/redirect',
       VK_CLIENT_ID: 51529574,
       VK_SECRET: 'hjGpAzvVB3d016FRM5At',
